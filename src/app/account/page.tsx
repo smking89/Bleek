@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { astroConfigured } from "@astro/core/db";
 import { SignInHandoff } from "@/components/account/sign-in-handoff";
 import { SignInPanel } from "@/components/account/sign-in-panel";
+import { deploymentOrigins } from "@/lib/astro/origin";
 import { signInApp, type SignInApp } from "@/lib/astro/signin";
 import { signInReturnUrl } from "@/lib/astro/signin-url";
 import { currentAccount } from "@/lib/session";
@@ -77,7 +78,7 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
     } else if (!state) {
       problem = "This link is missing its state value, so the sign-in was not started here. Start it again from the app.";
     } else {
-      app = await signInApp(redirectUri);
+      app = await signInApp(redirectUri, await deploymentOrigins());
       if (!app) {
         problem =
           "That redirect_uri is not registered to an active app, so nothing was forwarded. Check the URI registered for your app in the developer portal.";

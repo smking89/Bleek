@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { astroConfigured } from "@astro/core/db";
 import { CharacterArt } from "@/components/cosmetics/character";
+import { PopupSignInDemo } from "@/components/landing/popup-demo";
 import { Icon } from "@/components/icons";
 import { currentAccount } from "@/lib/session";
 import type { CharacterKey } from "@/lib/types";
@@ -150,6 +151,10 @@ export default async function BleekLandingPage() {
           >
             Log in with ASTRO
           </Link>
+        </div>
+
+        <div className="mt-6">
+          <PopupSignInDemo />
         </div>
       </section>
 

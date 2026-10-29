@@ -243,6 +243,12 @@ signs the member in — redirecting back with `state`, `handle` and `astroId`, o
 closing the window. A URI that no active app registered is refused before anything is written. Without a `redirect_uri`
 the same page is the plain Astrocan account screen.
 
+This deployment's own pages under `/astro/` are the one exception: their origin is the account screen's origin, so they
+need no registry row and appear as “Astrocan”. `/astro/signin-demo/callback` is such a page, and the landing page's
+**Try the popup sign-in** button drives the whole handoff against it — it opens the popup with a fresh `state`, then
+accepts one message back only when the source is Astrocan, the origin is this page and the state matches the one it sent.
+A blocked popup offers the same handoff as a redirect, which lands on that callback page.
+
 Bleek still serves the metered API those keys call:
 
 - Creating an app returns `clientId` plus a `astro_sk_…` secret **once**; only a SHA-256 hash, the display prefix and the
