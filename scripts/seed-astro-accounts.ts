@@ -200,7 +200,25 @@ async function seedAccount(seed: DemoAccount) {
   const existingProfile = await astroDb().accountProfile.findUnique({ where: { userId: account.id } });
   if (!existingProfile) {
     await astroDb().accountProfile.create({
-      data: { userId: account.id, email: seed.email, region: seed.region, platform: seed.platform },
+      data: {
+        userId: account.id,
+        email: seed.email,
+        region: seed.region,
+        platform: seed.platform,
+        // Demo accounts behave like members who finished verification.
+        emailVerifiedAt: new Date(),
+      },
+    });
+  } else {
+    await astroDb().accountProfile.update({
+      where: { userId: account.id },
+      data: {
+        email: seed.email,
+        region: seed.region,
+        platform: seed.platform,
+        // Profiles written before verification existed catch up on the next seed.
+        emailVerifiedAt: existingProfile.emailVerifiedAt ?? new Date(),
+      },
     });
   }
 
