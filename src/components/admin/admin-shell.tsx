@@ -89,12 +89,6 @@ export function AdminShell({
 
         <div className="mt-auto space-y-1 border-t border-white/[0.06] pt-3">
           <Link
-            href="/developers/console"
-            className="flex items-center gap-2 rounded-md px-2.5 py-1.5 text-[12px] text-[#94A3B8] transition-colors hover:text-[#F8FAFC]"
-          >
-            <Icon name="key" size={15} /> Developer portal
-          </Link>
-          <Link
             href="/app"
             className="flex items-center gap-2 rounded-md px-2.5 py-1.5 text-[12px] text-[#94A3B8] transition-colors hover:text-[#F8FAFC]"
           >

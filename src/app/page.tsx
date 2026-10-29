@@ -1,53 +1,94 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { currentAccount } from "@/lib/session";
 import { astroConfigured } from "@astro/core/db";
+import { CharacterArt } from "@/components/cosmetics/character";
+import { Icon } from "@/components/icons";
+import { currentAccount } from "@/lib/session";
+import type { CharacterKey } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Bleek — chat that feels like a place",
+  title: "Bleek — chat that actually feels like a space",
   description:
-    "Realtime channels, switchable chat, gallery and canvas layouts, creator storefronts, a local guard and an animated cosmetic shop. Sign in with your ASTRO account.",
+    "Real-time text channels, drop-in voice rooms, chat/gallery/canvas layouts, creator shops and animated cosmetics. Sign in with your ASTRO handle.",
 };
 
-const PILLARS = [
+const VIEWS = [
   {
-    title: "One timeline, not a server list",
-    body: "The home feed merges every channel with history, ranks them by the last 24 hours of activity, and filters by text threads, audio rooms or trending words.",
-    tag: "Home feed",
+    name: "Chat view",
+    body: "A clean, lightning-fast stream built for rapid-fire messaging.",
   },
   {
-    title: "Chat, gallery or canvas per channel",
-    body: "A linear stream when you want conversation, a masonry board for art drops, or a Notion-style document with markdown and a saved preview — switch it in the header.",
-    tag: "Hybrid layouts",
+    name: "Gallery view",
+    body: "A clean grid designed specifically for dropping art, links, and media.",
   },
   {
-    title: "Storefronts the creators own",
-    body: "Mint a decoration, effect, nameplate or theme into your server's shop. Every sale records a 90/10 payout you can see, and gifting still pays the creator.",
-    tag: "Creator economy",
-  },
-  {
-    title: "Moderation that stays local",
-    body: "Describe what to catch in plain language — scam terms, shouting, link floods. Every message is scanned in-process and hits land in a review queue.",
-    tag: "Guard",
+    name: "Canvas view",
+    body: "A shared document space with markdown support for writing notes or guidelines together.",
   },
 ] as const;
 
-const LAYOUTS = [
-  {
-    name: "Chat",
-    body: "Replies, reactions, edits, per-channel drafts and typing indicators.",
-  },
-  {
-    name: "Gallery",
-    body: "Messages become gradient cards in a board built for drops and links.",
-  },
-  {
-    name: "Canvas",
-    body: "A shared document with headings, lists and quotes, saved to the channel.",
-  },
+const COSMETICS = [
+  { slot: "Decorations", detail: "Animated frames on your avatar", tone: "from-[#4F46E5]/35 via-[#4F46E5]/5 to-transparent" },
+  { slot: "Profile effects", detail: "Ambient motion on your card", tone: "from-[#06B6D4]/30 via-[#06B6D4]/5 to-transparent" },
+  { slot: "Nameplates", detail: "Shimmering treatment for your name", tone: "from-[#A855F7]/30 via-[#A855F7]/5 to-transparent" },
+  { slot: "App themes", detail: "Recolour the whole client", tone: "from-[#23A55A]/25 via-[#23A55A]/5 to-transparent" },
 ] as const;
+
+const VOICE_MEMBERS: { key: CharacterKey; name: string }[] = [
+  { key: "comet", name: "Luna" },
+  { key: "tide", name: "Pixie" },
+  { key: "sprout", name: "Ash" },
+  { key: "static", name: "Unit-9" },
+];
+
+/** The API and its keys are documented with ASTRO, not with Bleek. */
+const ASTRO_DEVELOPER_DOCS = "https://github.com/smking89/Astro/blob/main/DEVELOPERS.md";
+
+type FooterLink = { label: string; href?: string; soon?: boolean };
+
+const FOOTER: { title: string; links: FooterLink[] }[] = [
+  {
+    title: "Product",
+    links: [
+      { label: "Open Web App", href: "/app" },
+      { label: "Integration API", href: ASTRO_DEVELOPER_DOCS },
+      { label: "Desktop Client", soon: true },
+    ],
+  },
+  {
+    title: "Ecosystem",
+    links: [
+      { label: "ASTRO Identity Layer", href: "/astro" },
+      { label: "Community Directory", href: "/app" },
+      { label: "Creator Shops", href: "/app" },
+    ],
+  },
+  {
+    title: "Developers",
+    links: [
+      { label: "API Documentation", href: ASTRO_DEVELOPER_DOCS },
+      { label: "Style Guide", href: "/astro/brand" },
+      { label: "Server Security Setup", href: "/app" },
+    ],
+  },
+  {
+    title: "Terms",
+    links: [{ label: "Platform Rules", soon: true }, { label: "Data Transparency Log", soon: true }],
+  },
+];
+
+function SectionHead({ title, body }: { title: string; body?: string }) {
+  return (
+    <>
+      <h2 className="max-w-2xl text-[26px] font-semibold leading-[1.2] tracking-tight text-[#F8FAFC] sm:text-[32px]">
+        {title}
+      </h2>
+      {body ? <p className="mt-3 max-w-2xl text-[14.5px] leading-7 text-[#94A3B8]">{body}</p> : null}
+    </>
+  );
+}
 
 export default async function BleekLandingPage() {
   let handle: string | null = null;
@@ -61,37 +102,24 @@ export default async function BleekLandingPage() {
     }
   }
 
+  const openHref = handle ? "/app" : "/astro?next=/app#access";
+
   return (
     <main className="min-h-dvh bg-black text-[#F8FAFC]">
-      <header className="sticky top-0 z-30 border-b border-white/[0.06] bg-black/95 backdrop-blur">
+      <header className="sticky top-0 z-40 border-b border-white/[0.06] bg-black/95 backdrop-blur">
         <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between gap-4 px-5">
-          <Link href="/" className="flex items-center gap-2.5">
+          <Link href="/" className="flex items-center gap-2.5" aria-label="Bleek home">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/bleek-icon.png" alt="" width={26} height={26} className="h-[26px] w-[26px] object-contain" />
-            <span className="text-[13px] font-bold uppercase tracking-[0.22em]">Bleek</span>
+            <img src="/bleek-icon.png" alt="" width={24} height={24} className="h-6 w-6 object-contain" />
+            <span className="text-[12px] font-bold uppercase tracking-[0.22em]">Bleek</span>
           </Link>
 
-          <nav aria-label="Bleek" className="hidden items-center gap-1 text-[13px] text-[#94A3B8] sm:flex">
-            <a href="#inside" className="rounded-full px-3 py-1.5 transition-colors hover:text-[#F8FAFC]">
-              What&apos;s inside
-            </a>
-            <a href="#cosmetics" className="rounded-full px-3 py-1.5 transition-colors hover:text-[#F8FAFC]">
-              Cosmetics
-            </a>
-            <a href="#operations" className="rounded-full px-3 py-1.5 transition-colors hover:text-[#F8FAFC]">
-              Operations
-            </a>
-          </nav>
-
           <div className="flex items-center gap-2">
+            {handle ? (
+              <span className="hidden text-[12px] text-[#64748B] sm:block">@{handle}</span>
+            ) : null}
             <Link
-              href={handle ? "/app" : "/astro?mode=login&next=/app#access"}
-              className="hidden rounded-full px-3 py-1.5 text-[13px] font-medium text-[#94A3B8] transition-colors hover:text-[#F8FAFC] sm:block"
-            >
-              {handle ? `@${handle}` : "Log in"}
-            </Link>
-            <Link
-              href={handle ? "/app" : "/astro?next=/app#access"}
+              href={openHref}
               className="rounded-full bg-[#4F46E5] px-4 py-1.5 text-[13px] font-semibold text-white transition-colors hover:bg-[#4338CA]"
             >
               Open Bleek
@@ -100,162 +128,121 @@ export default async function BleekLandingPage() {
         </div>
       </header>
 
-      <section className="mx-auto grid w-full max-w-6xl gap-10 px-5 pb-14 pt-12 lg:grid-cols-[1.05fr_0.95fr] lg:gap-14 lg:pt-20">
-        <div>
-          <p className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[11px] font-bold uppercase tracking-[0.2em] text-[#64748B]">
-            <span className="h-1.5 w-1.5 rounded-full bg-[#06B6D4]" aria-hidden />
-            Realtime chat · voice rooms · cosmetics
-          </p>
-
-          <h1 className="mt-5 max-w-xl text-[40px] font-bold leading-[1.05] tracking-tight sm:text-[56px]">
-            Chat that feels like a place, not a text box.
-          </h1>
-
-          <p className="mt-5 max-w-xl text-[15px] leading-7 text-[#94A3B8]">
-            Bleek is a social client with realtime channels, audio rooms, per-server storefronts and a cosmetic shop that
-            animates across every avatar in the app. Sign in with your ASTRO handle — the same identity you carry into
-            Koba.games, SnagChat and KOBAbot.
-          </p>
-
-          <div className="mt-8 flex flex-wrap items-center gap-3">
-            <Link
-              href={handle ? "/app" : "/astro?next=/app#access"}
-              className="rounded-full bg-[#4F46E5] px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#4338CA]"
-            >
-              Open Bleek
-            </Link>
-            <Link
-              href="/astro?mode=login&next=/app#access"
-              className="rounded-full border border-white/15 px-5 py-2.5 text-sm font-semibold text-[#F8FAFC] transition-colors hover:border-white/35"
-            >
-              Log in with ASTRO
-            </Link>
-          </div>
-
-          <dl className="mt-9 grid max-w-lg grid-cols-3 gap-4 border-t border-white/[0.06] pt-6">
-            {[
-              { value: "3", label: "channel layouts" },
-              { value: "90/10", label: "creator split" },
-              { value: "4", label: "cosmetic slots" },
-            ].map((stat) => (
-              <div key={stat.label}>
-                <dt className="text-2xl font-bold tabular-nums">{stat.value}</dt>
-                <dd className="mt-0.5 text-[11px] uppercase tracking-[0.12em] text-[#64748B]">{stat.label}</dd>
-              </div>
-            ))}
-          </dl>
+      <section className="mx-auto w-full max-w-4xl px-5 pb-20 pt-20 text-center sm:pt-28">
+        <h1 className="mx-auto max-w-3xl text-[38px] font-bold leading-[1.06] tracking-tight text-[#F8FAFC] sm:text-[58px]">
+          Chat that actually feels like a space, not a boring text box.
+        </h1>
+        <p className="mx-auto mt-6 max-w-2xl text-[15px] leading-7 text-[#94A3B8]">
+          Bleek gives your community real-time text channels, voice chat, and built-in shops where creators can sell
+          their own custom items. Sign in with your ASTRO handle to keep your exact profile, wallet, and history across
+          every app and game we plug into.
+        </p>
+        <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+          <Link
+            href={openHref}
+            className="inline-flex h-12 w-full items-center justify-center rounded-lg bg-[#4F46E5] px-7 text-[15px] font-semibold text-white transition-colors hover:bg-[#4338CA] sm:w-auto"
+          >
+            Open Bleek
+          </Link>
+          <Link
+            href="/astro?mode=login&next=/app#access"
+            className="inline-flex h-12 w-full items-center justify-center rounded-lg border border-white/15 bg-black px-7 text-[15px] font-semibold text-[#F8FAFC] transition-colors hover:border-white/35 sm:w-auto"
+          >
+            Log in with ASTRO
+          </Link>
         </div>
+      </section>
 
-        <div className="rounded-2xl border border-white/[0.08] bg-[#0B0C0E] p-4">
-          <div className="flex items-center gap-2 border-b border-white/[0.06] pb-3">
-            <span className="text-lg text-[#64748B]" aria-hidden>
-              #
-            </span>
-            <span className="text-sm font-semibold">welcome</span>
-            <span className="ml-auto flex items-center gap-1.5 text-[11px] text-[#64748B]">
-              <span className="h-1.5 w-1.5 rounded-full bg-[#06B6D4]" aria-hidden />
-              8 online
-            </span>
-          </div>
-
-          <ul className="mt-4 space-y-4 text-[14px] leading-6">
-            <li className="flex gap-3">
-              <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#4F46E5] to-[#06B6D4] text-[11px] font-bold">
-                LU
-              </span>
-              <p className="text-[#CBD5E1]">
-                <span className="font-semibold text-[#F8FAFC]">Luna</span> For the cosmetics, type <code className="rounded bg-white/[0.07] px-1 text-[12.5px] text-[#A5B4FC]">/shop</code> in #general.
-              </p>
-            </li>
-            <li className="flex gap-3">
-              <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#06B6D4] to-[#23A55A] text-[11px] font-bold">
-                PI
-              </span>
-              <p className="text-[#CBD5E1]">
-                <span className="font-semibold text-[#F8FAFC]">Pixie</span> Joined for the vents. Stayed for the decorations.
-              </p>
-            </li>
-          </ul>
-
-          <div className="mt-4 flex items-center gap-2 rounded-full bg-[#111318] px-3 py-2 text-[13px] text-[#64748B]">
-            <span className="flex h-6 w-6 items-center justify-center rounded-full bg-white/[0.08] text-[#94A3B8]" aria-hidden>
-              +
-            </span>
-            Message #welcome
+      <section className="border-t border-white/[0.06]">
+        <div className="mx-auto w-full max-w-6xl px-5 py-16">
+          <SectionHead
+            title="Pick how you want to talk."
+            body="You can switch your channel view right from the header depending on what you're doing. No clutter, just the format that fits the moment."
+          />
+          <div className="mt-8 grid gap-3 sm:grid-cols-3">
+            {VIEWS.map((view) => (
+              <article key={view.name} className="rounded-xl border border-white/[0.08] bg-[#0B0C0E] p-5">
+                <h3 className="text-[15px] font-semibold">{view.name}</h3>
+                <p className="mt-2 text-[13px] leading-6 text-[#94A3B8]">{view.body}</p>
+              </article>
+            ))}
           </div>
         </div>
       </section>
 
-      <section id="inside" className="scroll-mt-20 border-t border-white/[0.06]">
-        <div className="mx-auto w-full max-w-6xl px-5 py-14">
-          <h2 className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#64748B]">What&apos;s inside</h2>
-          <div className="mt-5 grid gap-3 sm:grid-cols-2">
-            {PILLARS.map((pillar) => (
-              <article key={pillar.title} className="rounded-xl border border-white/[0.08] bg-[#0B0C0E] p-5">
-                <span className="text-[10px] font-bold uppercase tracking-[0.16em] text-[#06B6D4]">{pillar.tag}</span>
-                <h3 className="mt-2 text-[15px] font-semibold">{pillar.title}</h3>
-                <p className="mt-2 text-[13px] leading-6 text-[#94A3B8]">{pillar.body}</p>
-              </article>
-            ))}
+      <section className="border-t border-white/[0.06]">
+        <div className="mx-auto grid w-full max-w-6xl items-center gap-10 px-5 py-16 lg:grid-cols-[1fr_1fr]">
+          <div>
+            <SectionHead
+              title="Just drop in. No invites needed."
+              body="Stop dealing with group calls that break up the second someone hangs up. Bleek's voice chat channels are permanent fixtures in your server. See who's hanging out, click to join, and bounce whenever you want. The channel stays alive before, during, and long after your session ends."
+            />
           </div>
 
-          <div className="mt-3 grid gap-3 sm:grid-cols-3">
-            {LAYOUTS.map((layout) => (
-              <div key={layout.name} className="rounded-xl border border-white/[0.06] p-4">
-                <h3 className="text-[13px] font-semibold">{layout.name}</h3>
-                <p className="mt-1.5 text-[12px] leading-5 text-[#64748B]">{layout.body}</p>
+          <div className="rounded-2xl border border-white/[0.08] bg-[#0B0C0E] p-4">
+            <div className="flex items-center gap-2 border-b border-white/[0.06] pb-3 text-[11px] font-bold uppercase tracking-[0.16em] text-[#64748B]">
+              <span className="h-1.5 w-1.5 rounded-full bg-[#06B6D4]" aria-hidden />
+              Koba Studio
+            </div>
+
+            <div className="mt-3 rounded-lg bg-white/[0.03] p-3">
+              <div className="flex items-center gap-2 text-[13px] font-semibold text-[#F8FAFC]">
+                <Icon name="volume" size={15} className="text-[#94A3B8]" />
+                voice-general
+                <span className="ml-auto rounded-full bg-[#06B6D4]/15 px-2 py-0.5 text-[10px] font-bold text-[#67E8F9]">
+                  {VOICE_MEMBERS.length} in
+                </span>
               </div>
-            ))}
+
+              <ul className="mt-3 grid grid-cols-2 gap-2">
+                {VOICE_MEMBERS.map((member, index) => (
+                  <li
+                    key={member.key}
+                    className="flex items-center gap-2 rounded-lg border border-white/[0.06] bg-black px-2 py-1.5"
+                  >
+                    <span
+                      className="flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-full"
+                      style={{
+                        background:
+                          index % 2 === 0
+                            ? "linear-gradient(145deg, #4F46E5, #06B6D4)"
+                            : "linear-gradient(145deg, #0EA5E9, #23A55A)",
+                      }}
+                    >
+                      <CharacterArt kind={member.key} size={32} />
+                    </span>
+                    <span className="min-w-0 truncate text-[12px] text-[#CBD5E1]">{member.name}</span>
+                    <span className="ml-auto h-1.5 w-1.5 shrink-0 rounded-full bg-[#06B6D4]" aria-hidden />
+                  </li>
+                ))}
+              </ul>
+
+              <p className="mt-3 text-[11px] text-[#6E7C93]">The room stays open. Join and leave whenever.</p>
+            </div>
           </div>
         </div>
       </section>
 
       <section id="cosmetics" className="scroll-mt-20 border-t border-white/[0.06]">
-        <div className="mx-auto grid w-full max-w-6xl gap-8 px-5 py-14 lg:grid-cols-[1fr_1.1fr]">
+        <div className="mx-auto grid w-full max-w-6xl items-center gap-10 px-5 py-16 lg:grid-cols-[1fr_1fr]">
           <div>
-            <h2 className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#64748B]">Cosmetics</h2>
-            <p className="mt-3 max-w-md text-[22px] font-semibold leading-8">
-              Twenty-six platform items and seven community mints, all generated in CSS and SVG.
-            </p>
-            <p className="mt-3 max-w-md text-[13px] leading-6 text-[#94A3B8]">
-              Masked conic-gradient rings, orbiting nodes, clip-path shapes and gradient nameplates scale from a 16px
-              reply avatar to a 96px call tile through one component. Buy for yourself or gift a cosmetic to someone
-              else — the creator is paid either way.
-            </p>
+            <SectionHead
+              title="Make your profile completely your own."
+              body="Stand out in chat without using the exact same basic emojis as everyone else. Design or buy custom profile decorations, background effects, and text nameplates directly from server shops. Everything scales perfectly and looks incredibly sharp, whether it's sitting on a tiny 16px avatar or a massive profile card."
+            />
           </div>
 
           <div className="grid grid-cols-2 gap-3">
-            {[
-              { slot: "Decorations", count: "10 animated", tone: "from-[#4F46E5]/30 to-transparent" },
-              { slot: "Profile effects", count: "6 ambient", tone: "from-[#06B6D4]/25 to-transparent" },
-              { slot: "Nameplates", count: "4 shimmering", tone: "from-[#A855F7]/30 to-transparent" },
-              { slot: "App themes", count: "6 palettes", tone: "from-[#23A55A]/25 to-transparent" },
-            ].map((item) => (
+            {COSMETICS.map((item) => (
               <div
                 key={item.slot}
-                className={`rounded-xl border border-white/[0.08] bg-gradient-to-br ${item.tone} p-4`}
+                className="overflow-hidden rounded-xl border border-white/[0.08] bg-[#0B0C0E]"
               >
-                <p className="text-[13px] font-semibold">{item.slot}</p>
-                <p className="mt-1 text-[11px] uppercase tracking-[0.12em] text-[#94A3B8]">{item.count}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section id="operations" className="scroll-mt-20 border-t border-white/[0.06]">
-        <div className="mx-auto w-full max-w-6xl px-5 py-14">
-          <h2 className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#64748B]">Operations</h2>
-          <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            {[
-              { title: "Guard queue", body: "Review flagged messages, keep or delete, dry-run rules before they ship." },
-              { title: "Role constructor", body: "Drag the hierarchy, set colours and permissions, persisted per server." },
-              { title: "Staff console", body: "Moderators triage cases; admins move wallets and verify handles." },
-              { title: "Audit trail", body: "Every privileged action writes one row with actor, target and IP." },
-            ].map((item) => (
-              <div key={item.title} className="rounded-xl border border-white/[0.08] bg-[#0B0C0E] p-4">
-                <h3 className="text-[13px] font-semibold">{item.title}</h3>
-                <p className="mt-1.5 text-[12px] leading-5 text-[#94A3B8]">{item.body}</p>
+                <div className={`h-20 bg-gradient-to-br ${item.tone}`} aria-hidden />
+                <div className="px-3.5 py-3">
+                  <p className="text-[12.5px] font-semibold">{item.slot}</p>
+                  <p className="mt-0.5 text-[11px] leading-4 text-[#64748B]">{item.detail}</p>
+                </div>
               </div>
             ))}
           </div>
@@ -263,42 +250,128 @@ export default async function BleekLandingPage() {
       </section>
 
       <section className="border-t border-white/[0.06]">
-        <div className="mx-auto flex w-full max-w-6xl flex-col items-start justify-between gap-4 px-5 py-12 sm:flex-row sm:items-center">
-          <div>
-            <p className="text-[20px] font-semibold">Ready when you are.</p>
-            <p className="mt-1 text-[13px] text-[#94A3B8]">
-              {handle ? `Signed in as @${handle}.` : "Your ASTRO handle is the only account you need."}
+        <div className="mx-auto w-full max-w-6xl px-5 py-16">
+          <SectionHead
+            title="See exactly who's around to link up."
+            body="Never guess if your group is online or busy. Check your server sidebar to see instantly who is active, what games they're playing, or if they're just lurking in a channel. For integrated titles, you can look up their live match details or join their lobby with a single click."
+          />
+        </div>
+      </section>
+
+      <section className="border-t border-white/[0.06]">
+        <div className="mx-auto w-full max-w-6xl px-5 py-16">
+          <SectionHead
+            title="Never sit around waiting for a conversation."
+            body="Keep the group active. Drop video links to sync layouts, queue audio streams directly in your channel, or review real-time media galleries side-by-side. Bleek handles live text threads, permanent voice connections, and community media sharing right inside a single chat window."
+          />
+        </div>
+      </section>
+
+      <section className="border-t border-white/[0.06]">
+        <div className="mx-auto grid w-full max-w-6xl items-center gap-10 px-5 py-16 lg:grid-cols-[1fr_auto]">
+          <SectionHead
+            title="Your shop, your rules."
+            body="Design your own profile decorations, background effects, or text nameplates and sell them directly in your server's shop. Every sale is a straight 90/10 split to the creator — even if someone buys it as a gift."
+          />
+
+          <div className="grid grid-cols-2 gap-3">
+            {[
+              { value: "90", unit: "%", label: "to the creator" },
+              { value: "10", unit: "%", label: "to the platform" },
+            ].map((stat) => (
+              <div
+                key={stat.label}
+                className="rounded-xl border border-white/[0.08] bg-[#0B0C0E] px-5 py-4 text-center"
+              >
+                <p className="text-[34px] font-bold leading-none tabular-nums text-[#F8FAFC]">
+                  {stat.value}
+                  <span className="text-[18px] text-[#64748B]">{stat.unit}</span>
+                </p>
+                <p className="mt-2 text-[10.5px] uppercase tracking-[0.14em] text-[#64748B]">{stat.label}</p>
+              </div>
+            ))}
+            <p className="col-span-2 text-right text-[11px] uppercase tracking-[0.14em] text-[#4F46E5]">
+              Creator split on every sale
             </p>
           </div>
-          <div className="flex flex-wrap items-center gap-3">
+        </div>
+      </section>
+
+      <section className="border-t border-white/[0.06]">
+        <div className="mx-auto w-full max-w-6xl px-5 py-16">
+          <SectionHead
+            title="Keep the garbage out of your server."
+            body="Just type out what you want to catch in plain language — like spam links or caps-lock floods. Bleek scans messages instantly and drops them into a queue for your mods to review."
+          />
+        </div>
+      </section>
+
+      <section className="border-t border-white/[0.06]">
+        <div className="mx-auto w-full max-w-6xl px-5 py-16">
+          <SectionHead
+            title="Access your communities from anywhere."
+            body="Jump between devices seamlessly without losing your place. Whether you are browsing feeds on your phone, managing files from your desktop client, or connecting your identity via web links, Bleek keeps your active notifications and settings perfectly aligned across platforms."
+          />
+        </div>
+      </section>
+
+      <section className="border-t border-white/[0.06]">
+        <div className="mx-auto flex w-full max-w-6xl flex-col items-center gap-5 px-5 py-20 text-center">
+          <h2 className="max-w-2xl text-[28px] font-semibold leading-[1.2] tracking-tight sm:text-[36px]">
+            That is the end of the page. Time to join a server.
+          </h2>
+          <div className="flex flex-col items-center gap-3 sm:flex-row">
             <Link
-              href="/astro#access"
-              className="rounded-full border border-white/15 px-5 py-2.5 text-sm font-semibold transition-colors hover:border-white/35"
-            >
-              {handle ? "Manage ASTRO account" : "Create ASTRO account"}
-            </Link>
-            <Link
-              href={handle ? "/app" : "/astro?next=/app#access"}
-              className="rounded-full bg-[#4F46E5] px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#4338CA]"
+              href={openHref}
+              className="inline-flex h-12 items-center justify-center rounded-lg bg-[#4F46E5] px-7 text-[15px] font-semibold text-white transition-colors hover:bg-[#4338CA]"
             >
               Open Bleek
+            </Link>
+            <Link
+              href="/app"
+              className="text-[13px] font-medium text-[#94A3B8] underline-offset-4 transition-colors hover:text-[#F8FAFC] hover:underline"
+            >
+              Check out the community directory
             </Link>
           </div>
         </div>
       </section>
 
       <footer className="border-t border-white/[0.06]">
-        <div className="mx-auto flex w-full max-w-6xl flex-col items-start justify-between gap-3 px-5 py-8 text-xs text-[#64748B] sm:flex-row sm:items-center">
-          <p>Bleek runs on the ASTRO identity layer — one handle, one wallet, one profile across products.</p>
-          <div className="flex items-center gap-4">
+        <div className="mx-auto w-full max-w-6xl px-5 py-12">
+          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+            {FOOTER.map((column) => (
+              <nav key={column.title} aria-label={column.title}>
+                <h2 className="text-[10.5px] font-bold uppercase tracking-[0.16em] text-[#64748B]">{column.title}</h2>
+                <ul className="mt-3 space-y-2">
+                  {column.links.map((link) => (
+                    <li key={link.label}>
+                      {link.href ? (
+                        <Link
+                          href={link.href}
+                          className="text-[12.5px] text-[#94A3B8] transition-colors hover:text-[#F8FAFC]"
+                        >
+                          {link.label}
+                        </Link>
+                      ) : (
+                        <span className="inline-flex items-center gap-1.5 text-[12.5px] text-[#55606F]">
+                          {link.label}
+                          <span className="rounded border border-white/10 px-1 py-px text-[9px] font-semibold uppercase tracking-[0.08em]">
+                            Soon
+                          </span>
+                        </span>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              </nav>
+            ))}
+          </div>
+
+          <div className="mt-10 flex flex-col items-start justify-between gap-3 border-t border-white/[0.06] pt-6 text-[11.5px] text-[#64748B] sm:flex-row sm:items-center">
+            <p>Bleek runs on the ASTRO identity layer — one handle, one wallet, one profile across products.</p>
             <Link href="/astro" className="transition-colors hover:text-[#F8FAFC]">
               ASTRO identity
-            </Link>
-            <Link href="/developers" className="transition-colors hover:text-[#F8FAFC]">
-              Developers
-            </Link>
-            <Link href="/admin" className="transition-colors hover:text-[#F8FAFC]">
-              Console
             </Link>
           </div>
         </div>

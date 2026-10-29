@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import type { CharacterKey, CosmeticSlot, ShopItem, Status, User } from "@/lib/types";
 import { THEMES } from "@/lib/shop";
+import { playPlatformLabel, regionLabel } from "@/lib/astro/regions";
 import { Avatar } from "./cosmetics/avatar";
 import { CharacterArt, CHARACTER_OPTIONS } from "./cosmetics/character";
 import { Nameplate } from "./cosmetics/nameplate";
@@ -275,6 +276,13 @@ export function SettingsModal({
           value: `${me.owned.length} owned`,
           onClick: () => setPage("cosmetics"),
         },
+        {
+          icon: "pin",
+          label: "Sign-up region",
+          value: me.region
+            ? `${regionLabel(me.region)}${me.playPlatform ? ` · ${playPlatformLabel(me.playPlatform)}` : ""}`
+            : "Not set",
+        },
         { icon: "bag", label: "Open cosmetic shop", value: `${me.coins.toLocaleString()} coins`, onClick: onOpenShop },
       ],
     },
@@ -451,6 +459,22 @@ export function SettingsModal({
                               onChange={(event) => setPronouns(event.target.value)}
                               className="w-full rounded-lg bg-[var(--bg-rail)] px-3 py-2.5 text-[15px] text-[var(--text)] outline-none focus:ring-1 focus:ring-[var(--accent)]"
                             />
+                          </div>
+                        </div>
+
+                        <div className="rounded-xl bg-[var(--bg-elevated)] p-3.5">
+                          <SectionTitle hint="Captured when you created your ASTRO account.">
+                            Region & platform
+                          </SectionTitle>
+                          <div className="flex flex-wrap items-center gap-2 text-[13px] text-[var(--text)]">
+                            <span className="flex items-center gap-1.5 rounded-lg bg-[var(--bg-rail)] px-2.5 py-1.5">
+                              <Icon name="pin" size={15} />
+                              {me.region ? regionLabel(me.region) : "Not set"}
+                            </span>
+                            <span className="flex items-center gap-1.5 rounded-lg bg-[var(--bg-rail)] px-2.5 py-1.5">
+                              <Icon name="compass" size={15} />
+                              {me.playPlatform ? playPlatformLabel(me.playPlatform) : "Not set"}
+                            </span>
                           </div>
                         </div>
 

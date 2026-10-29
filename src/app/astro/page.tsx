@@ -160,6 +160,9 @@ export default async function LandingPage({
             <Link href="/astro/profile" className="transition-colors hover:text-[#F8FAFC]">
               Profile preview
             </Link>
+            <Link href="/astro/brand" className="transition-colors hover:text-[#F8FAFC]">
+              Brand guidelines
+            </Link>
             <Link href="/app" className="transition-colors hover:text-[#F8FAFC]">
               Open Bleek
             </Link>

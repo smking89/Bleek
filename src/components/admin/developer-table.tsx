@@ -195,11 +195,7 @@ export function DeveloperTable({ apps, role }: { apps: AdminAppRow[]; role: Staf
       </Panel>
 
       <p className="text-[11px] leading-5 text-[#6E7C93]">
-        Revoking rejects the key on the next call. The owner can rotate or restore it from{" "}
-        <a href="/developers/console" className="text-[#A5B4FC] hover:underline">
-          their portal
-        </a>
-        .
+        Revoking rejects the key on the next call. The owner rotates or restores it from the ASTRO developer portal.
       </p>
     </div>
   );

@@ -107,12 +107,6 @@ function Gate({
               {action.label}
             </Link>
           ) : null}
-          <Link
-            href="/developers"
-            className="rounded-lg border border-white/12 px-3.5 py-2 text-[12px] font-medium text-[#CBD5E1] transition-colors hover:border-white/25 hover:text-white"
-          >
-            Developer portal
-          </Link>
         </div>
 
         <code className="mt-5 block rounded-lg border border-white/[0.07] bg-[#111318] px-3 py-2 font-mono text-[10.5px] text-[#94A3B8]">

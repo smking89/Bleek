@@ -252,9 +252,14 @@ attributed to `system:cli`.
 `GET` pages render server-side from PostgreSQL; mutations go through `/api/admin/*` and call `router.refresh()`, so the
 numbers on screen always come back from the database rather than from optimistic client state.
 
-### Developer portal
+### Developer platform
 
-`/developers` explains the platform, `/developers/docs` is the API reference, and `/developers/console` is session-gated.
+API keys belong to the ASTRO developer portal now (`developer.astro.io`), documented in the Astro repository's
+`DEVELOPERS.md`. Bleek no longer ships its own portal: `/developers` and `/developers/*` answer with a redirect to
+`/astro`, the admin console keeps its read-only key view under `/admin/developers`, and keys are issued and rotated
+centrally.
+
+Bleek still serves the metered API those keys call:
 
 - Creating an app returns `clientId` plus a `astro_sk_…` secret **once**; only a SHA-256 hash, the display prefix and the
   last four characters are stored.
