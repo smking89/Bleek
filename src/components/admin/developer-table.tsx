@@ -195,7 +195,7 @@ export function DeveloperTable({ apps, role }: { apps: AdminAppRow[]; role: Staf
       </Panel>
 
       <p className="text-[11px] leading-5 text-[#8A8A94]">
-        Revoking rejects the key on the next call. The owner rotates or restores it from the ASTRO developer portal.
+        Revoking rejects the key on the next call. The owner rotates or restores it from the Astrocan developer portal.
       </p>
     </div>
   );

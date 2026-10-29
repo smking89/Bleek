@@ -14,7 +14,7 @@ import {
 } from "@/components/brand/astro-brand";
 
 /** Keys and the API are documented with ASTRO now, not in a product portal. */
-const ASTRO_DEVELOPER_DOCS = "https://github.com/smking89/Astro/blob/main/DEVELOPERS.md";
+const ASTROCAN_PORTAL = "https://astrocan.io";
 
 export const metadata: Metadata = {
   title: "ASTRO — brand guidelines",
@@ -252,7 +252,7 @@ export default function BrandGuidelinesPage() {
               Identity
             </Link>
             <a
-              href={ASTRO_DEVELOPER_DOCS}
+              href={ASTROCAN_PORTAL}
               className="hidden rounded-md px-2.5 py-1.5 text-[#94A3B8] transition-colors hover:text-[#F8FAFC] sm:block"
             >
               Developers
@@ -806,8 +806,8 @@ export default function BrandGuidelinesPage() {
             </p>
             <p>
               Vector originals, co-marketing requests and approval questions go through the{" "}
-              <a href={ASTRO_DEVELOPER_DOCS} className="text-[#A5B4FC] hover:underline">
-                ASTRO developer platform
+              <a href={ASTROCAN_PORTAL} className="text-[#A5B4FC] hover:underline">
+                Astrocan developer portal
               </a>
               . If a use is not described on this page, it is not permitted yet — ask first.
             </p>
@@ -887,7 +887,7 @@ export default function BrandGuidelinesPage() {
               <Link href="/astro" className="transition-colors hover:text-[#F8FAFC]">
                 Identity
               </Link>
-              <a href={ASTRO_DEVELOPER_DOCS} className="transition-colors hover:text-[#F8FAFC]">
+              <a href={ASTROCAN_PORTAL} className="transition-colors hover:text-[#F8FAFC]">
                 Developers
               </a>
               <Link href="/astro/profile" className="transition-colors hover:text-[#F8FAFC]">

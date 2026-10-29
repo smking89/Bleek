@@ -39,8 +39,9 @@ const COSMETICS = [
 /** Decorative roster art for the voice illustration. No member names or counts. */
 const VOICE_MEMBERS: CharacterKey[] = ["comet", "tide", "sprout", "static"];
 
-/** The API and its keys are documented with ASTRO, not with Bleek. */
-const ASTRO_DEVELOPER_DOCS = "https://github.com/smking89/Astro/blob/main/DEVELOPERS.md";
+/** The API, its keys and its documentation live in Astrocan, not in Bleek. */
+const ASTROCAN_PORTAL = "https://astrocan.io";
+const ASTROCAN_DOCS = "https://astrocan.io/docs";
 
 type FooterLink = { label: string; href?: string; soon?: boolean };
 
@@ -49,7 +50,7 @@ const FOOTER: { title: string; links: FooterLink[] }[] = [
     title: "Product",
     links: [
       { label: "Open Web App", href: "/app" },
-      { label: "Integration API", href: ASTRO_DEVELOPER_DOCS },
+      { label: "Integration API", href: ASTROCAN_PORTAL },
       { label: "Desktop Client", soon: true },
     ],
   },
@@ -64,7 +65,7 @@ const FOOTER: { title: string; links: FooterLink[] }[] = [
   {
     title: "Developers",
     links: [
-      { label: "API Documentation", href: ASTRO_DEVELOPER_DOCS },
+      { label: "API Documentation", href: ASTROCAN_DOCS },
       { label: "Style Guide", href: "/astro/brand" },
       { label: "Server Security Setup", href: "/app" },
     ],

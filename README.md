@@ -177,8 +177,8 @@ permission sanitisation and ordering rejection, minting with template validation
 
 ## Operations console and developer platform
 
-Two new surfaces sit on the ASTRO data layer: a staff console at `/admin` and a developer portal at `/developers`.
-Both are gated by the same signed ASTRO session cookie; the console additionally requires a staff role.
+Two surfaces sit on the ASTRO data layer: a staff console at `/admin` and, separately, the Astrocan developer portal
+at `astrocan.io`. Both are gated by the same signed ASTRO session cookie; the console additionally requires a staff role.
 
 ### Staff roles
 
@@ -230,7 +230,7 @@ numbers on screen always come back from the database rather than from optimistic
 
 ### Developer platform
 
-API keys belong to the ASTRO developer portal now (`developer.astro.io`), documented in the Astro repository's
+API keys belong to Astrocan, the developer portal at `astrocan.io`, documented in the Astro repository's
 `DEVELOPERS.md`. Bleek no longer ships its own portal: `/developers` and `/developers/*` answer with a redirect to
 `/astro`, the admin console keeps its read-only key view under `/admin/developers`, and keys are issued and rotated
 centrally.

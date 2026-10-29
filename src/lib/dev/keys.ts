@@ -1,5 +1,5 @@
 /**
- * Developer platform vocabulary, shared by the portal UI and the `/api/v1` guards.
+ * Astrocan vocabulary, shared by the developer-portal UI and the `/api/v1` guards.
  * Client-safe: no Prisma, no Node crypto.
  */
 
