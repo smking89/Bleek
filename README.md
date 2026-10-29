@@ -172,6 +172,33 @@ permission sanitisation and ordering rejection, minting with template validation
 - No encrypted DMs, webhooks, or external integrations from the brief.
 - Single in-process store, no auth or database; data reseeds on restart.
 
+## Demo accounts
+
+`npm run seed:accounts` creates six ASTRO accounts on the configured database: a
+player, a business account and one of each staff role. It reads `DATABASE_URL`
+from `.env`, and runs through `npx tsx`, which is fetched on first use rather
+than pinned as a dependency. Every account keeps the
+ASTRO product chips that the landing page, `/astro` profile preview and
+developer API render, and `@koba` is the handle `/astro` reads.
+
+| Handle | Role | Coins | Chips |
+| --- | --- | --- | --- |
+| `player` | member | 1,200 | Beek, Koba.games |
+| `business` | member | 4,800 | Beek, Koba.games, SnagChat, KOBAbot |
+| `moderator` | Moderator | 900 | Beek |
+| `admin` | Admin | 2,400 | Beek |
+| `superadmin` | Super admin | 9,000 | Beek, KOBAbot |
+| `koba` | member | 250 | Beek, Koba.games, SnagChat, KOBAbot |
+
+The password for every seeded account is `astro-demo-1234`; override it with
+`ASTRO_DEMO_PASSWORD` when seeding. Sign in at `/#access`, then `/app` opens
+Bleek and `/admin` opens the console for the three staff roles.
+
+The seed is idempotent: re-running it keeps existing accounts, wallets and
+ASTROids (it only resets the role, verification and chips, and never overwrites
+a password). Seeded passwords are development fixtures — register real accounts
+before putting a database behind a public URL.
+
 ## Operations console and developer platform
 
 Two new surfaces sit on the ASTRO data layer: a staff console at `/admin` and a developer portal at `/developers`.
