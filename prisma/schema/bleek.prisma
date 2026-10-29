@@ -178,3 +178,63 @@ model StaffAudit {
   @@index([action])
   @@map("staff_audit")
 }
+
+/// Where a member plays, captured at sign-up.
+enum PlayPlatform {
+  PC
+  CONSOLE
+  BOTH
+}
+
+/// Join region, used for shard routing and the region badge on a profile.
+enum Region {
+  NORTH_AMERICA
+  EUROPE
+  LATIN_AMERICA
+  MIDDLE_EAST_AFRICA
+  ASIA_PACIFIC
+  OCEANIA
+}
+
+/// Third-party identities that can open an ASTRO session without a password.
+enum SignInProvider {
+  STEAM
+  XBOX
+}
+
+/// Sign-up facts that belong to Bleek rather than the shared account layer.
+/// Absent for accounts created through Steam or Xbox, which never supply an email.
+model AccountProfile {
+  id        String       @id @default(cuid())
+  userId    String       @unique
+  /// Lowercased at write time, so one address maps to exactly one account.
+  email     String       @unique
+  region    Region
+  platform  PlayPlatform
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+
+  user User @relation("AccountProfile", fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@index([region])
+  @@index([platform])
+  @@map("account_profiles")
+}
+
+/// A Steam or Xbox identity bound to an ASTRO account.
+model LinkedSignIn {
+  id                String         @id @default(cuid())
+  userId            String
+  provider          SignInProvider
+  /// Provider-stable identifier: a SteamID64, or the Microsoft account `sub`.
+  providerAccountId String
+  providerHandle    String?
+  createdAt         DateTime       @default(now())
+  lastUsedAt        DateTime?
+
+  user User @relation("AccountSignIns", fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+  @@map("linked_sign_ins")
+}
