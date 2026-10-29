@@ -1,11 +1,16 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { revalidatePath } from "next/cache";
 import { ProfileEditor } from "@astro/core/react/editor";
+import { EmailVerification } from "@/components/astro/email-verification";
+import { PasswordForm } from "@/components/astro/password-form";
 import { UnverifiedTag, VerifiedBadge } from "@/components/verified-badge";
 import { createAstroAccount, getAstroAccount, type AstroAccount } from "@astro/core/accounts";
 import { profileForUser } from "@/lib/astro/account-profile";
 import { playPlatformLabel, regionLabel } from "@/lib/astro/regions";
-import { astroConfigured } from "@astro/core/db";
+import { astroConfigured, astroDb } from "@astro/core/db";
+import { emailVerificationState } from "@/lib/astro/email-verification";
+import { currentAccount } from "@/lib/session";
 import { AstroDataError } from "@astro/core/errors";
 
 export const dynamic = "force-dynamic";
@@ -49,9 +54,19 @@ export default async function AstroProfilePage() {
     );
   }
 
+  // Signed in: this page manages the session's own email, password and chips.
+  // Signed out: it keeps showing the demo account so the page is never a dead end.
+  const session = await currentAccount().catch(() => null);
+
   let account: AstroAccount;
+  let previewing = false;
   try {
-    account = await getAstroAccount(DEMO_HANDLE);
+    if (session) {
+      account = session;
+    } else {
+      account = await getAstroAccount(DEMO_HANDLE);
+      previewing = true;
+    }
   } catch (error) {
     if (error instanceof AstroDataError && error.code === "ACCOUNT_NOT_FOUND") {
       return (
@@ -76,6 +91,11 @@ export default async function AstroProfilePage() {
   }
 
   const profile = await profileForUser(account.id);
+  const emailState = await emailVerificationState(account.id);
+  const credential = await astroDb().user.findUnique({
+    where: { id: account.id },
+    select: { passwordHash: true },
+  });
 
   return (
     <Shell>
@@ -97,6 +117,15 @@ export default async function AstroProfilePage() {
               <span className="rounded-full border border-white/10 bg-[#111214] px-2.5 py-1">{regionLabel(profile.region)}</span>
               <span className="rounded-full border border-white/10 bg-[#111214] px-2.5 py-1">{playPlatformLabel(profile.platform)}</span>
               <span className="text-neutral-500">{profile.email}</span>
+              <span
+                className={`rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.08em] ${
+                  emailState.verified
+                    ? "border-[#06B6D4]/40 text-[#67E8F9]"
+                    : "border-white/12 text-neutral-400"
+                }`}
+              >
+                {emailState.verified ? "Email verified" : "Email unverified"}
+              </span>
             </div>
           ) : null}
         </div>
@@ -104,6 +133,16 @@ export default async function AstroProfilePage() {
           {(account.wallet?.coins ?? 0).toLocaleString()} coins
         </span>
       </div>
+
+      {previewing ? (
+        <p className="mt-4 rounded-lg border border-white/10 bg-[#111214] px-3 py-2 text-[11.5px] leading-5 text-neutral-400">
+          Preview of the demo account.{" "}
+          <Link href="/astro" className="text-[#A5B4FC] hover:underline">
+            Sign in
+          </Link>{" "}
+          to manage your own email, password and chips.
+        </p>
+      ) : null}
 
       <h2 className="mt-8 text-[11px] font-bold uppercase tracking-[0.18em] text-neutral-500">Profiles</h2>
       <div className="mt-3">
@@ -116,6 +155,16 @@ export default async function AstroProfilePage() {
             verified: connection.isVerified,
           }))}
         />
+      </div>
+
+      <h2 className="mt-8 text-[11px] font-bold uppercase tracking-[0.18em] text-neutral-500">Security</h2>
+      <div className="mt-3 space-y-3">
+        <EmailVerification
+          email={emailState.email}
+          verified={emailState.verified}
+          resendAt={emailState.resendAt}
+        />
+        <PasswordForm hasPassword={Boolean(credential?.passwordHash)} />
       </div>
 
       <p className="mt-10 text-xs leading-5 text-neutral-600">

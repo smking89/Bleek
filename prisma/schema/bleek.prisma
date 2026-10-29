@@ -211,6 +211,13 @@ model AccountProfile {
   email     String       @unique
   region    Region
   platform  PlayPlatform
+  /// Null until the member opens the verification link sent to this address.
+  emailVerifiedAt     DateTime?
+  /// SHA-256 of the live verification token. The token itself is never stored.
+  emailTokenHash      String?
+  emailTokenExpiresAt DateTime?
+  /// Issue time of the live token, used to throttle resends.
+  emailTokenSentAt    DateTime?
   createdAt DateTime     @default(now())
   updatedAt DateTime     @updatedAt
 
@@ -218,6 +225,7 @@ model AccountProfile {
 
   @@index([region])
   @@index([platform])
+  @@index([emailVerifiedAt])
   @@map("account_profiles")
 }
 
