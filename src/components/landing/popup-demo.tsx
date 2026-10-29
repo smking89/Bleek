@@ -53,6 +53,13 @@ export function PopupSignInDemo() {
 
   useEffect(() => stopWatching, [stopWatching]);
 
+  /** The same handoff with no popup: the browser leaves this page entirely. */
+  const redirect = useCallback(() => {
+    const state = crypto.randomUUID();
+    const callback = `${window.location.origin}${CALLBACK_PATH}`;
+    window.location.assign(`/account?redirect_uri=${encodeURIComponent(callback)}&state=${encodeURIComponent(state)}`);
+  }, []);
+
   const start = useCallback(() => {
     const state = crypto.randomUUID();
     const callback = `${window.location.origin}${CALLBACK_PATH}`;
@@ -91,14 +98,23 @@ export function PopupSignInDemo() {
 
   return (
     <div className="mx-auto w-full max-w-sm text-left">
-      <button
-        type="button"
-        onClick={start}
-        className="inline-flex h-9 items-center gap-2 rounded-lg border border-white/12 px-4 text-[12.5px] font-semibold text-[#D4D4D8] transition-colors hover:border-white/30 hover:text-white"
-      >
-        Try the popup sign-in
-        <span aria-hidden>→</span>
-      </button>
+      <div className="flex flex-wrap items-center gap-2">
+        <button
+          type="button"
+          onClick={start}
+          className="inline-flex h-9 items-center gap-2 rounded-lg border border-white/12 px-4 text-[12.5px] font-semibold text-[#D4D4D8] transition-colors hover:border-white/30 hover:text-white"
+        >
+          Try the popup sign-in
+          <span aria-hidden>→</span>
+        </button>
+        <button
+          type="button"
+          onClick={redirect}
+          className="inline-flex h-9 items-center gap-2 rounded-lg px-3 text-[12.5px] font-medium text-[#8A8A94] transition-colors hover:text-[#FAFAFA]"
+        >
+          Run the redirect instead
+        </button>
+      </div>
 
       <div aria-live="polite" className="mt-3">
         {phase.kind === "waiting" ? (
