@@ -41,6 +41,7 @@ export function AuthCard({
   const [displayName, setDisplayName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [region, setRegion] = useState<string>("NORTH_AMERICA");
   const [platform, setPlatform] = useState<string>("PC");
   const [error, setError] = useState<string | null>(authError ? AUTH_ERRORS[authError] ?? "That sign-in did not finish." : null);
@@ -50,6 +51,12 @@ export function AuthCard({
   async function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setError(null);
+
+    if (mode === "register" && confirmPassword !== password) {
+      setError("Those passwords do not match.");
+      return;
+    }
+
     setBusy(true);
 
     try {
@@ -346,6 +353,30 @@ export function AuthCard({
                 className={FIELD}
               />
             </div>
+
+            {mode === "register" ? (
+              <div>
+                <label htmlFor="auth-confirm" className="mb-1.5 block text-[12px] font-medium text-[#CBD5E1]">
+                  Confirm password
+                </label>
+                <input
+                  id="auth-confirm"
+                  name="confirmPassword"
+                  type="password"
+                  value={confirmPassword}
+                  onChange={(event) => setConfirmPassword(event.target.value)}
+                  placeholder="Type it again"
+                  autoComplete="new-password"
+                  minLength={8}
+                  required
+                  aria-invalid={confirmPassword.length > 0 && confirmPassword !== password}
+                  className={FIELD}
+                />
+                {confirmPassword.length > 0 && confirmPassword !== password ? (
+                  <p className="mt-1 text-[11px] text-[#FCA5A5]">Those passwords do not match yet.</p>
+                ) : null}
+              </div>
+            ) : null}
 
             {error ? (
               <p role="alert" className="rounded-lg border border-[#EF4444]/40 bg-[#EF4444]/10 px-3 py-2 text-[12px] leading-5 text-[#FCA5A5]">
