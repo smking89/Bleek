@@ -35,7 +35,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
       <Gate
         title="Sign in as staff"
         body="The operations console is restricted to ASTRO accounts with a staff role."
-        action={{ href: "/#access", label: "Sign in with ASTRO" }}
+        action={{ href: "/astro#access", label: "Sign in with ASTRO" }}
       />
     );
   }
