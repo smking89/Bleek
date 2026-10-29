@@ -118,7 +118,7 @@ export default function DevelopersPage() {
         <div className="mx-auto flex w-full max-w-6xl flex-wrap items-center justify-between gap-3 px-5 py-6 text-[11.5px] text-[#6E7C93]">
           <p>ASTRO developer platform · keys are per account, never shared.</p>
           <div className="flex gap-4">
-            <Link href="/astro" className="transition-colors hover:text-[#F8FAFC]">
+            <Link href="/astro/profile" className="transition-colors hover:text-[#F8FAFC]">
               Profile
             </Link>
             <Link href="/app" className="transition-colors hover:text-[#F8FAFC]">

@@ -4,7 +4,7 @@ export function DevHeader() {
   return (
     <header className="sticky top-0 z-30 border-b border-white/[0.06] bg-black">
       <div className="mx-auto flex h-14 w-full max-w-6xl items-center justify-between gap-4 px-5">
-        <Link href="/" className="flex items-center gap-2.5">
+        <Link href="/astro" className="flex items-center gap-2.5">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/astro-icon.png" alt="" width={22} height={22} className="h-[22px] w-[22px] object-contain" />
           <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#F8FAFC]">ASTRO</span>

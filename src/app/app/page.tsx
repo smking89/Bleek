@@ -11,7 +11,7 @@ export const metadata = {
 };
 
 export default async function AppPage() {
-  if (!astroConfigured()) redirect("/?next=/app#access");
+  if (!astroConfigured()) redirect("/astro?next=/app#access");
 
   let account: Awaited<ReturnType<typeof currentAccount>> = null;
   try {
@@ -21,10 +21,10 @@ export default async function AppPage() {
   }
 
   // The client never renders for an anonymous visitor.
-  if (!account) redirect("/?next=/app#access");
+  if (!account) redirect("/astro?next=/app#access");
 
   // Suspended accounts keep their cookie until it expires, so the boundary checks status too.
-  if (account.status === "SUSPENDED") redirect("/?suspended=1#access");
+  if (account.status === "SUSPENDED") redirect("/astro?suspended=1#access");
 
   return (
     <DiscordApp
