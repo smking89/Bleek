@@ -1,3 +1,4 @@
+import { actorId } from "@/lib/actor";
 import { errorResponse, previewGuard, updateGuard } from "@/lib/store";
 import type { GuardConfig, GuardSensitivity } from "@/lib/types";
 
@@ -9,7 +10,7 @@ export async function PATCH(request: Request, context: { params: Promise<{ id: s
       sensitivity?: GuardSensitivity;
       rules?: GuardConfig["rules"];
     };
-    return Response.json(updateGuard(id, body));
+    return Response.json(await updateGuard(await actorId(), id, body));
   } catch (error) {
     return errorResponse(error);
   }
@@ -22,7 +23,7 @@ export async function POST(request: Request, context: { params: Promise<{ id: st
     if (typeof body.content !== "string" || !body.content.trim()) {
       return Response.json({ error: "content is required" }, { status: 400 });
     }
-    return Response.json(previewGuard(id, body.content.slice(0, 4000)));
+    return Response.json(await previewGuard(await actorId(), id, body.content.slice(0, 4000)));
   } catch (error) {
     return errorResponse(error);
   }

@@ -3,6 +3,8 @@
 import type { Server } from "@/lib/types";
 import { Icon } from "./icons";
 
+const SERVER_ADD = "text-[24px] font-light leading-none";
+
 function RailButton({
   label,
   active,
@@ -48,6 +50,7 @@ export function ServerRail({
   liveCount,
   onHome,
   onSelect,
+  onCreateServer,
   onOpenShop,
   onOpenSettings,
   onOpenProfile,
@@ -59,6 +62,7 @@ export function ServerRail({
   liveCount: number;
   onHome: () => void;
   onSelect: (id: string) => void;
+  onCreateServer: () => void;
   onOpenShop: () => void;
   onOpenSettings: () => void;
   onOpenProfile: () => void;
@@ -90,6 +94,12 @@ export function ServerRail({
           </RailButton>
         ))}
       </div>
+
+      <RailButton label="Create a server" onClick={onCreateServer}>
+        <span className={SERVER_ADD} aria-hidden>
+          +
+        </span>
+      </RailButton>
 
       <div className="flex flex-col items-center gap-2 pt-2">
         <div className="mb-1 h-0.5 w-8 rounded-full bg-[var(--border-strong)]" />

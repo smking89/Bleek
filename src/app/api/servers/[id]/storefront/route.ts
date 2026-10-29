@@ -1,3 +1,4 @@
+import { actorId } from "@/lib/actor";
 import { errorResponse, mintCosmetic } from "@/lib/store";
 import type { ShopItem } from "@/lib/types";
 
@@ -15,7 +16,7 @@ export async function POST(request: Request, context: { params: Promise<{ id: st
       return Response.json({ error: "name, slot and key are required" }, { status: 400 });
     }
     return Response.json(
-      mintCosmetic(id, {
+      await mintCosmetic(await actorId(), id, {
         name: body.name,
         description: body.description,
         slot: body.slot,

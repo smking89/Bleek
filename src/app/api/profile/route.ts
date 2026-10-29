@@ -1,3 +1,4 @@
+import { actorId } from "@/lib/actor";
 import { errorResponse, updateProfile } from "@/lib/store";
 import type { CharacterKey, Cosmetics, Status } from "@/lib/types";
 
@@ -13,7 +14,7 @@ export async function PATCH(request: Request) {
       banner?: [string, string];
       cosmetics?: Partial<Cosmetics>;
     };
-    return Response.json(updateProfile(body));
+    return Response.json(await updateProfile(await actorId(), body));
   } catch (error) {
     return errorResponse(error);
   }

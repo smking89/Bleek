@@ -43,27 +43,27 @@ enum CasePriority {
 /// The single identity shared by every ASTRO product.
 
 model DeveloperApp {
-  id           String              @id @default(cuid())
+  id           String             @id @default(cuid())
   ownerId      String
   name         String
   description  String?
   /// Public identifier, safe to show in logs and dashboards.
-  clientId     String              @unique
+  clientId     String             @unique
   /// Display prefix of the secret, e.g. "astro_sk_4f2a".
   keyPrefix    String
   /// SHA-256 of the full secret. The secret itself is shown once and never stored.
-  keyHash      String              @unique
+  keyHash      String             @unique
   lastFour     String
-  scopes       String[]            @default([])
-  environment  AppEnvironment      @default(DEVELOPMENT)
-  status       DeveloperAppStatus  @default(ACTIVE)
+  scopes       String[]           @default([])
+  environment  AppEnvironment     @default(DEVELOPMENT)
+  status       DeveloperAppStatus @default(ACTIVE)
   redirectUri  String?
-  requestCount Int                 @default(0)
-  errorCount   Int                 @default(0)
+  requestCount Int                @default(0)
+  errorCount   Int                @default(0)
   lastUsedAt   DateTime?
   revokedAt    DateTime?
-  createdAt    DateTime            @default(now())
-  updatedAt    DateTime            @updatedAt
+  createdAt    DateTime           @default(now())
+  updatedAt    DateTime           @updatedAt
 
   owner    User            @relation("AppOwner", fields: [ownerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   usage    ApiUsageDaily[]
@@ -112,24 +112,24 @@ model ApiRequest {
 /// A moderation report moving through the staff queue.
 
 model ModerationCase {
-  id            String        @id @default(cuid())
-  reference     String        @unique
-  subjectId     String?
-  subjectHandle String
+  id             String       @id @default(cuid())
+  reference      String       @unique
+  subjectId      String?
+  subjectHandle  String
   reporterHandle String?
-  reason        String
-  detail        String?
-  channel       String?
-  status        CaseStatus    @default(OPEN)
-  priority      CasePriority  @default(NORMAL)
-  assigneeId    String?
-  resolution    String?
-  resolvedAt    DateTime?
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
+  reason         String
+  detail         String?
+  channel        String?
+  status         CaseStatus   @default(OPEN)
+  priority       CasePriority @default(NORMAL)
+  assigneeId     String?
+  resolution     String?
+  resolvedAt     DateTime?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
 
-  subject  User?   @relation("CaseSubject", fields: [subjectId], references: [id], onDelete: SetNull, onUpdate: Cascade)
-  assignee User?   @relation("CaseAssignee", fields: [assigneeId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  subject  User?      @relation("CaseSubject", fields: [subjectId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  assignee User?      @relation("CaseAssignee", fields: [assigneeId], references: [id], onDelete: SetNull, onUpdate: Cascade)
   notes    CaseNote[]
 
   @@index([status, priority])
@@ -205,12 +205,12 @@ enum SignInProvider {
 /// Sign-up facts that belong to Bleek rather than the shared account layer.
 /// Absent for accounts created through Steam or Xbox, which never supply an email.
 model AccountProfile {
-  id        String       @id @default(cuid())
-  userId    String       @unique
+  id                  String       @id @default(cuid())
+  userId              String       @unique
   /// Lowercased at write time, so one address maps to exactly one account.
-  email     String       @unique
-  region    Region
-  platform  PlayPlatform
+  email               String       @unique
+  region              Region
+  platform            PlayPlatform
   /// Null until the member opens the verification link sent to this address.
   emailVerifiedAt     DateTime?
   /// SHA-256 of the live verification token. The token itself is never stored.
@@ -218,8 +218,8 @@ model AccountProfile {
   emailTokenExpiresAt DateTime?
   /// Issue time of the live token, used to throttle resends.
   emailTokenSentAt    DateTime?
-  createdAt DateTime     @default(now())
-  updatedAt DateTime     @updatedAt
+  createdAt           DateTime     @default(now())
+  updatedAt           DateTime     @updatedAt
 
   user User @relation("AccountProfile", fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
@@ -245,4 +245,126 @@ model LinkedSignIn {
   @@unique([provider, providerAccountId])
   @@index([userId])
   @@map("linked_sign_ins")
+}
+
+/// A chat identity, one per ASTRO account. Coins mirror the shared wallet at
+/// first use and are debited here as cosmetics are bought.
+model ChatMember {
+  id           String   @id
+  handle       String   @unique
+  name         String
+  verified     Boolean  @default(false)
+  region       String?
+  playPlatform String?
+  status       String   @default("online")
+  avatarFrom   String   @default("#4f46e5")
+  avatarTo     String   @default("#06b6d4")
+  banner       String[]
+  bio          String   @default("")
+  pronouns     String   @default("")
+  customStatus String?
+  character    String   @default("comet")
+  cosmetics    Json
+  coins        Int      @default(0)
+  owned        String[] @default([])
+  joinedAt     DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  servers   ChatServer[]  @relation("ServerOwner")
+  messages  ChatMessage[]
+  giftsSent ChatGift[]    @relation("GiftsSent")
+  giftsGot  ChatGift[]    @relation("GiftsReceived")
+
+  @@index([joinedAt])
+  @@map("chat_members")
+}
+
+/// A server owned by one member. Roles, guard rules and the storefront are
+/// documents; channels, messages and payouts are rows so they can be queried.
+model ChatServer {
+  id         String   @id @default(cuid())
+  ownerId    String
+  name       String
+  icon       String   @default("")
+  color      String   @default("#4f46e5")
+  position   Int      @default(0)
+  roles      Json
+  guard      Json
+  flagged    Json     @default("[]")
+  storefront Json?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  owner    ChatMember    @relation("ServerOwner", fields: [ownerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  channels ChatChannel[]
+
+  @@index([ownerId, position])
+  @@map("chat_servers")
+}
+
+model ChatChannel {
+  id       String  @id @default(cuid())
+  serverId String
+  name     String
+  type     String
+  topic    String?
+  layout   String?
+  doc      String?
+  position Int     @default(0)
+
+  server   ChatServer    @relation(fields: [serverId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  messages ChatMessage[]
+
+  @@unique([serverId, name])
+  @@index([serverId, position])
+  @@map("chat_channels")
+}
+
+model ChatMessage {
+  id        String    @id @default(cuid())
+  channelId String
+  authorId  String
+  content   String
+  createdAt DateTime  @default(now())
+  editedAt  DateTime?
+  reactions Json      @default("[]")
+  replyTo   String?
+  pinned    Boolean   @default(false)
+
+  channel ChatChannel @relation(fields: [channelId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  author  ChatMember  @relation(fields: [authorId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@index([channelId, createdAt])
+  @@index([authorId])
+  @@map("chat_messages")
+}
+
+model ChatGift {
+  id        String   @id @default(cuid())
+  fromId    String
+  toId      String
+  itemId    String
+  createdAt DateTime @default(now())
+
+  from ChatMember @relation("GiftsSent", fields: [fromId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  to   ChatMember @relation("GiftsReceived", fields: [toId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@index([createdAt])
+  @@map("chat_gifts")
+}
+
+/// A creator split, written when a storefront item sells.
+model ChatPayout {
+  id            String   @id @default(cuid())
+  itemId        String
+  serverId      String
+  creatorId     String
+  amount        Int
+  creatorShare  Int
+  platformShare Int
+  createdAt     DateTime @default(now())
+
+  @@index([serverId, createdAt])
+  @@index([creatorId])
+  @@map("chat_payouts")
 }

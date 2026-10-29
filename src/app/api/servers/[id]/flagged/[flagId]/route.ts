@@ -1,3 +1,4 @@
+import { actorId } from "@/lib/actor";
 import { errorResponse, resolveFlag } from "@/lib/store";
 
 export async function POST(request: Request, context: { params: Promise<{ id: string; flagId: string }> }) {
@@ -7,7 +8,7 @@ export async function POST(request: Request, context: { params: Promise<{ id: st
     if (body.action !== "approve" && body.action !== "delete") {
       return Response.json({ error: "action must be approve or delete" }, { status: 400 });
     }
-    return Response.json(resolveFlag(id, flagId, body.action));
+    return Response.json(await resolveFlag(await actorId(), id, flagId, body.action));
   } catch (error) {
     return errorResponse(error);
   }

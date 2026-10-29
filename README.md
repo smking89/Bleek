@@ -10,7 +10,7 @@ npm run dev      # http://localhost:3000
 npm run build
 ```
 
-Chat state is in-process and starts empty: the signed-in ASTRO account, one server provisioned for it, and nothing else until people join and talk. Accounts and wallets live in PostgreSQL.
+Chat state lives in PostgreSQL: servers, channels, messages, reactions, gifts and payouts are rows, while roles, guard rules and storefronts are documents on the server row. A new account gets one server with `#general` and a voice channel, and can create more from the rail.
 
 ## Landing page and ASTRO sign-in
 
@@ -151,6 +151,8 @@ starfields and gradient text — and scales from a 16px reply avatar to a 96px c
 | `POST /api/messages/:id/reactions` | Toggle a reaction |
 | `PATCH /api/channels/:id` | Set `layout` or publish the canvas `doc` |
 | `PATCH /api/servers/:id/guard`, `POST` | Update config / dry-run a sample |
+| `POST /api/servers` | Create a server with a text and a voice channel |
+| `POST /api/servers/:id/channels` | Add a text or voice channel |
 | `POST /api/servers/:id/flagged/:flagId` | Approve or delete a flagged message |
 | `POST /api/servers/:id/storefront` | Mint a community cosmetic |
 | `POST /api/servers/:id/roles` | Create, update, delete, or reorder roles |
@@ -171,7 +173,7 @@ permission sanitisation and ordering rejection, minting with template validation
   WebRTC/LiveKit deployment and token endpoint.
 - No Tauri/Rust desktop shell; this is the web client the shell would wrap.
 - No encrypted DMs, webhooks, or external integrations from the brief.
-- Chat state is a single in-process store: it starts empty and is not persisted across restarts. Accounts, wallets and sessions are in PostgreSQL.
+- Typing indicators are ephemeral and live in process; every other piece of chat state is in PostgreSQL.
 
 ## Operations console and developer platform
 

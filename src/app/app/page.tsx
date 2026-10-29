@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 import { BleekApp } from "@/components/bleek-app";
 import { currentAccount } from "@/lib/session";
 import { profileForUser } from "@/lib/astro/account-profile";
-import { bindAccount } from "@/lib/store";
+import { ensureMember } from "@/lib/store";
 import { astroConfigured } from "@astro/core/db";
 import { AstroDataError } from "@astro/core/errors";
 
@@ -30,11 +30,12 @@ export default async function AppPage() {
 
   const profile = await profileForUser(account.id);
 
-  // The chat store carries the account, not a stand-in: name, handle, region,
-  // platform and wallet balance are read from the rows this session owns.
-  bindAccount({
-    name: account.displayName,
+  // The chat rows carry the account, not a stand-in: name, handle, region,
+  // platform and wallet balance are read from the account this session owns.
+  await ensureMember({
+    id: account.id,
     handle: account.handle,
+    displayName: account.displayName,
     verified: Boolean(account.handleVerifiedAt),
     region: profile?.region ?? null,
     playPlatform: profile?.platform ?? null,

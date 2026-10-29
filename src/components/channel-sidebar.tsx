@@ -13,6 +13,7 @@ export function ChannelSidebar({
   deafened,
   voiceChannelId,
   onSelectChannel,
+  onCreateChannel,
   onToggleMic,
   onToggleDeafen,
   onOpenSettings,
@@ -29,6 +30,7 @@ export function ChannelSidebar({
   deafened: boolean;
   voiceChannelId: string | null;
   onSelectChannel: (channel: Channel) => void;
+  onCreateChannel: () => void;
   onToggleMic: () => void;
   onToggleDeafen: () => void;
   onOpenSettings: () => void;
@@ -79,19 +81,30 @@ export function ChannelSidebar({
   };
 
   const section = (key: "text" | "voice", label: string) => (
-    <button
-      type="button"
-      onClick={() => setOpenSections((current) => ({ ...current, [key]: !current[key] }))}
-      aria-expanded={openSections[key]}
-      className="flex w-full items-center gap-1 rounded px-1 pb-1 pt-3 text-[11px] font-bold uppercase tracking-wider text-[var(--text-muted)] transition hover:text-[var(--text)]"
-    >
-      <Icon
-        name="chevron-down"
-        size={12}
-        className={`transition-transform duration-150 ${openSections[key] ? "" : "-rotate-90"}`}
-      />
-      <span className="truncate">{label}</span>
-    </button>
+    <div className="flex items-center gap-1 pb-1 pt-3">
+      <button
+        type="button"
+        onClick={() => setOpenSections((current) => ({ ...current, [key]: !current[key] }))}
+        aria-expanded={openSections[key]}
+        className="flex min-w-0 flex-1 items-center gap-1 rounded px-1 text-[11px] font-bold uppercase tracking-wider text-[var(--text-muted)] transition hover:text-[var(--text)]"
+      >
+        <Icon
+          name="chevron-down"
+          size={12}
+          className={`transition-transform duration-150 ${openSections[key] ? "" : "-rotate-90"}`}
+        />
+        <span className="truncate">{label}</span>
+      </button>
+      <button
+        type="button"
+        onClick={onCreateChannel}
+        title={`Create a ${key} channel`}
+        aria-label={`Create a ${key} channel`}
+        className="flex h-6 w-6 shrink-0 items-center justify-center rounded text-[15px] leading-none text-[var(--text-muted)] transition hover:bg-[var(--bg-hover)] hover:text-[var(--text)]"
+      >
+        +
+      </button>
+    </div>
   );
 
   return (

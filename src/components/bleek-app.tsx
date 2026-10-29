@@ -17,6 +17,7 @@ import type {
 import { api } from "@/lib/client";
 import { withHandle, withIdentity, type AppIdentity } from "@/lib/identity";
 import { ChannelSidebar } from "./channel-sidebar";
+import { CreateDialog } from "./create-dialog";
 import { ChatView } from "./chat-view";
 import { GiftDialog } from "./gift-dialog";
 import { HomeFeed } from "./home-feed";
@@ -63,6 +64,14 @@ function applyEvent(previous: Snapshot | null, event: ServerEvent): Snapshot | n
           ...(event.server.storefront?.items ?? []),
         ],
       };
+    case "server:new":
+      return previous.servers.some((server) => server.id === event.server.id)
+        ? previous
+        : {
+            ...previous,
+            servers: [...previous.servers, event.server],
+            shop: [...previous.shop, ...(event.server.storefront?.items ?? [])],
+          };
     case "payout":
       return {
         ...previous,
@@ -139,6 +148,8 @@ export function BleekApp({ identity }: { identity: AppIdentity }) {
   const [consoleOpen, setConsoleOpen] = useState(false);
   const [storefrontServerId, setStorefrontServerId] = useState<string | null>(null);
   const [giftItemId, setGiftItemId] = useState<string | null>(null);
+  const [createServerOpen, setCreateServerOpen] = useState(false);
+  const [createChannelOpen, setCreateChannelOpen] = useState(false);
   const [popout, setPopout] = useState<{ userId: string; rect: DOMRect } | null>(null);
   const [voiceChannelId, setVoiceChannelId] = useState<string | null>(null);
   const [micMuted, setMicMuted] = useState(false);
@@ -473,6 +484,43 @@ export function BleekApp({ identity }: { identity: AppIdentity }) {
     [mergeUser, snap, toast],
   );
 
+  const onCreateServer = useCallback(
+    async (name: string) => {
+      const { server } = await api.createServer(name);
+      setRawSnap((previous) =>
+        previous
+          ? {
+              ...previous,
+              servers: [...previous.servers, server],
+              shop: [...previous.shop, ...(server.storefront?.items ?? [])],
+            }
+          : previous,
+      );
+      setActiveServerId(server.id);
+      setView("server");
+      setMobileNavOpen(false);
+      toast(`“${server.name}” is ready.`);
+    },
+    [toast],
+  );
+
+  const onCreateChannel = useCallback(
+    async (input: { name: string; type: "text" | "voice" }) => {
+      if (!activeServer) throw new Error("No server selected");
+      const { server } = await api.createChannel(activeServer.id, input);
+      mergeServer(server);
+
+      const slug = input.name.trim().toLowerCase().replace(/\s+/g, "-");
+      const created = server.channels.find((channel) => channel.name.toLowerCase() === slug);
+      if (created) {
+        setChannelByServer((previous) => ({ ...previous, [server.id]: created.id }));
+        if (created.type === "voice") setVoiceChannelId(created.id);
+      }
+      toast(`${input.type === "voice" ? "Voice channel" : "#"}${created?.name ?? slug} added.`);
+    },
+    [activeServer, mergeServer, toast],
+  );
+
   const onSetLayout = useCallback(
     async (layout: ChannelLayout) => {
       if (!activeChannel) return;
@@ -650,6 +698,7 @@ export function BleekApp({ identity }: { identity: AppIdentity }) {
           setMobileNavOpen(false);
         }}
         onSelect={selectServer}
+        onCreateServer={() => setCreateServerOpen(true)}
         onOpenShop={() => setShopOpen(true)}
         onOpenSettings={() => setSettingsOpen(true)}
         onOpenProfile={() => {
@@ -684,6 +733,7 @@ export function BleekApp({ identity }: { identity: AppIdentity }) {
               deafened={deafened}
               voiceChannelId={voiceChannelId}
               onSelectChannel={selectChannel}
+              onCreateChannel={() => setCreateChannelOpen(true)}
               onToggleMic={() => setMicMuted((value) => !value)}
               onToggleDeafen={() => setDeafened((value) => !value)}
               onOpenSettings={() => setSettingsOpen(true)}
@@ -814,6 +864,29 @@ export function BleekApp({ identity }: { identity: AppIdentity }) {
           }}
         />
       )}
+
+      <CreateDialog
+        open={createServerOpen}
+        title="Create a server"
+        description="Every server starts with a text channel and a voice channel you can rename."
+        label="Server name"
+        placeholder="Late Night Cafe"
+        submitLabel="Create server"
+        onClose={() => setCreateServerOpen(false)}
+        onSubmit={(name) => onCreateServer(name)}
+      />
+
+      <CreateDialog
+        open={createChannelOpen}
+        title="Create a channel"
+        description={`Added to ${activeServer.name}.`}
+        label="Channel name"
+        placeholder="design-lab"
+        submitLabel="Create channel"
+        withType
+        onClose={() => setCreateChannelOpen(false)}
+        onSubmit={(name, type) => onCreateChannel({ name, type })}
+      />
 
       {giftItem && (
         <GiftDialog

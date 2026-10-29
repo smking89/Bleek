@@ -66,6 +66,10 @@ export const api = {
     banner?: [string, string];
     cosmetics?: Partial<Cosmetics>;
   }) => request<{ user: User }>("/api/profile", { method: "PATCH", body: JSON.stringify(patch) }),
+  createServer: (name: string) =>
+    request<{ server: Snapshot["servers"][number] }>("/api/servers", { method: "POST", body: JSON.stringify({ name }) }),
+  createChannel: (serverId: string, input: { name: string; type: "text" | "voice" }) =>
+    request<ServerPayload>(`/api/servers/${serverId}/channels`, { method: "POST", body: JSON.stringify(input) }),
   setLayout: (channelId: string, layout: ChannelLayout) =>
     request<ServerPayload>(`/api/channels/${channelId}`, { method: "PATCH", body: JSON.stringify({ layout }) }),
   setDoc: (channelId: string, doc: string) =>

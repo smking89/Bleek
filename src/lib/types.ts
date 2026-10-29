@@ -245,6 +245,7 @@ export type ServerEvent =
   | { type: "message:typing"; channelId: string; userId: string; at: number }
   | { type: "user:update"; user: User }
   | { type: "server:update"; server: Server }
+  | { type: "server:new"; server: Server }
   | { type: "payout"; payout: Payout }
   | { type: "gift"; gift: Gift; itemName: string; fromName: string };
 
