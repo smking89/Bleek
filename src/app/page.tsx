@@ -39,9 +39,12 @@ const COSMETICS = [
 /** Decorative roster art for the voice illustration. No member names or counts. */
 const VOICE_MEMBERS: CharacterKey[] = ["comet", "tide", "sprout", "static"];
 
-/** The API, its keys and its documentation live in Astrocan, not in Bleek. */
-const ASTROCAN_PORTAL = "https://astrocan.io";
-const ASTROCAN_DOCS = "https://astrocan.io/docs";
+/**
+ * The API, its keys and its documentation live in Astrocan, not in Bleek:
+ * astrocan.io is the landing page, developer.astrocan.io the portal itself.
+ */
+const ASTROCAN_PORTAL = "https://developer.astrocan.io";
+const ASTROCAN_DOCS = "https://developer.astrocan.io/docs";
 
 type FooterLink = { label: string; href?: string; soon?: boolean };
 

@@ -14,7 +14,7 @@ import {
 } from "@/components/brand/astro-brand";
 
 /** Keys and the API are documented with ASTRO now, not in a product portal. */
-const ASTROCAN_PORTAL = "https://astrocan.io";
+const ASTROCAN_PORTAL = "https://developer.astrocan.io";
 
 export const metadata: Metadata = {
   title: "ASTRO — brand guidelines",
