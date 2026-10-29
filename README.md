@@ -237,6 +237,12 @@ API keys belong to Astrocan, the developer portal at `developer.astrocan.io`, do
 `/astro`, the admin console keeps its read-only key view under `/admin/developers`, and keys are issued and rotated
 centrally.
 
+The account screen that backs `astrocan.io/account` is `/account` on this deployment. It accepts `redirect_uri`, `state`
+and an optional `mode=popup`, matches the URI exactly against an active app's registered `redirectUri`, and only then
+signs the member in — redirecting back with `state`, `handle` and `astroId`, or posting the same result to the opener and
+closing the window. A URI that no active app registered is refused before anything is written. Without a `redirect_uri`
+the same page is the plain Astrocan account screen.
+
 Bleek still serves the metered API those keys call:
 
 - Creating an app returns `clientId` plus a `astro_sk_…` secret **once**; only a SHA-256 hash, the display prefix and the
