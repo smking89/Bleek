@@ -1,9 +1,9 @@
 import "server-only";
 
 import { Prisma } from "@prisma/client";
-import { currentAccount } from "@/lib/astro/auth";
-import { astroDb } from "@/lib/astro/db";
-import { AstroDataError } from "@/lib/astro/errors";
+import { currentAccount } from "@/lib/session";
+import { astroDb } from "@astro/core/db";
+import { AstroDataError } from "@astro/core/errors";
 import { AdminError } from "./errors";
 import { can, type Capability, type StaffRole } from "./roles";
 

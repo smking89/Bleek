@@ -5,7 +5,7 @@ import {
   updateApp,
 } from "@/lib/dev/apps";
 import { developerAccount } from "@/lib/dev/account";
-import { astroErrorResponse, readJson } from "@/lib/astro/http";
+import { astroErrorResponse, readJson } from "@astro/core/http";
 
 export const dynamic = "force-dynamic";
 

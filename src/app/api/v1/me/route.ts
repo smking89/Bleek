@@ -1,4 +1,4 @@
-import { getAstroAccount } from "@/lib/astro/accounts";
+import { getAstroAccount } from "@astro/core/accounts";
 import { withDeveloperApi } from "@/lib/dev/handler";
 
 export const dynamic = "force-dynamic";
@@ -11,6 +11,7 @@ export async function GET(request: Request) {
       {
         account: {
           handle: account.handle,
+          astroId: account.astroId,
           displayName: account.displayName,
           headline: account.headline,
           accentColor: account.accentColor,

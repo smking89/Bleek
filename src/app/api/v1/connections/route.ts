@@ -1,5 +1,5 @@
-import { getAstroAccount } from "@/lib/astro/accounts";
-import { tryGenerateASTROLink } from "@/lib/astro/links";
+import { getAstroAccount } from "@astro/core/accounts";
+import { tryGenerateASTROLink } from "@astro/core/links";
 import { withDeveloperApi } from "@/lib/dev/handler";
 
 export const dynamic = "force-dynamic";

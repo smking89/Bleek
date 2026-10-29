@@ -2,11 +2,11 @@ import "server-only";
 
 import { randomBytes } from "node:crypto";
 import { Prisma } from "@prisma/client";
-import { adjustWallet } from "@/lib/astro/accounts";
-import { astroDb } from "@/lib/astro/db";
+import { adjustWallet } from "@astro/core/accounts";
+import { astroDb } from "@astro/core/db";
 import { setAnyAppStatus } from "@/lib/dev/apps";
-import { AstroDataError } from "@/lib/astro/errors";
-import { AstroLinkError, normalizeAccountHandle } from "@/lib/astro/links";
+import { AstroDataError } from "@astro/core/errors";
+import { AstroLinkError, normalizeAccountHandle } from "@astro/core/links";
 import { recordAudit, type StaffContext } from "./access";
 import { AdminError } from "./errors";
 import {

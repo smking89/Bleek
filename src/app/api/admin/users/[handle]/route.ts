@@ -1,7 +1,7 @@
 import { clientIp, requireStaff, staffErrorResponse } from "@/lib/admin/access";
 import { isStaffRole } from "@/lib/admin/roles";
 import { moveCoins, setHandleVerification, setStaffRole, setSuspension } from "@/lib/admin/service";
-import { readJson } from "@/lib/astro/http";
+import { readJson } from "@astro/core/http";
 
 export const dynamic = "force-dynamic";
 

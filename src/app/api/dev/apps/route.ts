@@ -1,7 +1,7 @@
 import { createApp, loadConsole } from "@/lib/dev/apps";
 import { developerAccount } from "@/lib/dev/account";
-import { readJson } from "@/lib/astro/http";
-import { astroErrorResponse } from "@/lib/astro/http";
+import { readJson } from "@astro/core/http";
+import { astroErrorResponse } from "@astro/core/http";
 
 export const dynamic = "force-dynamic";
 

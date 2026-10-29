@@ -18,6 +18,7 @@ jobs:
       # but the Prisma client and the data layer refuse to initialise without these.
       DATABASE_URL: postgresql://ci:ci@localhost:5432/astro?schema=public
       ASTRO_AUTH_SECRET: ci-placeholder-secret-not-used-for-real-sessions
+      ASTRO_ID_SECRET: ci-placeholder-id-secret-not-used-for-real-ids
     steps:
       - name: Check out the repository
         uses: actions/checkout@v4
@@ -32,7 +33,7 @@ jobs:
         run: npm ci
 
       - name: Generate the Prisma client
-        run: npx prisma generate
+        run: npx prisma generate --schema prisma/schema
 
       - name: Typecheck
         run: npm run typecheck

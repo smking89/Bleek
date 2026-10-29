@@ -1,5 +1,5 @@
-import { deleteAstroAccount, getAstroAccount } from "@/lib/astro/accounts";
-import { astroErrorResponse } from "@/lib/astro/http";
+import { deleteAstroAccount, getAstroAccount } from "@astro/core/accounts";
+import { astroErrorResponse } from "@astro/core/http";
 
 export const dynamic = "force-dynamic";
 

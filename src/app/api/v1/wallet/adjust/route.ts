@@ -1,5 +1,5 @@
-import { adjustWallet } from "@/lib/astro/accounts";
-import { readJson } from "@/lib/astro/http";
+import { adjustWallet } from "@astro/core/accounts";
+import { readJson } from "@astro/core/http";
 import { withDeveloperApi } from "@/lib/dev/handler";
 
 export const dynamic = "force-dynamic";

@@ -1,6 +1,7 @@
-import { authenticate, startSession } from "@/lib/astro/auth";
-import { AstroDataError } from "@/lib/astro/errors";
-import { astroErrorResponse, readJson } from "@/lib/astro/http";
+import { authenticate } from "@astro/core/auth";
+import { startSession } from "@/lib/session";
+import { AstroDataError } from "@astro/core/errors";
+import { astroErrorResponse, readJson } from "@astro/core/http";
 
 export const dynamic = "force-dynamic";
 

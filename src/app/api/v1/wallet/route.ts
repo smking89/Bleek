@@ -1,4 +1,4 @@
-import { getAstroAccount } from "@/lib/astro/accounts";
+import { getAstroAccount } from "@astro/core/accounts";
 import { withDeveloperApi } from "@/lib/dev/handler";
 
 export const dynamic = "force-dynamic";

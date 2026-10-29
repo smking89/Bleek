@@ -1,7 +1,7 @@
-import { connectPlatform } from "@/lib/astro/accounts";
-import { AstroDataError } from "@/lib/astro/errors";
-import { astroErrorResponse, readJson } from "@/lib/astro/http";
-import type { PlatformType } from "@/lib/astro/links";
+import { connectPlatform } from "@astro/core/accounts";
+import { AstroDataError } from "@astro/core/errors";
+import { astroErrorResponse, readJson } from "@astro/core/http";
+import type { PlatformType } from "@astro/core/links";
 
 export const dynamic = "force-dynamic";
 

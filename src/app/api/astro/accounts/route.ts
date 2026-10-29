@@ -1,6 +1,6 @@
-import { createAstroAccount } from "@/lib/astro/accounts";
-import { AstroDataError } from "@/lib/astro/errors";
-import { astroErrorResponse, readJson } from "@/lib/astro/http";
+import { createAstroAccount } from "@astro/core/accounts";
+import { AstroDataError } from "@astro/core/errors";
+import { astroErrorResponse, readJson } from "@astro/core/http";
 
 export const dynamic = "force-dynamic";
 

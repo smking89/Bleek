@@ -1,7 +1,7 @@
 import "server-only";
 
-import { currentAccount } from "@/lib/astro/auth";
-import { AstroDataError } from "@/lib/astro/errors";
+import { currentAccount } from "@/lib/session";
+import { AstroDataError } from "@astro/core/errors";
 
 /** The signed-in ASTRO account, required for every developer-portal route. */
 export async function developerAccount() {

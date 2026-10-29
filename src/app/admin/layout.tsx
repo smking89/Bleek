@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { AdminShell } from "@/components/admin/admin-shell";
 import { staffContext } from "@/lib/admin/access";
-import { currentAccount } from "@/lib/astro/auth";
-import { astroConfigured } from "@/lib/astro/db";
-import { AstroDataError } from "@/lib/astro/errors";
+import { currentAccount } from "@/lib/session";
+import { astroConfigured } from "@astro/core/db";
+import { AstroDataError } from "@astro/core/errors";
 
 export const dynamic = "force-dynamic";
 

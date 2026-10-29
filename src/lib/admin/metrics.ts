@@ -1,6 +1,6 @@
 import "server-only";
 
-import { astroDb } from "@/lib/astro/db";
+import { astroDb } from "@astro/core/db";
 import type { StaffRole } from "./roles";
 
 export type TrendPoint = {

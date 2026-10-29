@@ -31,21 +31,38 @@ in production.
 
 ASTRO is the account layer shared by Bleek, Koba.games and SnagChat. It ships as three paste-ready pieces:
 
-- `prisma/schema.prisma` — one `User`, one `AccountWallet` (single coin balance for every product) and
-  `UserConnection` chips keyed by the `PlatformType` enum (`BEEK`, `KOBA_GAMES`, `SNAGCHAT`). Wallets and connections
-  cascade on user delete; lookups go through unique `platform` + `handleNormalized`.
-- `src/lib/astro/links.ts` — `generateASTROLink(platform, handle)` plus normalisation, formatting and a non-throwing
+- `@astro/core` (github.com/smking89/Astro) — the account package Bleek installs. It owns one `User`, one
+  `AccountWallet` (single coin balance for every product) and the `UserConnection` chips keyed by the `PlatformType`
+  enum (`BEEK`, `KOBA_GAMES`, `SNAGCHAT`). Wallets and connections cascade on user delete; lookups go through unique
+  `platform` + `handleNormalized`.
+- `@astro/core/links` — `generateASTROLink(platform, handle)` plus normalisation, formatting and a non-throwing
   `tryGenerateASTROLink`. Client-safe: it never imports the generated Prisma client.
-- `src/components/astro/profile-connections.tsx` — the profile link row: wrapping rounded pills on `#111214` over a
-  `#000000` surface, truncated handles, verified marks and the dotted `+ Add` chip in editing mode.
+- `@astro/core/react/connections` — the profile link row: wrapping rounded pills on `#111214` over a `#000000`
+  surface, truncated handles, verified marks and the dotted `+ Add` chip in editing mode.
 
 `/astro` renders a real account straight from PostgreSQL, with a connect form that writes through the API and a chip
 row you can remove from. On an empty database it offers a one-click demo account.
 
+### ASTROid
+
+Registration mints a signed ASTROid — 80 random bits in Crockford base32 plus an HMAC-SHA256 signature over them:
+
+```
+ASTRO-4K7Q-9WTM-2XHB-8NDR-3FVC-6PZS
+```
+
+It is stored once on `User.astroId`, never exposed to mutation endpoints, and any product can verify it offline with
+`verifyAstroId()` from `@astro/core/id`; edited, extended or invented values fail the signature without a database
+read. `GET /api/astro/ids/[astroId]` performs the full check here — signature first, then the stored row — and returns
+the handle behind it. Accounts created before the split receive one the first time ASTRO reads them. Set
+`ASTRO_ID_SECRET` in production so rotating `ASTRO_AUTH_SECRET` does not invalidate every ID.
+
 ### Data layer
 
-`prisma/migrations` holds the applied `astro_init` migration. Copy `.env.example` to `.env`, point `DATABASE_URL` at a
-PostgreSQL database, then:
+Bleek's schema is composed at install time: `prisma/schema/bleek.prisma` holds the Bleek-only models, and
+`prisma/schema/astro.prisma` is generated from the installed `@astro/core` package by
+`scripts/sync-astro-schema.mjs` (the account models plus Bleek's back-relations on `User`). Copy `.env.example` to `.env`,
+point `DATABASE_URL` at a PostgreSQL database, then:
 
 ```bash
 npm run db:generate   # prisma generate (also runs on install)
@@ -54,8 +71,8 @@ npm run db:deploy     # apply committed migrations in production
 npm run db:studio     # inspect rows in Prisma Studio
 ```
 
-`src/lib/astro/db.ts` exposes one cached `PrismaClient` per process and refuses to start without `DATABASE_URL`.
-`src/lib/astro/accounts.ts` holds every operation: create an account with its wallet in one write, read it with chips in
+`@astro/core/db` exposes one cached `PrismaClient` per process and refuses to start without `DATABASE_URL`.
+`@astro/core/accounts` holds every operation: create an account with its wallet in one write, read it with chips in
 display order, delete it, connect or disconnect a product handle, and move coins through a version-guarded update so two
 products cannot overwrite each other's balance. Failures surface as `AstroDataError` with an HTTP status and a code.
 

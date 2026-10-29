@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { DevHeader } from "@/components/dev/dev-header";
 import { AppConsole, type RequestView } from "@/components/dev/app-console";
-import { currentAccount } from "@/lib/astro/auth";
-import { astroConfigured, astroDb } from "@/lib/astro/db";
-import { AstroDataError } from "@/lib/astro/errors";
+import { currentAccount } from "@/lib/session";
+import { astroConfigured, astroDb } from "@astro/core/db";
+import { AstroDataError } from "@astro/core/errors";
 import { loadConsole } from "@/lib/dev/apps";
 
 export const dynamic = "force-dynamic";

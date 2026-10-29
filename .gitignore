@@ -6,3 +6,5 @@ out
 *.tsbuildinfo
 .env*
 !.env.example
+prisma/schema/astro.prisma
+.astro-package/

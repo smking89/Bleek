@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@source "../../node_modules/@astro/core/src";
 
 @theme {
   --font-sans: "Inter", "gg sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica,

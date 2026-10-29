@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { AuthCard } from "@/components/landing/auth-card";
-import { currentAccount } from "@/lib/astro/auth";
-import { astroConfigured } from "@/lib/astro/db";
+import { currentAccount } from "@/lib/session";
+import { astroConfigured } from "@astro/core/db";
 
 export const metadata: Metadata = {
   title: "ASTRO — one account for Bleek, Koba.games and SnagChat",

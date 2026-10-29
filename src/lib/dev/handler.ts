@@ -1,6 +1,6 @@
 import "server-only";
 
-import { AstroDataError } from "@/lib/astro/errors";
+import { AstroDataError } from "@astro/core/errors";
 import { authenticateApiKey, recordApiRequest, todayUsage, type ApiKeyContext } from "./apps";
 import { DAILY_QUOTA, type ScopeKey } from "./keys";
 

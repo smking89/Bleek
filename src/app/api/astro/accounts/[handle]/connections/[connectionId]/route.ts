@@ -1,5 +1,5 @@
-import { disconnectPlatform } from "@/lib/astro/accounts";
-import { astroErrorResponse } from "@/lib/astro/http";
+import { disconnectPlatform } from "@astro/core/accounts";
+import { astroErrorResponse } from "@astro/core/http";
 
 export const dynamic = "force-dynamic";
 

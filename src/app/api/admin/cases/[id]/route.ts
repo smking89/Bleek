@@ -1,6 +1,6 @@
 import { clientIp, requireStaff, staffErrorResponse } from "@/lib/admin/access";
 import { updateCase } from "@/lib/admin/service";
-import { readJson } from "@/lib/astro/http";
+import { readJson } from "@astro/core/http";
 
 export const dynamic = "force-dynamic";
 

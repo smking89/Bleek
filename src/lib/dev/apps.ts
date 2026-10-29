@@ -2,8 +2,8 @@ import "server-only";
 
 import { createHash, randomBytes } from "node:crypto";
 import { Prisma } from "@prisma/client";
-import { astroDb } from "@/lib/astro/db";
-import { AstroDataError } from "@/lib/astro/errors";
+import { astroDb } from "@astro/core/db";
+import { AstroDataError } from "@astro/core/errors";
 import { DEFAULT_SCOPES, keyPrefix, lastFour, normalizeScopes, type ScopeKey } from "./keys";
 
 export const APP_SELECT = {

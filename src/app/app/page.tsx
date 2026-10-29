@@ -1,8 +1,8 @@
 import { redirect } from "next/navigation";
 import { DiscordApp } from "@/components/discord-app";
-import { currentAccount } from "@/lib/astro/auth";
-import { astroConfigured } from "@/lib/astro/db";
-import { AstroDataError } from "@/lib/astro/errors";
+import { currentAccount } from "@/lib/session";
+import { astroConfigured } from "@astro/core/db";
+import { AstroDataError } from "@astro/core/errors";
 
 export const dynamic = "force-dynamic";
 

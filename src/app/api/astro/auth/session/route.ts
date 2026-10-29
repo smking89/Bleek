@@ -1,5 +1,5 @@
-import { currentAccount } from "@/lib/astro/auth";
-import { astroErrorResponse } from "@/lib/astro/http";
+import { currentAccount } from "@/lib/session";
+import { astroErrorResponse } from "@astro/core/http";
 
 export const dynamic = "force-dynamic";
 

@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import { revalidatePath } from "next/cache";
-import { ProfileEditor } from "@/components/astro/profile-editor";
+import { ProfileEditor } from "@astro/core/react/editor";
 import { UnverifiedTag, VerifiedBadge } from "@/components/verified-badge";
-import { createAstroAccount, getAstroAccount, type AstroAccount } from "@/lib/astro/accounts";
-import { astroConfigured } from "@/lib/astro/db";
-import { AstroDataError } from "@/lib/astro/errors";
+import { createAstroAccount, getAstroAccount, type AstroAccount } from "@astro/core/accounts";
+import { astroConfigured } from "@astro/core/db";
+import { AstroDataError } from "@astro/core/errors";
 
 export const dynamic = "force-dynamic";
 
@@ -85,6 +85,9 @@ export default async function AstroProfilePage() {
             </span>
             {account.handleVerifiedAt ? <VerifiedBadge size={14} /> : <UnverifiedTag />}
           </div>
+          <p className="mt-2 font-mono text-[11px] uppercase tracking-[0.16em] text-neutral-600">
+            {account.astroId ?? "ASTROid pending"}
+          </p>
         </div>
         <span className="shrink-0 rounded-full border border-white/10 bg-[#111214] px-3 py-1.5 text-[12px] font-semibold tabular-nums text-neutral-300">
           {(account.wallet?.coins ?? 0).toLocaleString()} coins
