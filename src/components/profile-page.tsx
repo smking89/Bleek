@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { ROLE_META } from "@/lib/admin/roles";
+import { playPlatformLabel, regionLabel } from "@/lib/astro/regions";
 import type { CosmeticSlot, User } from "@/lib/types";
 import { Avatar } from "./cosmetics/avatar";
 import { Nameplate } from "./cosmetics/nameplate";
@@ -256,6 +257,19 @@ export function ProfilePage({
                         <Icon name="users" size={15} /> {user.joined}
                       </div>
                     </Card>
+
+                    {(user.region || user.playPlatform) && (
+                      <Card>
+                        <div className="text-[15px] font-semibold text-[var(--text-strong)]">Region</div>
+                        <div className="mt-1 flex items-center gap-2 text-[13px] text-[var(--text-muted)]">
+                          <span className="h-1.5 w-1.5 rounded-full bg-[var(--accent-2)]" aria-hidden />
+                          <span>
+                            {user.region ? regionLabel(user.region) : "Not set"}
+                            {user.playPlatform ? ` · ${playPlatformLabel(user.playPlatform)}` : ""}
+                          </span>
+                        </div>
+                      </Card>
+                    )}
 
                     {user.bio && (
                       <Card>
