@@ -15,7 +15,7 @@
     "staff:grant": "node scripts/grant-staff.mjs"
   },
   "dependencies": {
-    "@astro/core": "git+https://github.com/smking89/Astro.git",
+    "@astro/core": "github:smking89/Astro",
     "@prisma/client": "^6.19.3",
     "next": "^15.5.4",
     "react": "^19.1.1",
