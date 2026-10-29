@@ -1,0 +1,280 @@
+// ASTRO — unified schema for the Bleek · Koba.games · SnagChat ecosystem.
+// One User owns one AccountWallet (the shared coin balance across every product)
+// and any number of UserConnection rows (the Meta-style profile link chips).
+//
+//   npx prisma generate
+//   npx prisma migrate dev --name astro_init
+//
+// DATABASE_URL is the only environment variable this schema reads.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum PlatformType {
+  BEEK
+  KOBA_GAMES
+  SNAGCHAT
+}
+
+/// Staff role inside the ASTRO operations console. Null on ordinary members.
+enum StaffRole {
+  MODERATOR
+  ADMIN
+  SUPER_ADMIN
+}
+
+enum AccountStatus {
+  ACTIVE
+  SUSPENDED
+}
+
+enum AppEnvironment {
+  DEVELOPMENT
+  PRODUCTION
+}
+
+enum DeveloperAppStatus {
+  ACTIVE
+  REVOKED
+}
+
+enum CaseStatus {
+  OPEN
+  INVESTIGATING
+  RESOLVED
+  DISMISSED
+}
+
+enum CasePriority {
+  LOW
+  NORMAL
+  HIGH
+  URGENT
+}
+
+/// The single identity shared by every ASTRO product.
+model User {
+  id          String   @id @default(cuid())
+  handle      String   @unique
+  displayName String
+  avatarUrl   String?
+  headline    String?
+  bio         String?
+  /// Hex accent used for the profile ring, e.g. "#5865f2".
+  accentColor String?  @db.Char(7)
+  /// scrypt hash for handle + password sign-in; null when the account predates credentials.
+  passwordHash String?
+  /// Staff role in the operations console; null for ordinary members.
+  staffRole        StaffRole?
+  staffTitle       String?
+  staffSince       DateTime?
+  status           AccountStatus @default(ACTIVE)
+  suspendedAt      DateTime?
+  suspendedReason  String?
+  lastSeenAt       DateTime?
+  /// Set when staff verify that this handle belongs to the account it claims.
+  handleVerifiedAt DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  wallet        AccountWallet?
+  connections   UserConnection[]
+  developerApps DeveloperApp[]   @relation("AppOwner")
+  auditEvents   StaffAudit[]     @relation("AuditActor")
+  assignedCases ModerationCase[] @relation("CaseAssignee")
+  subjectCases  ModerationCase[] @relation("CaseSubject")
+  caseNotes     CaseNote[]
+
+  @@index([createdAt])
+  @@index([displayName])
+  @@index([staffRole])
+  @@index([status])
+  @@index([handleVerifiedAt])
+  @@map("users")
+}
+
+/// One wallet per user. Every product debits and credits this same row.
+model AccountWallet {
+  id             String   @id @default(cuid())
+  userId         String   @unique
+  /// Spendable balance. The migration adds CHECK ("coins" >= 0).
+  coins          Int      @default(0)
+  lifetimeEarned Int      @default(0)
+  lifetimeSpent  Int      @default(0)
+  /// Bumped on every write so concurrent product clients can detect a lost update.
+  version        Int      @default(0)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@map("account_wallets")
+}
+
+/// A profile link chip pointing at one of the three ASTRO products.
+model UserConnection {
+  id               String       @id @default(cuid())
+  userId           String
+  platform         PlatformType
+  /// Exactly as the member typed it, minus a leading "@".
+  handle           String
+  /// Lowercased handle, or digits-only for WhatsApp. Every lookup uses this column.
+  handleNormalized String
+  /// Shown first in the profile row.
+  isPrimary        Boolean      @default(false)
+  isVerified       Boolean      @default(false)
+  /// Manual drag order inside the chip row.
+  sortOrder        Int          @default(0)
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  /// A handle belongs to at most one ASTRO account per platform, so a product
+  /// nickname can never be claimed twice. Also serves the resolve-by-handle lookup.
+  @@unique([platform, handleNormalized])
+  /// Fast fetch of one profile row in display order.
+  @@index([userId, sortOrder])
+  /// Fast per-platform counts and verification sweeps.
+  @@index([platform])
+  @@map("user_connections")
+}
+
+/// A third-party ASTRO integration. Owned by one account, authenticated by one key.
+model DeveloperApp {
+  id           String              @id @default(cuid())
+  ownerId      String
+  name         String
+  description  String?
+  /// Public identifier, safe to show in logs and dashboards.
+  clientId     String              @unique
+  /// Display prefix of the secret, e.g. "astro_sk_4f2a".
+  keyPrefix    String
+  /// SHA-256 of the full secret. The secret itself is shown once and never stored.
+  keyHash      String              @unique
+  lastFour     String
+  scopes       String[]            @default([])
+  environment  AppEnvironment      @default(DEVELOPMENT)
+  status       DeveloperAppStatus  @default(ACTIVE)
+  redirectUri  String?
+  requestCount Int                 @default(0)
+  errorCount   Int                 @default(0)
+  lastUsedAt   DateTime?
+  revokedAt    DateTime?
+  createdAt    DateTime            @default(now())
+  updatedAt    DateTime            @updatedAt
+
+  owner    User            @relation("AppOwner", fields: [ownerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  usage    ApiUsageDaily[]
+  requests ApiRequest[]
+
+  @@index([ownerId, createdAt])
+  @@index([status])
+  @@map("developer_apps")
+}
+
+/// One row per app per UTC day; the source for the portal's usage charts.
+model ApiUsageDaily {
+  id       String   @id @default(cuid())
+  appId    String
+  day      DateTime @db.Date
+  requests Int      @default(0)
+  errors   Int      @default(0)
+
+  app DeveloperApp @relation(fields: [appId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@unique([appId, day])
+  @@index([day])
+  @@map("api_usage_daily")
+}
+
+/// Recent API calls, capped by a rolling 30-day prune, for the request inspector.
+model ApiRequest {
+  id         String   @id @default(cuid())
+  appId      String
+  method     String
+  path       String
+  status     Int
+  durationMs Int
+  ip         String?
+  createdAt  DateTime @default(now())
+
+  app DeveloperApp @relation(fields: [appId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@index([appId, createdAt])
+  @@index([createdAt])
+  @@map("api_requests")
+}
+
+/// A moderation report moving through the staff queue.
+model ModerationCase {
+  id            String        @id @default(cuid())
+  reference     String        @unique
+  subjectId     String?
+  subjectHandle String
+  reporterHandle String?
+  reason        String
+  detail        String?
+  channel       String?
+  status        CaseStatus    @default(OPEN)
+  priority      CasePriority  @default(NORMAL)
+  assigneeId    String?
+  resolution    String?
+  resolvedAt    DateTime?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  subject  User?   @relation("CaseSubject", fields: [subjectId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  assignee User?   @relation("CaseAssignee", fields: [assigneeId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  notes    CaseNote[]
+
+  @@index([status, priority])
+  @@index([createdAt])
+  @@index([assigneeId])
+  @@map("moderation_cases")
+}
+
+/// Internal case notes. Author handle is denormalised so the note survives deletion.
+model CaseNote {
+  id           String   @id @default(cuid())
+  caseId       String
+  authorId     String?
+  authorHandle String
+  body         String
+  createdAt    DateTime @default(now())
+
+  case   ModerationCase @relation(fields: [caseId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  author User?          @relation(fields: [authorId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+
+  @@index([caseId, createdAt])
+  @@map("case_notes")
+}
+
+/// Append-only staff action log. Every privileged mutation writes one row.
+model StaffAudit {
+  id          String     @id @default(cuid())
+  actorId     String?
+  actorHandle String
+  actorRole   StaffRole?
+  action      String
+  targetType  String
+  targetId    String?
+  targetLabel String?
+  summary     String
+  metadata    Json?
+  ip          String?
+  createdAt   DateTime   @default(now())
+
+  actor User? @relation("AuditActor", fields: [actorId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+
+  @@index([createdAt])
+  @@index([actorId])
+  @@index([action])
+  @@map("staff_audit")
+}

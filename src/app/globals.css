@@ -1,0 +1,454 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", "gg sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica,
+    Arial, sans-serif;
+}
+
+:root {
+  --bg-rail: #050608;
+  --bg-sidebar: #0b0c0e;
+  --bg-chat: #000000;
+  --bg-panel: #0b0c0e;
+  --bg-input: #111318;
+  --bg-hover: #15181e;
+  --bg-active: #1b1f27;
+  --bg-modal: #0b0c0e;
+  --bg-elevated: #111318;
+  --bg-float: #0b0c0e;
+  --border-subtle: rgba(255, 255, 255, 0.06);
+  --border-strong: rgba(255, 255, 255, 0.12);
+  --text-strong: #f8fafc;
+  --text: #e2e8f0;
+  --text-body: #cbd5e1;
+  --text-muted: #94a3b8;
+  --text-faint: #6e7c93;
+  --link: #818cf8;
+  --green: #23a55a;
+  --yellow: #f0b232;
+  --red: #f23f43;
+  --grey: #80848e;
+  --cyan: #06b6d4;
+  --indigo: #4f46e5;
+
+  --accent: #4f46e5;
+  --accent-2: #818cf8;
+  --accent-hover: color-mix(in srgb, var(--accent) 82%, #000);
+  --accent-soft: color-mix(in srgb, var(--accent) 20%, transparent);
+  --accent-softer: color-mix(in srgb, var(--accent) 12%, transparent);
+  --accent-contrast: #ffffff;
+
+  --dur-fast: 120ms;
+  --dur: 180ms;
+  --dur-slow: 260ms;
+  --ease: cubic-bezier(0.2, 0.8, 0.3, 1);
+}
+
+[data-theme="sunset"] {
+  --accent: #f97316;
+  --accent-2: #ec4899;
+  --link: #fb923c;
+}
+[data-theme="forest"] {
+  --accent: #22c55e;
+  --accent-2: #84cc16;
+  --link: #4ade80;
+}
+[data-theme="crimson"] {
+  --accent: #ef4444;
+  --accent-2: #f97316;
+  --link: #f87171;
+}
+[data-theme="ice"] {
+  --accent: #0ea5e9;
+  --accent-2: #67e8f9;
+  --link: #38bdf8;
+}
+[data-theme="mono"] {
+  --accent: #e5e7eb;
+  --accent-2: #9ca3af;
+  --link: #d1d5db;
+  --accent-contrast: #111214;
+}
+
+* {
+  border-color: var(--border-subtle);
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  background: var(--bg-chat);
+  color: var(--text);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overscroll-behavior: none;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--accent) 45%, transparent);
+  color: #fff;
+}
+
+button {
+  cursor: pointer;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.scroll-thin {
+  scrollbar-width: thin;
+  scrollbar-color: #1a1b1e transparent;
+}
+.scroll-thin::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+.scroll-thin::-webkit-scrollbar-track {
+  background: transparent;
+}
+.scroll-thin::-webkit-scrollbar-thumb {
+  background: #1a1b1e;
+  border-radius: 8px;
+  border: 1px solid var(--bg-chat);
+}
+
+.no-scrollbar {
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* ── Animations ───────────────────────────────────────────────────────── */
+@keyframes nebula-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes nebula-spin-rev {
+  to {
+    transform: rotate(-360deg);
+  }
+}
+@keyframes nebula-pulse {
+  0%,
+  100% {
+    opacity: 0.45;
+    transform: scale(0.94);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.08);
+  }
+}
+@keyframes nebula-flicker {
+  0%,
+  100% {
+    opacity: 0.75;
+    transform: scale(0.96);
+  }
+  35% {
+    opacity: 1;
+    transform: scale(1.07);
+  }
+  70% {
+    opacity: 0.85;
+    transform: scale(0.99);
+  }
+}
+@keyframes nebula-shimmer {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 200% 50%;
+  }
+}
+@keyframes nebula-twinkle {
+  0%,
+  100% {
+    opacity: 0.15;
+    transform: scale(0.7);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+}
+@keyframes nebula-rise {
+  0% {
+    opacity: 0;
+    transform: translateY(6px) scale(0.6);
+  }
+  15% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-34px) scale(1.05);
+  }
+}
+@keyframes nebula-fall {
+  0% {
+    opacity: 0;
+    transform: translateY(-24px) rotate(0deg);
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(26px) rotate(220deg);
+  }
+}
+@keyframes nebula-drift {
+  0%,
+  100% {
+    transform: translate3d(-6%, 0, 0) scale(1.05);
+  }
+  50% {
+    transform: translate3d(6%, -4%, 0) scale(1.15);
+  }
+}
+@keyframes nebula-hue {
+  to {
+    filter: hue-rotate(360deg);
+  }
+}
+@keyframes nebula-pop {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes nebula-modal {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes nebula-typing {
+  0%,
+  60%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.45;
+  }
+  30% {
+    transform: translateY(-3px);
+    opacity: 1;
+  }
+}
+@keyframes nebula-glow {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 0.9;
+  }
+}
+@keyframes nebula-blip {
+  0% {
+    transform: scale(0.85);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.animate-pop {
+  animation: nebula-pop var(--dur) var(--ease) both;
+}
+.animate-modal {
+  animation: nebula-modal var(--dur-slow) var(--ease) both;
+}
+.animate-blip {
+  animation: nebula-blip var(--dur-fast) var(--ease) both;
+}
+
+/* Ultra-thin cyan frame while a voice participant is speaking. */
+@keyframes astro-speak {
+  0%,
+  100% {
+    border-color: #06b6d4;
+  }
+  50% {
+    border-color: rgba(6, 182, 212, 0.25);
+  }
+}
+.speaking-ring {
+  animation: astro-speak 1.6s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .speaking-ring {
+    animation: none;
+    border-color: #06b6d4;
+  }
+}
+
+/* Horizontal strips that continue past the edge get a soft fade instead of a hard cut. */
+.scroll-fade-x {
+  mask-image: linear-gradient(to right, #000 0, #000 calc(100% - 32px), transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, #000 0, #000 calc(100% - 32px), transparent 100%);
+}
+
+kbd,
+.kbd {
+  display: inline-block;
+  border-radius: 4px;
+  border: 1px solid var(--border-strong);
+  background: var(--bg-float);
+  padding: 0 4px;
+  font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  font-size: 10px;
+  line-height: 15px;
+  color: var(--text-muted);
+}
+
+/* Message actions are hover-only on pointer devices, but must stay reachable on touch. */
+@media (pointer: coarse) {
+  .msg-actions {
+    display: flex;
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .nameplate,
+  .nameplate-neon-pulse,
+  .nameplate-gold-shimmer,
+  .nameplate-holo-chrome,
+  .nameplate-shadowflame {
+    animation: none !important;
+    background-position: 0% 50% !important;
+  }
+  .hover-raise:hover {
+    transform: none;
+  }
+}
+
+/* ── Nameplates ───────────────────────────────────────────────────────── */
+.nameplate {
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  animation: nebula-shimmer 6s linear infinite;
+}
+
+.nameplate-neon-pulse {
+  background-image: linear-gradient(90deg, #0891b2, #a5f3fc, #22d3ee, #a5f3fc, #0891b2);
+  filter: drop-shadow(0 0 6px rgba(34, 211, 238, 0.55));
+  animation-duration: 3.2s;
+}
+
+.nameplate-gold-shimmer {
+  background-image: linear-gradient(90deg, #a16207, #fde68a, #fffbeb, #fbbf24, #a16207);
+  filter: drop-shadow(0 0 5px rgba(234, 179, 8, 0.45));
+  animation-duration: 4.5s;
+}
+
+.nameplate-holo-chrome {
+  background-image: linear-gradient(90deg, #67e8f9, #a5b4fc, #f0abfc, #fde68a, #67e8f9);
+  filter: drop-shadow(0 0 7px rgba(165, 180, 252, 0.5));
+  animation-duration: 5.5s;
+}
+
+.nameplate-shadowflame {
+  background-image: linear-gradient(90deg, #7c3aed, #c026d3, #f43f5e, #f97316, #7c3aed);
+  filter: drop-shadow(0 0 8px rgba(192, 38, 211, 0.6));
+  animation-duration: 3.8s;
+}
+
+/* ── Message content ──────────────────────────────────────────────────── */
+.msg-content {
+  font-size: 1rem;
+  line-height: 1.375rem;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.msg-content a {
+  color: var(--link);
+  text-decoration: none;
+}
+.msg-content a:hover {
+  text-decoration: underline;
+}
+.msg-content code {
+  background: #1e1f22;
+  border-radius: 4px;
+  padding: 0 4px;
+  font-size: 0.85em;
+  font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+}
+.msg-content strong {
+  color: var(--text-strong);
+  font-weight: 700;
+}
+.msg-content em {
+  font-style: italic;
+}
+/* No blocky fill: a mention is colour and weight inside the flat black message. */
+.msg-mention {
+  background: transparent;
+  color: #a5b4fc;
+  border-radius: 0;
+  padding: 0;
+  font-weight: 600;
+}
+.msg-mention:hover {
+  background: transparent;
+  color: #c7d2fe;
+  text-decoration: underline;
+}
+
+/* ── Misc ─────────────────────────────────────────────────────────────── */
+.hover-raise {
+  transition: transform 0.15s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+.hover-raise:hover {
+  transform: translateY(-2px);
+}
+
+input[type="range"] {
+  accent-color: var(--accent);
+}
+
+::placeholder {
+  color: var(--text-faint);
+}
+
+textarea {
+  font-family: inherit;
+}
