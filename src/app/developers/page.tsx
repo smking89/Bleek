@@ -7,7 +7,7 @@ import { API_VERSION, QUICKSTART_CURL } from "@/lib/dev/docs";
 export const metadata: Metadata = {
   title: "ASTRO — developer platform",
   description:
-    "Build on ASTRO: one account, one shared wallet and profile chips for Bleek, Koba.games and SnagChat, behind a single metered API.",
+    "Build on ASTRO: one account, one shared wallet and profile chips for Bleek, Koba.games, SnagChat and KOBAbot, behind a single metered API.",
 };
 
 const FEATURES = [
@@ -40,7 +40,7 @@ export default function DevelopersPage() {
           One ASTRO account, callable from anything you build.
         </h1>
         <p className="mt-4 max-w-2xl text-[14.5px] leading-7 text-[#94A3B8]">
-          The same identity behind Bleek, Koba.games and SnagChat is available as a metered HTTP API. Read a profile,
+          The same identity behind Bleek, Koba.games, SnagChat and KOBAbot is available as a metered HTTP API. Read a profile,
           list its chips, move coins in the shared wallet — all scoped to the account that owns the key.
         </p>
 

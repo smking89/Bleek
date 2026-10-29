@@ -160,7 +160,7 @@ export function AuthCard({
           </h2>
           <p className="mt-1 text-[13px] leading-6 text-[#94A3B8]">
             {mode === "register"
-              ? "One handle, one wallet. It works in Bleek, Koba.games and SnagChat from the moment you sign up."
+              ? "One handle, one wallet. It works in Bleek, Koba.games, SnagChat and KOBAbot from the moment you sign up."
               : "Sign in with the handle and password you registered."}
           </p>
 

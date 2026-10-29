@@ -12,7 +12,7 @@ export const API_SCOPES = [
   {
     key: "connections:read",
     label: "Read connections",
-    description: "The Bleek, Koba.games and SnagChat chips linked to the account.",
+    description: "The Bleek, Koba.games, SnagChat and KOBAbot chips linked to the account.",
   },
   {
     key: "wallet:read",

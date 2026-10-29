@@ -5,14 +5,15 @@ import { currentAccount } from "@/lib/session";
 import { astroConfigured } from "@astro/core/db";
 
 export const metadata: Metadata = {
-  title: "ASTRO — one account for Bleek, Koba.games and SnagChat",
-  description: "Sign up once. Chat in Bleek, play in Koba.games, post in SnagChat — one handle, one wallet.",
+  title: "ASTRO — one account for Bleek, Koba.games, SnagChat and KOBAbot",
+  description: "Sign up once. Chat in Bleek, play in Koba.games, post in SnagChat, run KOBAbot — one handle, one wallet.",
 };
 
 const PRODUCTS = [
   { name: "Bleek", role: "Chat, voice & cosmetics", badge: "BK" },
   { name: "Koba.games", role: "Play & publish games", badge: "KG" },
   { name: "SnagChat", role: "Mobile media feed", badge: "SC" },
+  { name: "KOBAbot", role: "Discord bot for your servers", badge: "KB" },
 ] as const;
 
 export default async function LandingPage({
@@ -65,7 +66,7 @@ export default async function LandingPage({
         <div>
           <p className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[11px] font-bold uppercase tracking-[0.2em] text-[#64748B]">
             <span className="h-1.5 w-1.5 rounded-full bg-[#06B6D4]" aria-hidden />
-            One identity · three worlds
+            One identity · four worlds
           </p>
 
           <h1 className="mt-5 max-w-xl text-[40px] font-bold leading-[1.05] tracking-tight text-[#F8FAFC] sm:text-[56px]">
@@ -73,11 +74,12 @@ export default async function LandingPage({
           </h1>
 
           <p className="mt-5 max-w-xl text-[15px] leading-7 text-[#94A3B8]">
-            Bleek for chat and voice rooms. Koba.games for the games you build. SnagChat for the feed. A single ASTRO
-            handle signs you in everywhere, carries one coin balance, and keeps your profile chips in sync.
+            Bleek for chat and voice rooms. Koba.games for the games you build. SnagChat for the feed. KOBAbot for the
+            Discord servers you run. A single ASTRO handle signs you in everywhere, carries one coin balance, and keeps
+            your profile chips in sync.
           </p>
 
-          <div className="mt-8 grid gap-2.5 sm:grid-cols-3">
+          <div className="mt-8 grid gap-2.5 sm:grid-cols-2 lg:grid-cols-4">
             {PRODUCTS.map((product) => (
               <div
                 key={product.name}
@@ -97,7 +99,7 @@ export default async function LandingPage({
           <dl className="mt-8 grid max-w-lg grid-cols-3 gap-4 border-t border-white/[0.06] pt-6">
             {[
               { value: "1", label: "shared wallet" },
-              { value: "3", label: "products" },
+              { value: "4", label: "products" },
               { value: "0", label: "re-signups" },
             ].map((stat) => (
               <div key={stat.label}>
@@ -122,7 +124,7 @@ export default async function LandingPage({
             },
             {
               title: "Chips that travel",
-              body: "Link your Bleek, Koba.games and SnagChat handles once. Every profile row renders from the same ASTRO record.",
+              body: "Link your Bleek, Koba.games, SnagChat and KOBAbot handles once. Every profile row renders from the same ASTRO record.",
             },
             {
               title: "Sessions that hold",
@@ -139,7 +141,7 @@ export default async function LandingPage({
 
       <footer className="border-t border-white/[0.06]">
         <div className="mx-auto flex w-full max-w-6xl flex-col items-start justify-between gap-3 px-5 py-8 text-xs text-[#64748B] sm:flex-row sm:items-center">
-          <p>ASTRO is the account layer for Bleek, Koba.games and SnagChat.</p>
+          <p>ASTRO is the account layer for Bleek, Koba.games, SnagChat and KOBAbot.</p>
           <div className="flex items-center gap-4">
             <Link href="/astro" className="transition-colors hover:text-[#F8FAFC]">
               Profile preview

@@ -57,7 +57,7 @@ export default async function AstroProfilePage() {
           <h1 className="text-2xl font-bold text-white">No account on this database yet</h1>
           <p className="mt-2 max-w-lg text-sm leading-6 text-neutral-400">
             Create <span className="text-neutral-200">@{DEMO_HANDLE}</span> with a 250-coin wallet, then connect a handle
-            from Beek, Koba.games or SnagChat.
+            from Bleek, Koba.games, SnagChat or KOBAbot.
           </p>
           <form action={createDemoAccount} className="mt-6">
             <button
@@ -124,7 +124,7 @@ function Shell({ children }: { children: React.ReactNode }) {
           <img src="/astro-icon.png" alt="" width={40} height={40} className="h-10 w-10 object-contain" />
           <div>
             <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-neutral-500">ASTRO</p>
-            <p className="text-sm text-neutral-400">One account across Bleek, Koba.games and SnagChat</p>
+            <p className="text-sm text-neutral-400">One account across Bleek, Koba.games, SnagChat and KOBAbot</p>
           </div>
         </div>
         <div className="mt-8">{children}</div>

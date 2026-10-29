@@ -29,11 +29,11 @@ in production.
 
 ## ASTRO ecosystem layer
 
-ASTRO is the account layer shared by Bleek, Koba.games and SnagChat. It ships as three paste-ready pieces:
+ASTRO is the account layer shared by Bleek, Koba.games, SnagChat and KOBAbot. It ships as three paste-ready pieces:
 
 - `@astro/core` (github.com/smking89/Astro) — the account package Bleek installs. It owns one `User`, one
   `AccountWallet` (single coin balance for every product) and the `UserConnection` chips keyed by the `PlatformType`
-  enum (`BEEK`, `KOBA_GAMES`, `SNAGCHAT`). Wallets and connections cascade on user delete; lookups go through unique
+  enum (`BEEK`, `KOBA_GAMES`, `SNAGCHAT`, `KOBABOT`). Wallets and connections cascade on user delete; lookups go through unique
   `platform` + `handleNormalized`.
 - `@astro/core/links` — `generateASTROLink(platform, handle)` plus normalisation, formatting and a non-throwing
   `tryGenerateASTROLink`. Client-safe: it never imports the generated Prisma client.
@@ -54,7 +54,13 @@ ASTRO-4K7Q-9WTM-2XHB-8NDR-3FVC-6PZS
 It is stored once on `User.astroId`, never exposed to mutation endpoints, and any product can verify it offline with
 `verifyAstroId()` from `@astro/core/id`; edited, extended or invented values fail the signature without a database
 read. `GET /api/astro/ids/[astroId]` performs the full check here — signature first, then the stored row — and returns
-the handle behind it. Accounts created before the split receive one the first time ASTRO reads them. Set
+the handle behind it. Accounts created before the split receive one the first time ASTRO reads them.
+
+### KOBAbot
+
+KOBAbot is the Discord bot, and it signs people in with the same ASTRO account. A member links their Discord user ID
+as a `KOBABOT` connection (the chip deep-links to `https://discord.com/users/<id>`), and the bot resolves that ID to
+the ASTRO account, verifies the ASTROid signature, and only then acts on a command — a nickname alone is never enough. Set
 `ASTRO_ID_SECRET` in production so rotating `ASTRO_AUTH_SECRET` does not invalidate every ID.
 
 ### Data layer
