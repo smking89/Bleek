@@ -66,7 +66,7 @@ const ACCOUNTS: DemoAccount[] = [
   {
     handle: "business",
     displayName: "Koba Studio",
-    headline: "creator studio \u00b7 games & drops",
+    headline: "creator studio · games & drops",
     bio: "Sells cosmetics through creator storefronts and pays out 90% to the artists we sign.",
     accentColor: "#f0b232",
     coins: 4800,
@@ -179,16 +179,16 @@ async function seedAccount(seed: DemoAccount) {
 }
 
 async function main() {
-  console.log("Seeding ASTRO demo accounts\u2026");
+  console.log("Seeding ASTRO demo accounts…");
   const rows = [];
   for (const seed of ACCOUNTS) rows.push(await seedAccount(seed));
 
   console.log("\n  handle      role         coins   astroid");
-  console.log("  \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500  \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500  \u2500\u2500\u2500\u2500\u2500\u2500  \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500");
+  console.log("  ──────────  ───────────  ──────  ───────────────────────────────────");
   for (const row of rows) {
     const role = row.staffRole ? row.staffTitle ?? row.staffRole : "member";
     console.log(
-      `  @${row.handle.padEnd(10)}  ${role.padEnd(11)}  ${String(row.wallet?.coins ?? 0).padStart(6)}  ${row.astroId ?? "\u2014"}`,
+      `  @${row.handle.padEnd(10)}  ${role.padEnd(11)}  ${String(row.wallet?.coins ?? 0).padStart(6)}  ${row.astroId ?? "—"}`,
     );
   }
   console.log(`\nPassword for every seeded account: ${PASSWORD}`);
