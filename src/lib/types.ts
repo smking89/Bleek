@@ -74,6 +74,10 @@ export interface User {
   verified?: boolean;
   /** Staff role in the ASTRO operations console, when the account has one. */
   staffRole?: StaffRole | null;
+  /** Sign-up region, present once the account registered through Bleek. */
+  region?: string | null;
+  /** PC, console or both, captured at sign-up. */
+  playPlatform?: string | null;
   status: Status;
   avatarFrom: string;
   avatarTo: string;

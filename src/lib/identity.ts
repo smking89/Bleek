@@ -7,6 +7,8 @@ export type AppIdentity = {
   displayName: string;
   verified: boolean;
   staffRole: StaffRole | null;
+  region: string | null;
+  playPlatform: string | null;
 };
 
 function withMe(snapshot: Snapshot, me: User): Snapshot {
@@ -27,6 +29,8 @@ export function withHandle(snapshot: Snapshot, identity: AppIdentity): Snapshot 
     handle: identity.handle,
     verified: identity.verified,
     staffRole: identity.staffRole,
+    region: identity.region,
+    playPlatform: identity.playPlatform,
   });
 }
 

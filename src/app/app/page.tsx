@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { DiscordApp } from "@/components/discord-app";
 import { currentAccount } from "@/lib/session";
+import { profileForUser } from "@/lib/astro/account-profile";
 import { astroConfigured } from "@astro/core/db";
 import { AstroDataError } from "@astro/core/errors";
 
@@ -26,6 +27,8 @@ export default async function AppPage() {
   // Suspended accounts keep their cookie until it expires, so the boundary checks status too.
   if (account.status === "SUSPENDED") redirect("/astro?suspended=1#access");
 
+  const profile = await profileForUser(account.id);
+
   return (
     <DiscordApp
       identity={{
@@ -33,6 +36,8 @@ export default async function AppPage() {
         displayName: account.displayName,
         verified: Boolean(account.handleVerifiedAt),
         staffRole: account.staffRole,
+        region: profile?.region ?? null,
+        playPlatform: profile?.platform ?? null,
       }}
     />
   );

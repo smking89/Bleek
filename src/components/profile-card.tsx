@@ -1,6 +1,7 @@
 "use client";
 
 import { ROLE_META } from "@/lib/admin/roles";
+import { playPlatformLabel, regionLabel } from "@/lib/astro/regions";
 import type { User } from "@/lib/types";
 import { Icon } from "./icons";
 import { Avatar } from "./cosmetics/avatar";
@@ -80,6 +81,14 @@ export function ProfileCard({
                   </span>
                 ) : null}
               </div>
+              {(user.region || user.playPlatform) && (
+                <div className="mt-1.5 flex flex-wrap items-center gap-1.5 text-[11px] text-[var(--text-muted)]">
+                  <span className="h-1 w-1 rounded-full bg-[var(--text-faint)]" aria-hidden />
+                  {user.region ? <span>{regionLabel(user.region)}</span> : null}
+                  {user.region && user.playPlatform ? <span aria-hidden>·</span> : null}
+                  {user.playPlatform ? <span>{playPlatformLabel(user.playPlatform)}</span> : null}
+                </div>
+              )}
               {user.customStatus && (
                 <div className="mt-1.5 flex items-start gap-1.5 text-[12px] leading-4 text-[var(--text)]">
                   <span
