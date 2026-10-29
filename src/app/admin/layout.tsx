@@ -84,32 +84,32 @@ function Gate({
   handle?: string;
 }) {
   return (
-    <main className="grid min-h-dvh place-items-center bg-black px-5 py-10 text-[#F8FAFC]">
-      <div className="w-full max-w-md rounded-2xl border border-white/[0.08] bg-[#0B0C0E] p-6">
+    <main className="grid min-h-dvh place-items-center bg-black px-5 py-10 text-[#FAFAFA]">
+      <div className="w-full max-w-md rounded-2xl border border-white/[0.08] bg-[#121214] p-6">
         <div className="flex items-center gap-2.5">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/astro-icon.png" alt="" width={24} height={24} className="h-6 w-6 object-contain" />
-          <span className="text-[10.5px] font-bold uppercase tracking-[0.2em] text-[#F8FAFC]">ASTRO</span>
-          <span className="text-[10.5px] uppercase tracking-[0.16em] text-[#6E7C93]">Operations</span>
+          <span className="text-[10.5px] font-bold uppercase tracking-[0.2em] text-[#FAFAFA]">ASTRO</span>
+          <span className="text-[10.5px] uppercase tracking-[0.16em] text-[#8A8A94]">Operations</span>
         </div>
 
-        <h1 className="mt-4 text-[19px] font-semibold text-[#F8FAFC]">
+        <h1 className="mt-4 text-[19px] font-semibold text-[#FAFAFA]">
           {handle ? title.replace("{handle}", handle) : title}
         </h1>
-        <p className="mt-2 text-[12.5px] leading-6 text-[#94A3B8]">{body}</p>
+        <p className="mt-2 text-[12.5px] leading-6 text-[#A1A1AA]">{body}</p>
 
         <div className="mt-4 flex flex-wrap gap-2">
           {action ? (
             <Link
               href={action.href}
-              className="rounded-lg bg-[#4F46E5] px-3.5 py-2 text-[12px] font-semibold text-white transition-colors hover:bg-[#4338CA]"
+              className="rounded-lg bg-[#7C3AED] px-3.5 py-2 text-[12px] font-semibold text-white transition-colors hover:bg-[#6D28D9]"
             >
               {action.label}
             </Link>
           ) : null}
         </div>
 
-        <code className="mt-5 block rounded-lg border border-white/[0.07] bg-[#111318] px-3 py-2 font-mono text-[10.5px] text-[#94A3B8]">
+        <code className="mt-5 block rounded-lg border border-white/[0.07] bg-[#1A1A1E] px-3 py-2 font-mono text-[10.5px] text-[#A1A1AA]">
           npm run staff:grant -- &lt;handle&gt; SUPER_ADMIN
         </code>
       </div>

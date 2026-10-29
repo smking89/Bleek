@@ -93,15 +93,15 @@ function ItemPreview({ item, me }: { item: ShopItem; me: User }) {
       </div>
       <div className="overflow-hidden rounded-md ring-1 ring-white/10">
         <div className="flex h-16">
-          <div className="flex w-9 items-center justify-center bg-[#1e1f22]">
+          <div className="flex w-9 items-center justify-center bg-[#1E1E22]">
             <span className="h-4 w-4 rounded-full" style={{ background: theme.accent }} />
           </div>
-          <div className="flex w-20 flex-col gap-1 bg-[#2b2d31] p-1.5">
+          <div className="flex w-20 flex-col gap-1 bg-[#232327] p-1.5">
             <span className="h-1.5 w-12 rounded-full bg-white/25" />
             <span className="h-1.5 w-9 rounded-full bg-white/15" />
             <span className="h-1.5 w-14 rounded-full" style={{ background: theme.accent }} />
           </div>
-          <div className="flex flex-1 flex-col justify-end gap-1 bg-[#313338] p-1.5">
+          <div className="flex flex-1 flex-col justify-end gap-1 bg-[#26262B] p-1.5">
             <span className="h-1.5 w-16 rounded-full bg-white/20" />
             <span className="h-1.5 w-10 rounded-full bg-white/10" />
             <span className="mt-1 h-3 w-full rounded" style={{ background: theme.accent, opacity: 0.35 }} />

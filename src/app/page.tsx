@@ -30,7 +30,7 @@ const VIEWS = [
 ] as const;
 
 const COSMETICS = [
-  { slot: "Decorations", detail: "Animated frames on your avatar", tone: "from-[#4F46E5]/35 via-[#4F46E5]/5 to-transparent" },
+  { slot: "Decorations", detail: "Animated frames on your avatar", tone: "from-[#7C3AED]/35 via-[#7C3AED]/5 to-transparent" },
   { slot: "Profile effects", detail: "Ambient motion on your card", tone: "from-[#06B6D4]/30 via-[#06B6D4]/5 to-transparent" },
   { slot: "Nameplates", detail: "Shimmering treatment for your name", tone: "from-[#A855F7]/30 via-[#A855F7]/5 to-transparent" },
   { slot: "App themes", detail: "Recolour the whole client", tone: "from-[#23A55A]/25 via-[#23A55A]/5 to-transparent" },
@@ -78,10 +78,10 @@ const FOOTER: { title: string; links: FooterLink[] }[] = [
 function SectionHead({ title, body }: { title: string; body?: string }) {
   return (
     <>
-      <h2 className="max-w-2xl text-[26px] font-semibold leading-[1.2] tracking-tight text-[#F8FAFC] sm:text-[32px]">
+      <h2 className="max-w-2xl text-[26px] font-semibold leading-[1.2] tracking-tight text-[#FAFAFA] sm:text-[32px]">
         {title}
       </h2>
-      {body ? <p className="mt-3 max-w-2xl text-[14.5px] leading-7 text-[#94A3B8]">{body}</p> : null}
+      {body ? <p className="mt-3 max-w-2xl text-[14.5px] leading-7 text-[#A1A1AA]">{body}</p> : null}
     </>
   );
 }
@@ -101,7 +101,7 @@ export default async function BleekLandingPage() {
   const openHref = handle ? "/app" : "/astro?next=/app#access";
 
   return (
-    <main className="min-h-dvh bg-black text-[#F8FAFC]">
+    <main className="min-h-dvh bg-black text-[#FAFAFA]">
       <header className="sticky top-0 z-40 border-b border-white/[0.06] bg-black/95 backdrop-blur">
         <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between gap-4 px-5">
           <Link href="/" className="flex items-center gap-2.5" aria-label="Bleek home">
@@ -112,11 +112,11 @@ export default async function BleekLandingPage() {
 
           <div className="flex items-center gap-2">
             {handle ? (
-              <span className="hidden text-[12px] text-[#64748B] sm:block">@{handle}</span>
+              <span className="hidden text-[12px] text-[#71717A] sm:block">@{handle}</span>
             ) : null}
             <Link
               href={openHref}
-              className="rounded-full bg-[#4F46E5] px-4 py-1.5 text-[13px] font-semibold text-white transition-colors hover:bg-[#4338CA]"
+              className="rounded-full bg-[#7C3AED] px-4 py-1.5 text-[13px] font-semibold text-white transition-colors hover:bg-[#6D28D9]"
             >
               Open Bleek
             </Link>
@@ -125,10 +125,10 @@ export default async function BleekLandingPage() {
       </header>
 
       <section className="mx-auto w-full max-w-4xl px-5 pb-20 pt-20 text-center sm:pt-28">
-        <h1 className="mx-auto max-w-3xl text-[38px] font-bold leading-[1.06] tracking-tight text-[#F8FAFC] sm:text-[58px]">
+        <h1 className="mx-auto max-w-3xl text-[38px] font-bold leading-[1.06] tracking-tight text-[#FAFAFA] sm:text-[58px]">
           Chat that actually feels like a space, not a boring text box.
         </h1>
-        <p className="mx-auto mt-6 max-w-2xl text-[15px] leading-7 text-[#94A3B8]">
+        <p className="mx-auto mt-6 max-w-2xl text-[15px] leading-7 text-[#A1A1AA]">
           Bleek gives your community real-time text channels, voice chat, and built-in shops where creators can sell
           their own custom items. Sign in with your ASTRO handle to keep your exact profile, wallet, and history across
           every app and game we plug into.
@@ -136,13 +136,13 @@ export default async function BleekLandingPage() {
         <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
           <Link
             href={openHref}
-            className="inline-flex h-12 w-full items-center justify-center rounded-lg bg-[#4F46E5] px-7 text-[15px] font-semibold text-white transition-colors hover:bg-[#4338CA] sm:w-auto"
+            className="inline-flex h-12 w-full items-center justify-center rounded-lg bg-[#7C3AED] px-7 text-[15px] font-semibold text-white transition-colors hover:bg-[#6D28D9] sm:w-auto"
           >
             Open Bleek
           </Link>
           <Link
             href="/astro?mode=login&next=/app#access"
-            className="inline-flex h-12 w-full items-center justify-center rounded-lg border border-white/15 bg-black px-7 text-[15px] font-semibold text-[#F8FAFC] transition-colors hover:border-white/35 sm:w-auto"
+            className="inline-flex h-12 w-full items-center justify-center rounded-lg border border-white/15 bg-black px-7 text-[15px] font-semibold text-[#FAFAFA] transition-colors hover:border-white/35 sm:w-auto"
           >
             Log in with ASTRO
           </Link>
@@ -157,9 +157,9 @@ export default async function BleekLandingPage() {
           />
           <div className="mt-8 grid gap-3 sm:grid-cols-3">
             {VIEWS.map((view) => (
-              <article key={view.name} className="rounded-xl border border-white/[0.08] bg-[#0B0C0E] p-5">
+              <article key={view.name} className="rounded-xl border border-white/[0.08] bg-[#121214] p-5">
                 <h3 className="text-[15px] font-semibold">{view.name}</h3>
-                <p className="mt-2 text-[13px] leading-6 text-[#94A3B8]">{view.body}</p>
+                <p className="mt-2 text-[13px] leading-6 text-[#A1A1AA]">{view.body}</p>
               </article>
             ))}
           </div>
@@ -175,15 +175,15 @@ export default async function BleekLandingPage() {
             />
           </div>
 
-          <div className="rounded-2xl border border-white/[0.08] bg-[#0B0C0E] p-4">
-            <div className="flex items-center gap-2 border-b border-white/[0.06] pb-3 text-[11px] font-bold uppercase tracking-[0.16em] text-[#64748B]">
+          <div className="rounded-2xl border border-white/[0.08] bg-[#121214] p-4">
+            <div className="flex items-center gap-2 border-b border-white/[0.06] pb-3 text-[11px] font-bold uppercase tracking-[0.16em] text-[#71717A]">
               <span className="h-1.5 w-1.5 rounded-full bg-[#06B6D4]" aria-hidden />
               Koba Studio
             </div>
 
             <div className="mt-3 rounded-lg bg-white/[0.03] p-3">
-              <div className="flex items-center gap-2 text-[13px] font-semibold text-[#F8FAFC]">
-                <Icon name="volume" size={15} className="text-[#94A3B8]" />
+              <div className="flex items-center gap-2 text-[13px] font-semibold text-[#FAFAFA]">
+                <Icon name="volume" size={15} className="text-[#A1A1AA]" />
                 voice-general
                 <span className="ml-auto rounded-full bg-[#06B6D4]/15 px-2 py-0.5 text-[10px] font-bold text-[#67E8F9]">
                   Live
@@ -201,7 +201,7 @@ export default async function BleekLandingPage() {
                       style={{
                         background:
                           index % 2 === 0
-                            ? "linear-gradient(145deg, #4F46E5, #06B6D4)"
+                            ? "linear-gradient(145deg, #7C3AED, #06B6D4)"
                             : "linear-gradient(145deg, #0EA5E9, #23A55A)",
                       }}
                     >
@@ -212,7 +212,7 @@ export default async function BleekLandingPage() {
                 ))}
               </ul>
 
-              <p className="mt-3 text-[11px] text-[#6E7C93]">The room stays open. Join and leave whenever.</p>
+              <p className="mt-3 text-[11px] text-[#8A8A94]">The room stays open. Join and leave whenever.</p>
             </div>
           </div>
         </div>
@@ -231,12 +231,12 @@ export default async function BleekLandingPage() {
             {COSMETICS.map((item) => (
               <div
                 key={item.slot}
-                className="overflow-hidden rounded-xl border border-white/[0.08] bg-[#0B0C0E]"
+                className="overflow-hidden rounded-xl border border-white/[0.08] bg-[#121214]"
               >
                 <div className={`h-20 bg-gradient-to-br ${item.tone}`} aria-hidden />
                 <div className="px-3.5 py-3">
                   <p className="text-[12.5px] font-semibold">{item.slot}</p>
-                  <p className="mt-0.5 text-[11px] leading-4 text-[#64748B]">{item.detail}</p>
+                  <p className="mt-0.5 text-[11px] leading-4 text-[#71717A]">{item.detail}</p>
                 </div>
               </div>
             ))}
@@ -276,16 +276,16 @@ export default async function BleekLandingPage() {
             ].map((stat) => (
               <div
                 key={stat.label}
-                className="rounded-xl border border-white/[0.08] bg-[#0B0C0E] px-5 py-4 text-center"
+                className="rounded-xl border border-white/[0.08] bg-[#121214] px-5 py-4 text-center"
               >
-                <p className="text-[34px] font-bold leading-none tabular-nums text-[#F8FAFC]">
+                <p className="text-[34px] font-bold leading-none tabular-nums text-[#FAFAFA]">
                   {stat.value}
-                  <span className="text-[18px] text-[#64748B]">{stat.unit}</span>
+                  <span className="text-[18px] text-[#71717A]">{stat.unit}</span>
                 </p>
-                <p className="mt-2 text-[10.5px] uppercase tracking-[0.14em] text-[#64748B]">{stat.label}</p>
+                <p className="mt-2 text-[10.5px] uppercase tracking-[0.14em] text-[#71717A]">{stat.label}</p>
               </div>
             ))}
-            <p className="col-span-2 text-right text-[11px] uppercase tracking-[0.14em] text-[#4F46E5]">
+            <p className="col-span-2 text-right text-[11px] uppercase tracking-[0.14em] text-[#7C3AED]">
               Creator split on every sale
             </p>
           </div>
@@ -318,13 +318,13 @@ export default async function BleekLandingPage() {
           <div className="flex flex-col items-center gap-3 sm:flex-row">
             <Link
               href={openHref}
-              className="inline-flex h-12 items-center justify-center rounded-lg bg-[#4F46E5] px-7 text-[15px] font-semibold text-white transition-colors hover:bg-[#4338CA]"
+              className="inline-flex h-12 items-center justify-center rounded-lg bg-[#7C3AED] px-7 text-[15px] font-semibold text-white transition-colors hover:bg-[#6D28D9]"
             >
               Open Bleek
             </Link>
             <Link
               href="/app"
-              className="text-[13px] font-medium text-[#94A3B8] underline-offset-4 transition-colors hover:text-[#F8FAFC] hover:underline"
+              className="text-[13px] font-medium text-[#A1A1AA] underline-offset-4 transition-colors hover:text-[#FAFAFA] hover:underline"
             >
               Check out the community directory
             </Link>
@@ -337,19 +337,19 @@ export default async function BleekLandingPage() {
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
             {FOOTER.map((column) => (
               <nav key={column.title} aria-label={column.title}>
-                <h2 className="text-[10.5px] font-bold uppercase tracking-[0.16em] text-[#64748B]">{column.title}</h2>
+                <h2 className="text-[10.5px] font-bold uppercase tracking-[0.16em] text-[#71717A]">{column.title}</h2>
                 <ul className="mt-3 space-y-2">
                   {column.links.map((link) => (
                     <li key={link.label}>
                       {link.href ? (
                         <Link
                           href={link.href}
-                          className="text-[12.5px] text-[#94A3B8] transition-colors hover:text-[#F8FAFC]"
+                          className="text-[12.5px] text-[#A1A1AA] transition-colors hover:text-[#FAFAFA]"
                         >
                           {link.label}
                         </Link>
                       ) : (
-                        <span className="inline-flex items-center gap-1.5 text-[12.5px] text-[#55606F]">
+                        <span className="inline-flex items-center gap-1.5 text-[12.5px] text-[#6B6B75]">
                           {link.label}
                           <span className="rounded border border-white/10 px-1 py-px text-[9px] font-semibold uppercase tracking-[0.08em]">
                             Soon
@@ -363,9 +363,9 @@ export default async function BleekLandingPage() {
             ))}
           </div>
 
-          <div className="mt-10 flex flex-col items-start justify-between gap-3 border-t border-white/[0.06] pt-6 text-[11.5px] text-[#64748B] sm:flex-row sm:items-center">
+          <div className="mt-10 flex flex-col items-start justify-between gap-3 border-t border-white/[0.06] pt-6 text-[11.5px] text-[#71717A] sm:flex-row sm:items-center">
             <p>Bleek runs on the ASTRO identity layer — one handle, one wallet, one profile across products.</p>
-            <Link href="/astro" className="transition-colors hover:text-[#F8FAFC]">
+            <Link href="/astro" className="transition-colors hover:text-[#FAFAFA]">
               ASTRO identity
             </Link>
           </div>

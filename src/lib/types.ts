@@ -194,6 +194,10 @@ export interface Storefront {
 
 export interface Server {
   id: string;
+  /** ASTRO account id of the owner. Managers compare this with the signed-in id. */
+  ownerId: string;
+  /** Shareable join code; every member of the server can pass it on. */
+  inviteCode: string;
   name: string;
   icon: string;
   color: string;
@@ -245,7 +249,8 @@ export type ServerEvent =
   | { type: "message:typing"; channelId: string; userId: string; at: number }
   | { type: "user:update"; user: User }
   | { type: "server:update"; server: Server }
-  | { type: "server:new"; server: Server }
+  | { type: "server:new"; server: Server; accountId?: string }
+  | { type: "server:delete"; serverId: string }
   | { type: "payout"; payout: Payout }
   | { type: "gift"; gift: Gift; itemName: string; fromName: string };
 

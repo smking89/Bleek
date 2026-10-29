@@ -8,7 +8,7 @@ import { PLAY_PLATFORMS, REGIONS } from "@/lib/astro/regions";
 type Mode = "register" | "login";
 
 const FIELD =
-  "w-full rounded-lg border border-white/10 bg-[#111318] px-3.5 py-2.5 text-sm text-[#F8FAFC] outline-none transition-colors placeholder:text-[#5B6675] focus-visible:border-[#4F46E5] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#4F46E5]";
+  "w-full rounded-lg border border-white/10 bg-[#1A1A1E] px-3.5 py-2.5 text-sm text-[#FAFAFA] outline-none transition-colors placeholder:text-[#8A8A94] focus-visible:border-[#7C3AED] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7C3AED]";
 
 const AUTH_ERRORS: Record<string, string> = {
   steam_cancelled: "Steam sign-in was cancelled before it finished.",
@@ -90,18 +90,18 @@ export function AuthCard({
   }
 
   return (
-    <div className="rounded-2xl border border-white/[0.08] bg-[#0B0C0E] p-6">
+    <div className="rounded-2xl border border-white/[0.08] bg-[#121214] p-6">
       {!available ? (
         <>
-          <h2 className="text-lg font-semibold text-[#F8FAFC]">Sign-in needs a database</h2>
-          <p className="mt-2 text-[13px] leading-6 text-[#94A3B8]">
-            Set <code className="text-[#CBD5E1]">DATABASE_URL</code> and{" "}
-            <code className="text-[#CBD5E1]">ASTRO_AUTH_SECRET</code>, then run{" "}
-            <code className="text-[#CBD5E1]">npm run db:deploy</code>. Accounts, wallets and sessions live in PostgreSQL.
+          <h2 className="text-lg font-semibold text-[#FAFAFA]">Sign-in needs a database</h2>
+          <p className="mt-2 text-[13px] leading-6 text-[#A1A1AA]">
+            Set <code className="text-[#D4D4D8]">DATABASE_URL</code> and{" "}
+            <code className="text-[#D4D4D8]">ASTRO_AUTH_SECRET</code>, then run{" "}
+            <code className="text-[#D4D4D8]">npm run db:deploy</code>. Accounts, wallets and sessions live in PostgreSQL.
           </p>
           <Link
             href="/astro/profile"
-            className="mt-5 inline-flex rounded-full border border-white/15 px-4 py-1.5 text-[13px] font-medium text-[#F8FAFC] transition-colors hover:border-white/30"
+            className="mt-5 inline-flex rounded-full border border-white/15 px-4 py-1.5 text-[13px] font-medium text-[#FAFAFA] transition-colors hover:border-white/30"
           >
             See the profile preview
           </Link>
@@ -109,8 +109,8 @@ export function AuthCard({
       ) : suspended ? (
         <>
           <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#FCA5A5]">Access paused</p>
-          <h2 className="mt-2 text-lg font-semibold text-[#F8FAFC]">This account is suspended</h2>
-          <p className="mt-2 text-[13px] leading-6 text-[#94A3B8]">
+          <h2 className="mt-2 text-lg font-semibold text-[#FAFAFA]">This account is suspended</h2>
+          <p className="mt-2 text-[13px] leading-6 text-[#A1A1AA]">
             Bleek, the operations console and developer keys are unavailable while the suspension is in place. Sign out
             to use a different ASTRO account, or contact support if you believe this is a mistake.
           </p>
@@ -127,35 +127,35 @@ export function AuthCard({
                 setSigningOut(false);
               }
             }}
-            className="mt-5 flex w-full items-center justify-center rounded-lg border border-white/15 px-4 py-2.5 text-sm font-medium text-[#CBD5E1] transition-colors hover:border-white/30 hover:text-white disabled:opacity-50"
+            className="mt-5 flex w-full items-center justify-center rounded-lg border border-white/15 px-4 py-2.5 text-sm font-medium text-[#D4D4D8] transition-colors hover:border-white/30 hover:text-white disabled:opacity-50"
           >
             {signingOut ? "Signing out…" : "Sign out"}
           </button>
         </>
       ) : signedInHandle ? (
         <>
-          <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#64748B]">Signed in</p>
-          <h2 className="mt-2 text-lg font-semibold text-[#F8FAFC]">@{signedInHandle}</h2>
-          <p className="mt-2 text-[13px] leading-6 text-[#94A3B8]">
+          <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#71717A]">Signed in</p>
+          <h2 className="mt-2 text-lg font-semibold text-[#FAFAFA]">@{signedInHandle}</h2>
+          <p className="mt-2 text-[13px] leading-6 text-[#A1A1AA]">
             Your ASTRO session is active. Jump back into the chat client, or review the profile chips your account is
             carrying.
           </p>
           <Link
             href="/app"
-            className="mt-5 flex w-full items-center justify-center rounded-lg bg-[#4F46E5] px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#4338CA]"
+            className="mt-5 flex w-full items-center justify-center rounded-lg bg-[#7C3AED] px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#6D28D9]"
           >
             Open Bleek
           </Link>
           <Link
             href="/astro/profile"
-            className="mt-2 flex w-full items-center justify-center rounded-lg border border-white/10 px-4 py-2.5 text-sm font-medium text-[#CBD5E1] transition-colors hover:border-white/25 hover:text-white"
+            className="mt-2 flex w-full items-center justify-center rounded-lg border border-white/10 px-4 py-2.5 text-sm font-medium text-[#D4D4D8] transition-colors hover:border-white/25 hover:text-white"
           >
             Manage profile
           </Link>
         </>
       ) : (
         <>
-          <div className="flex rounded-full border border-white/10 bg-[#111318] p-1" role="tablist" aria-label="ASTRO access">
+          <div className="flex rounded-full border border-white/10 bg-[#1A1A1E] p-1" role="tablist" aria-label="ASTRO access">
             {(
               [
                 { key: "register" as const, label: "Create account" },
@@ -172,7 +172,7 @@ export function AuthCard({
                   setError(null);
                 }}
                 className={`flex-1 rounded-full px-3 py-1.5 text-[13px] font-semibold transition-colors ${
-                  mode === tab.key ? "bg-[#4F46E5] text-white" : "text-[#94A3B8] hover:text-[#F8FAFC]"
+                  mode === tab.key ? "bg-[#7C3AED] text-white" : "text-[#A1A1AA] hover:text-[#FAFAFA]"
                 }`}
               >
                 {tab.label}
@@ -185,7 +185,7 @@ export function AuthCard({
               href="/api/astro/auth/steam/start"
               aria-disabled={!providers.steam}
               title={providers.steam ? "Sign in with Steam" : "Steam sign-in is unavailable"}
-              className="flex w-full items-center justify-center gap-2 rounded-lg border border-white/10 bg-[#111318] px-4 py-2.5 text-sm font-semibold text-[#F8FAFC] transition-colors hover:border-white/25"
+              className="flex w-full items-center justify-center gap-2 rounded-lg border border-white/10 bg-[#1A1A1E] px-4 py-2.5 text-sm font-semibold text-[#FAFAFA] transition-colors hover:border-white/25"
             >
               <span className="flex h-4 w-4 items-center justify-center rounded-full bg-[#1B2838] text-[9px] font-bold text-[#66C0F4]">
                 S
@@ -196,8 +196,8 @@ export function AuthCard({
               href="/api/astro/auth/xbox/start"
               aria-disabled={!providers.xbox}
               title={providers.xbox ? "Sign in with Xbox" : "Add XBOX_CLIENT_ID and XBOX_CLIENT_SECRET to enable Xbox sign-in"}
-              className={`flex w-full items-center justify-center gap-2 rounded-lg border border-white/10 bg-[#111318] px-4 py-2.5 text-sm font-semibold transition-colors ${
-                providers.xbox ? "text-[#F8FAFC] hover:border-white/25" : "cursor-not-allowed text-[#5B6675]"
+              className={`flex w-full items-center justify-center gap-2 rounded-lg border border-white/10 bg-[#1A1A1E] px-4 py-2.5 text-sm font-semibold transition-colors ${
+                providers.xbox ? "text-[#FAFAFA] hover:border-white/25" : "cursor-not-allowed text-[#8A8A94]"
               }`}
             >
               <span className="flex h-4 w-4 items-center justify-center rounded-full bg-[#107C10] text-[9px] font-bold text-white">
@@ -206,36 +206,36 @@ export function AuthCard({
               Continue with Xbox
             </a>
             {!providers.xbox ? (
-              <p className="text-center text-[11px] text-[#5B6675]">
+              <p className="text-center text-[11px] text-[#8A8A94]">
                 Xbox needs an Entra app registration; email and Steam work today.
               </p>
             ) : null}
           </div>
 
-          <div className="my-5 flex items-center gap-3 text-[11px] uppercase tracking-[0.16em] text-[#5B6675]">
+          <div className="my-5 flex items-center gap-3 text-[11px] uppercase tracking-[0.16em] text-[#8A8A94]">
             <span className="h-px flex-1 bg-white/10" />
             or use email
             <span className="h-px flex-1 bg-white/10" />
           </div>
 
-          <h2 className="text-lg font-semibold text-[#F8FAFC]">
+          <h2 className="text-lg font-semibold text-[#FAFAFA]">
             {mode === "register" ? "Claim your ASTRO handle" : "Welcome back"}
           </h2>
-          <p className="mt-1 text-[13px] leading-6 text-[#94A3B8]">
+          <p className="mt-1 text-[13px] leading-6 text-[#A1A1AA]">
             {mode === "register"
               ? "One handle, one wallet. It works in Bleek, Koba.games, SnagChat and KOBAbot from the moment you sign up."
               : "Sign in with your email address or your handle."}
           </p>
 
           {next === "/app" ? (
-            <p className="mt-4 rounded-lg border border-[#4F46E5]/35 bg-[#4F46E5]/10 px-3 py-2 text-[12px] leading-5 text-[#C7D2FE]">
+            <p className="mt-4 rounded-lg border border-[#7C3AED]/35 bg-[#7C3AED]/10 px-3 py-2 text-[12px] leading-5 text-[#DDD6FE]">
               Sign in to open Bleek with your ASTRO handle.
             </p>
           ) : null}
 
           <form onSubmit={submit} className="mt-5 space-y-3">
             <div>
-              <label htmlFor="auth-handle" className="mb-1.5 block text-[12px] font-medium text-[#CBD5E1]">
+              <label htmlFor="auth-handle" className="mb-1.5 block text-[12px] font-medium text-[#D4D4D8]">
                 {mode === "register" ? "Handle" : "Email or handle"}
               </label>
               <input
@@ -255,7 +255,7 @@ export function AuthCard({
             {mode === "register" ? (
               <>
                 <div>
-                  <label htmlFor="auth-name" className="mb-1.5 block text-[12px] font-medium text-[#CBD5E1]">
+                  <label htmlFor="auth-name" className="mb-1.5 block text-[12px] font-medium text-[#D4D4D8]">
                     Display name
                   </label>
                   <input
@@ -270,7 +270,7 @@ export function AuthCard({
                 </div>
 
                 <div>
-                  <label htmlFor="auth-email" className="mb-1.5 block text-[12px] font-medium text-[#CBD5E1]">
+                  <label htmlFor="auth-email" className="mb-1.5 block text-[12px] font-medium text-[#D4D4D8]">
                     Email
                   </label>
                   <input
@@ -288,7 +288,7 @@ export function AuthCard({
 
                 <div className="grid gap-3 sm:grid-cols-2">
                   <div>
-                    <label htmlFor="auth-region" className="mb-1.5 block text-[12px] font-medium text-[#CBD5E1]">
+                    <label htmlFor="auth-region" className="mb-1.5 block text-[12px] font-medium text-[#D4D4D8]">
                       Region
                     </label>
                     <select
@@ -299,7 +299,7 @@ export function AuthCard({
                       className={FIELD}
                     >
                       {REGIONS.map((option) => (
-                        <option key={option.value} value={option.value} className="bg-[#111318]">
+                        <option key={option.value} value={option.value} className="bg-[#1A1A1E]">
                           {option.label}
                         </option>
                       ))}
@@ -307,16 +307,16 @@ export function AuthCard({
                   </div>
 
                   <fieldset>
-                    <legend className="mb-1.5 block text-[12px] font-medium text-[#CBD5E1]">You play on</legend>
-                    <div className="flex rounded-lg border border-white/10 bg-[#111318] p-1" role="radiogroup" aria-label="Platform">
+                    <legend className="mb-1.5 block text-[12px] font-medium text-[#D4D4D8]">You play on</legend>
+                    <div className="flex rounded-lg border border-white/10 bg-[#1A1A1E] p-1" role="radiogroup" aria-label="Platform">
                       {PLAY_PLATFORMS.map((option) => (
                         <label
                           key={option.value}
                           title={option.hint}
                           className={`flex-1 cursor-pointer rounded-md px-2 py-1.5 text-center text-[12px] font-semibold transition-colors ${
                             platform === option.value
-                              ? "bg-[#4F46E5] text-white"
-                              : "text-[#94A3B8] hover:text-[#F8FAFC]"
+                              ? "bg-[#7C3AED] text-white"
+                              : "text-[#A1A1AA] hover:text-[#FAFAFA]"
                           }`}
                         >
                           <input
@@ -337,7 +337,7 @@ export function AuthCard({
             ) : null}
 
             <div>
-              <label htmlFor="auth-password" className="mb-1.5 block text-[12px] font-medium text-[#CBD5E1]">
+              <label htmlFor="auth-password" className="mb-1.5 block text-[12px] font-medium text-[#D4D4D8]">
                 Password
               </label>
               <input
@@ -356,7 +356,7 @@ export function AuthCard({
 
             {mode === "register" ? (
               <div>
-                <label htmlFor="auth-confirm" className="mb-1.5 block text-[12px] font-medium text-[#CBD5E1]">
+                <label htmlFor="auth-confirm" className="mb-1.5 block text-[12px] font-medium text-[#D4D4D8]">
                   Confirm password
                 </label>
                 <input
@@ -387,13 +387,13 @@ export function AuthCard({
             <button
               type="submit"
               disabled={busy}
-              className="w-full rounded-lg bg-[#4F46E5] px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#4338CA] disabled:cursor-not-allowed disabled:bg-[#4F46E5]/40 disabled:text-white/60"
+              className="w-full rounded-lg bg-[#7C3AED] px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#6D28D9] disabled:cursor-not-allowed disabled:bg-[#7C3AED]/40 disabled:text-white/60"
             >
               {busy ? "Working…" : mode === "register" ? "Create ASTRO account" : "Log in"}
             </button>
           </form>
 
-          <p className="mt-4 text-[11px] leading-5 text-[#64748B]">
+          <p className="mt-4 text-[11px] leading-5 text-[#71717A]">
             New accounts start with 250 coins in the shared wallet. Your email and region stay on this deployment and are
             never sent to a third party.
           </p>

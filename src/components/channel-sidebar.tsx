@@ -20,6 +20,7 @@ export function ChannelSidebar({
   onOpenShop,
   onOpenStorefront,
   onOpenServerConsole,
+  onOpenServerSettings,
   onOpenProfile,
   onClose,
 }: {
@@ -37,11 +38,15 @@ export function ChannelSidebar({
   onOpenShop: () => void;
   onOpenStorefront: () => void;
   onOpenServerConsole: () => void;
+  onOpenServerSettings: () => void;
   onOpenProfile: (rect: DOMRect) => void;
   onClose?: () => void;
 }) {
   const [query, setQuery] = useState("");
   const [openSections, setOpenSections] = useState({ text: true, voice: true });
+
+  // Only the owner creates and removes channels; members keep the read/send view.
+  const canManage = server.ownerId === me.id;
 
   const needle = query.trim().toLowerCase();
   const matches = (channel: Channel) => channel.name.toLowerCase().includes(needle);
@@ -95,15 +100,17 @@ export function ChannelSidebar({
         />
         <span className="truncate">{label}</span>
       </button>
-      <button
-        type="button"
-        onClick={onCreateChannel}
-        title={`Create a ${key} channel`}
-        aria-label={`Create a ${key} channel`}
-        className="flex h-6 w-6 shrink-0 items-center justify-center rounded text-[15px] leading-none text-[var(--text-muted)] transition hover:bg-[var(--bg-hover)] hover:text-[var(--text)]"
-      >
-        +
-      </button>
+      {canManage ? (
+        <button
+          type="button"
+          onClick={onCreateChannel}
+          title={`Create a ${key} channel`}
+          aria-label={`Create a ${key} channel`}
+          className="flex h-6 w-6 shrink-0 items-center justify-center rounded text-[15px] leading-none text-[var(--text-muted)] transition hover:bg-[var(--bg-hover)] hover:text-[var(--text)]"
+        >
+          +
+        </button>
+      ) : null}
     </div>
   );
 
@@ -122,13 +129,24 @@ export function ChannelSidebar({
         <div className="flex shrink-0 items-center gap-1">
           <button
             type="button"
-            onClick={onOpenServerConsole}
-            title="Server console — guard & roles"
-            aria-label="Server console — guard and roles"
+            onClick={onOpenServerSettings}
+            title="Server settings"
+            aria-label="Server settings"
             className="flex h-8 w-8 items-center justify-center rounded-full text-[var(--text-muted)] transition hover:bg-[var(--bg-hover)] hover:text-[var(--text)]"
           >
-            <Icon name="crown" size={17} />
+            <Icon name="settings" size={17} />
           </button>
+          {canManage ? (
+            <button
+              type="button"
+              onClick={onOpenServerConsole}
+              title="Server console — guard & roles"
+              aria-label="Server console — guard and roles"
+              className="flex h-8 w-8 items-center justify-center rounded-full text-[var(--text-muted)] transition hover:bg-[var(--bg-hover)] hover:text-[var(--text)]"
+            >
+              <Icon name="crown" size={17} />
+            </button>
+          ) : null}
           <button
             type="button"
             onClick={onOpenStorefront}

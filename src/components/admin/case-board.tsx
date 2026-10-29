@@ -160,8 +160,8 @@ export function CaseBoard({
     <div className="space-y-4">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="text-[22px] font-semibold tracking-tight text-[#F8FAFC]">Moderation</h1>
-          <p className="mt-1 text-[12.5px] text-[#94A3B8]">
+          <h1 className="text-[22px] font-semibold tracking-tight text-[#FAFAFA]">Moderation</h1>
+          <p className="mt-1 text-[12.5px] text-[#A1A1AA]">
             Triage reports, claim work, leave an internal trail and close with a resolution.
           </p>
         </div>
@@ -187,7 +187,7 @@ export function CaseBoard({
         <Panel>
           <PanelHeader title="Open a case" hint="The subject must already be an ASTRO account." />
           <form onSubmit={createCase} className="grid gap-3 px-4 py-4 sm:grid-cols-2">
-            <label className="text-[11px] font-medium text-[#CBD5E1]">
+            <label className="text-[11px] font-medium text-[#D4D4D8]">
               Subject handle
               <input
                 required
@@ -197,7 +197,7 @@ export function CaseBoard({
                 className={`${INPUT} mt-1`}
               />
             </label>
-            <label className="text-[11px] font-medium text-[#CBD5E1]">
+            <label className="text-[11px] font-medium text-[#D4D4D8]">
               Priority
               <select
                 value={form.priority}
@@ -211,7 +211,7 @@ export function CaseBoard({
                 ))}
               </select>
             </label>
-            <label className="text-[11px] font-medium text-[#CBD5E1] sm:col-span-2">
+            <label className="text-[11px] font-medium text-[#D4D4D8] sm:col-span-2">
               Reason
               <input
                 required
@@ -221,7 +221,7 @@ export function CaseBoard({
                 className={`${INPUT} mt-1`}
               />
             </label>
-            <label className="text-[11px] font-medium text-[#CBD5E1]">
+            <label className="text-[11px] font-medium text-[#D4D4D8]">
               Channel
               <input
                 value={form.channel}
@@ -230,7 +230,7 @@ export function CaseBoard({
                 className={`${INPUT} mt-1`}
               />
             </label>
-            <label className="text-[11px] font-medium text-[#CBD5E1]">
+            <label className="text-[11px] font-medium text-[#D4D4D8]">
               Detail
               <input
                 value={form.detail}
@@ -249,7 +249,7 @@ export function CaseBoard({
       ) : null}
 
       <div className="flex flex-wrap items-center gap-2">
-        <div role="group" aria-label="Filter by status" className="flex rounded-full border border-white/10 bg-[#0B0C0E] p-0.5">
+        <div role="group" aria-label="Filter by status" className="flex rounded-full border border-white/10 bg-[#121214] p-0.5">
           {STATUS_TABS.map((entry) => (
             <button
               key={entry.key}
@@ -257,7 +257,7 @@ export function CaseBoard({
               aria-pressed={tab === entry.key}
               onClick={() => setTab(entry.key)}
               className={`rounded-full px-3 py-1 text-[11px] font-semibold transition-colors ${
-                tab === entry.key ? "bg-[#4F46E5] text-white" : "text-[#94A3B8] hover:text-[#F8FAFC]"
+                tab === entry.key ? "bg-[#7C3AED] text-white" : "text-[#A1A1AA] hover:text-[#FAFAFA]"
               }`}
             >
               {entry.label}
@@ -293,7 +293,7 @@ export function CaseBoard({
           ))}
         </select>
 
-        <span className="ml-auto text-[11px] tabular-nums text-[#6E7C93]">
+        <span className="ml-auto text-[11px] tabular-nums text-[#8A8A94]">
           {filtered.length} of {cases.length}
         </span>
       </div>
@@ -315,21 +315,21 @@ export function CaseBoard({
                       aria-current={active ? "true" : undefined}
                       className={`flex w-full flex-col gap-1 border-l-2 px-3.5 py-2.5 text-left transition-colors ${
                         active
-                          ? "border-[#4F46E5] bg-[#4F46E5]/10"
+                          ? "border-[#7C3AED] bg-[#7C3AED]/10"
                           : "border-transparent hover:bg-white/[0.03]"
                       }`}
                     >
                       <span className="flex items-center gap-1.5">
-                        <span className="font-mono text-[10.5px] text-[#6E7C93]">{item.reference}</span>
+                        <span className="font-mono text-[10.5px] text-[#8A8A94]">{item.reference}</span>
                         <CasePriorityTag priority={item.priority} />
                         <span className="ml-auto">
                           <CaseStatusTag status={item.status} />
                         </span>
                       </span>
-                      <span className="truncate text-[12.5px] font-medium text-[#F8FAFC]">
+                      <span className="truncate text-[12.5px] font-medium text-[#FAFAFA]">
                         @{item.subjectHandle} · {item.reason}
                       </span>
-                      <span className="text-[10.5px] text-[#6E7C93]">
+                      <span className="text-[10.5px] text-[#8A8A94]">
                         {item.assignee ? `@${item.assignee.handle}` : "Unassigned"} · {formatWhen(item.createdAt)} ·{" "}
                         {item.notes.length} note{item.notes.length === 1 ? "" : "s"}
                       </span>
@@ -348,21 +348,21 @@ export function CaseBoard({
             <>
               <div className="border-b border-white/[0.06] px-4 py-3">
                 <div className="flex flex-wrap items-center gap-2">
-                  <span className="font-mono text-[11px] text-[#6E7C93]">{selected.reference}</span>
+                  <span className="font-mono text-[11px] text-[#8A8A94]">{selected.reference}</span>
                   <CaseStatusTag status={selected.status} />
                   <CasePriorityTag priority={selected.priority} />
-                  <span className="ml-auto text-[10.5px] text-[#6E7C93]">{formatWhen(selected.createdAt)}</span>
+                  <span className="ml-auto text-[10.5px] text-[#8A8A94]">{formatWhen(selected.createdAt)}</span>
                 </div>
-                <h2 className="mt-1.5 text-[16px] font-semibold text-[#F8FAFC]">{selected.reason}</h2>
-                <p className="mt-1 text-[12px] text-[#94A3B8]">
-                  <Link href={`/admin/users?q=${selected.subjectHandle}`} className="text-[#A5B4FC] hover:underline">
+                <h2 className="mt-1.5 text-[16px] font-semibold text-[#FAFAFA]">{selected.reason}</h2>
+                <p className="mt-1 text-[12px] text-[#A1A1AA]">
+                  <Link href={`/admin/users?q=${selected.subjectHandle}`} className="text-[#C4B5FD] hover:underline">
                     @{selected.subjectHandle}
                   </Link>
                   {selected.channel ? ` · ${selected.channel}` : ""} · reported by @{selected.reporterHandle ?? "staff"}
                   {selected.assignee ? ` · with @${selected.assignee.handle}` : " · unassigned"}
                 </p>
                 {selected.detail ? (
-                  <p className="mt-2 rounded-lg border border-white/[0.07] bg-[#111318] px-3 py-2 text-[12px] leading-5 text-[#CBD5E1]">
+                  <p className="mt-2 rounded-lg border border-white/[0.07] bg-[#1A1A1E] px-3 py-2 text-[12px] leading-5 text-[#D4D4D8]">
                     {selected.detail}
                   </p>
                 ) : null}
@@ -394,8 +394,8 @@ export function CaseBoard({
                         onClick={() => void act(selected.id, { action: "priority", priority: entry }, `Priority set to ${entry}.`)}
                         className={`rounded-lg border px-2.5 py-1.5 text-[11px] font-semibold transition-colors ${
                           selected.priority === entry
-                            ? "border-[#4F46E5]/60 bg-[#4F46E5]/15 text-[#C7D2FE]"
-                            : "border-white/12 text-[#94A3B8] hover:border-white/25 hover:text-white"
+                            ? "border-[#7C3AED]/60 bg-[#7C3AED]/15 text-[#DDD6FE]"
+                            : "border-white/12 text-[#A1A1AA] hover:border-white/25 hover:text-white"
                         }`}
                       >
                         {entry}
@@ -474,13 +474,13 @@ export function CaseBoard({
                   <div>
                     <Eyebrow>Case trail</Eyebrow>
                     {selected.notes.length === 0 ? (
-                      <p className="mt-1.5 text-[12px] text-[#6E7C93]">No notes yet.</p>
+                      <p className="mt-1.5 text-[12px] text-[#8A8A94]">No notes yet.</p>
                     ) : (
                       <ol className="mt-1.5 space-y-2">
                         {selected.notes.map((entry) => (
                           <li key={entry.id} className="border-l-2 border-white/10 pl-2.5">
-                            <p className="text-[12px] leading-5 text-[#E2E8F0]">{entry.body}</p>
-                            <p className="text-[10.5px] text-[#6E7C93]">
+                            <p className="text-[12px] leading-5 text-[#E4E4E7]">{entry.body}</p>
+                            <p className="text-[10.5px] text-[#8A8A94]">
                               @{entry.authorHandle} · {formatWhen(entry.createdAt)}
                             </p>
                           </li>
@@ -507,7 +507,7 @@ export function CaseBoard({
                   </div>
                 </div>
               ) : (
-                <p className="px-4 py-4 text-[12px] text-[#6E7C93]">
+                <p className="px-4 py-4 text-[12px] text-[#8A8A94]">
                   <span className={`inline-flex rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.1em] ${CASE_STATUS_META[selected.status].tone}`}>
                     Read only
                   </span>{" "}
@@ -519,7 +519,7 @@ export function CaseBoard({
                 <Link href={`/admin/users?q=${selected.subjectHandle}`} className={BUTTON_GHOST}>
                   Open @{selected.subjectHandle}
                 </Link>
-                <span className="text-[10.5px] leading-5 text-[#6E7C93]">
+                <span className="text-[10.5px] leading-5 text-[#8A8A94]">
                   Every action here is written to the staff audit log.
                 </span>
               </div>

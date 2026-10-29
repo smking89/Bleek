@@ -68,8 +68,8 @@ export function DeveloperTable({ apps, role }: { apps: AdminAppRow[]; role: Staf
   return (
     <div className="space-y-4">
       <div>
-        <h1 className="text-[22px] font-semibold tracking-tight text-[#F8FAFC]">Developer apps</h1>
-        <p className="mt-1 text-[12.5px] text-[#94A3B8]">
+        <h1 className="text-[22px] font-semibold tracking-tight text-[#FAFAFA]">Developer apps</h1>
+        <p className="mt-1 text-[12.5px] text-[#A1A1AA]">
           Every key issued against the ASTRO API. Revoking is instant and keeps the account and its data.
         </p>
       </div>
@@ -80,10 +80,10 @@ export function DeveloperTable({ apps, role }: { apps: AdminAppRow[]; role: Staf
           { label: "Requests", value: totalRequests.toLocaleString(), hint: "all time" },
           { label: "Error rate", value: `${errorRate.toFixed(1)}%`, hint: `${totalErrors.toLocaleString()} failed calls` },
         ].map((card) => (
-          <div key={card.label} className="rounded-xl border border-white/[0.08] bg-[#0B0C0E] px-4 py-3">
-            <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#6E7C93]">{card.label}</p>
-            <p className="mt-1.5 text-[20px] font-semibold tabular-nums text-[#F8FAFC]">{card.value}</p>
-            <p className="mt-1 text-[11px] text-[#94A3B8]">{card.hint}</p>
+          <div key={card.label} className="rounded-xl border border-white/[0.08] bg-[#121214] px-4 py-3">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#8A8A94]">{card.label}</p>
+            <p className="mt-1.5 text-[20px] font-semibold tabular-nums text-[#FAFAFA]">{card.value}</p>
+            <p className="mt-1 text-[11px] text-[#A1A1AA]">{card.hint}</p>
           </div>
         ))}
       </div>
@@ -106,7 +106,7 @@ export function DeveloperTable({ apps, role }: { apps: AdminAppRow[]; role: Staf
             placeholder="App, owner or client id"
             className={`${INPUT} sm:max-w-[240px]`}
           />
-          <div role="group" aria-label="Filter apps" className="flex rounded-full border border-white/10 bg-[#111318] p-0.5">
+          <div role="group" aria-label="Filter apps" className="flex rounded-full border border-white/10 bg-[#1A1A1E] p-0.5">
             {(["all", "ACTIVE", "REVOKED"] as const).map((option) => (
               <button
                 key={option}
@@ -114,14 +114,14 @@ export function DeveloperTable({ apps, role }: { apps: AdminAppRow[]; role: Staf
                 aria-pressed={filter === option}
                 onClick={() => setFilter(option)}
                 className={`rounded-full px-2.5 py-1 text-[11px] font-semibold capitalize transition-colors ${
-                  filter === option ? "bg-[#4F46E5] text-white" : "text-[#94A3B8] hover:text-[#F8FAFC]"
+                  filter === option ? "bg-[#7C3AED] text-white" : "text-[#A1A1AA] hover:text-[#FAFAFA]"
                 }`}
               >
                 {option.toLowerCase()}
               </button>
             ))}
           </div>
-          <span className="ml-auto text-[11px] tabular-nums text-[#6E7C93]">{visible.length} shown</span>
+          <span className="ml-auto text-[11px] tabular-nums text-[#8A8A94]">{visible.length} shown</span>
         </div>
 
         {visible.length === 0 ? (
@@ -133,7 +133,7 @@ export function DeveloperTable({ apps, role }: { apps: AdminAppRow[]; role: Staf
           <div className="overflow-x-auto">
             <table className="w-full min-w-[860px] border-collapse text-left">
               <thead>
-                <tr className="border-b border-white/[0.06] text-[10px] uppercase tracking-[0.12em] text-[#6E7C93]">
+                <tr className="border-b border-white/[0.06] text-[10px] uppercase tracking-[0.12em] text-[#8A8A94]">
                   <th scope="col" className="px-4 py-2 font-semibold">App</th>
                   <th scope="col" className="px-3 py-2 font-semibold">Owner</th>
                   <th scope="col" className="px-3 py-2 font-semibold">Key</th>
@@ -150,26 +150,26 @@ export function DeveloperTable({ apps, role }: { apps: AdminAppRow[]; role: Staf
                 {visible.map((app) => (
                   <tr key={app.id} className="border-b border-white/[0.04] last:border-0 hover:bg-white/[0.02]">
                     <td className="px-4 py-2.5">
-                      <span className="block text-[12.5px] font-medium text-[#F8FAFC]">{app.name}</span>
-                      <span className="font-mono text-[10px] text-[#6E7C93]">{app.clientId}</span>
+                      <span className="block text-[12.5px] font-medium text-[#FAFAFA]">{app.name}</span>
+                      <span className="font-mono text-[10px] text-[#8A8A94]">{app.clientId}</span>
                     </td>
                     <td className="px-3 py-2.5">
-                      <span className="block text-[12px] text-[#CBD5E1]">@{app.owner.handle}</span>
-                      <span className="text-[10.5px] text-[#6E7C93]">{app.environment.toLowerCase()}</span>
+                      <span className="block text-[12px] text-[#D4D4D8]">@{app.owner.handle}</span>
+                      <span className="text-[10.5px] text-[#8A8A94]">{app.environment.toLowerCase()}</span>
                     </td>
                     <td className="px-3 py-2.5">
-                      <span className="font-mono text-[10.5px] text-[#94A3B8]">
+                      <span className="font-mono text-[10.5px] text-[#A1A1AA]">
                         {maskSecret(app.keyPrefix, app.lastFour)}
                       </span>
                     </td>
-                    <td className="px-3 py-2.5 text-[11px] text-[#94A3B8]">{app.scopes.length}</td>
-                    <td className="px-3 py-2.5 text-right text-[12px] tabular-nums text-[#CBD5E1]">
+                    <td className="px-3 py-2.5 text-[11px] text-[#A1A1AA]">{app.scopes.length}</td>
+                    <td className="px-3 py-2.5 text-right text-[12px] tabular-nums text-[#D4D4D8]">
                       {app.requestCount.toLocaleString()}
                     </td>
                     <td className="px-3 py-2.5 text-right text-[12px] tabular-nums text-[#FCA5A5]">
                       {app.errorCount.toLocaleString()}
                     </td>
-                    <td className="px-3 py-2.5 text-[11px] text-[#94A3B8]">{formatDate(app.lastUsedAt)}</td>
+                    <td className="px-3 py-2.5 text-[11px] text-[#A1A1AA]">{formatDate(app.lastUsedAt)}</td>
                     <td className="px-4 py-2.5 text-right">
                       {canRevoke ? (
                         <button
@@ -181,7 +181,7 @@ export function DeveloperTable({ apps, role }: { apps: AdminAppRow[]; role: Staf
                           {busyId === app.id ? "Working…" : app.status === "ACTIVE" ? "Revoke" : "Restore"}
                         </button>
                       ) : (
-                        <span className="text-[10.5px] text-[#6E7C93]">
+                        <span className="text-[10.5px] text-[#8A8A94]">
                           {app.status === "ACTIVE" ? "Active" : "Revoked"}
                         </span>
                       )}
@@ -194,7 +194,7 @@ export function DeveloperTable({ apps, role }: { apps: AdminAppRow[]; role: Staf
         )}
       </Panel>
 
-      <p className="text-[11px] leading-5 text-[#6E7C93]">
+      <p className="text-[11px] leading-5 text-[#8A8A94]">
         Revoking rejects the key on the next call. The owner rotates or restores it from the ASTRO developer portal.
       </p>
     </div>

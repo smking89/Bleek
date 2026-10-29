@@ -7,36 +7,38 @@
 }
 
 :root {
-  --bg-rail: #050608;
-  --bg-sidebar: #0b0c0e;
-  --bg-chat: #000000;
-  --bg-panel: #0b0c0e;
-  --bg-input: #111318;
-  --bg-hover: #15181e;
-  --bg-active: #1b1f27;
-  --bg-modal: #0b0c0e;
-  --bg-elevated: #111318;
-  --bg-float: #0b0c0e;
-  --border-subtle: rgba(255, 255, 255, 0.06);
-  --border-strong: rgba(255, 255, 255, 0.12);
-  --text-strong: #f8fafc;
-  --text: #e2e8f0;
-  --text-body: #cbd5e1;
-  --text-muted: #94a3b8;
-  --text-faint: #6e7c93;
-  --link: #818cf8;
+  /* Bleek palette: raw charcoal surfaces, one electric violet accent, cyan only
+     for live signals. Surfaces are untinted so creator cosmetics stay neutral. */
+  --bg-rail: #0c0c0f;
+  --bg-sidebar: #121214;
+  --bg-chat: #09090b;
+  --bg-panel: #121214;
+  --bg-input: #1a1a1e;
+  --bg-hover: #1e1e22;
+  --bg-active: #26262b;
+  --bg-modal: #121214;
+  --bg-elevated: #1a1a1e;
+  --bg-float: #121214;
+  --border-subtle: rgba(255, 255, 255, 0.07);
+  --border-strong: rgba(255, 255, 255, 0.13);
+  --text-strong: #fafafa;
+  --text: #e4e4e7;
+  --text-body: #d4d4d8;
+  --text-muted: #a1a1aa;
+  --text-faint: #8a8a94;
+  --link: #a78bfa;
   --green: #23a55a;
   --yellow: #f0b232;
   --red: #f23f43;
-  --grey: #80848e;
+  --grey: #8a8a94;
   --cyan: #06b6d4;
-  --indigo: #4f46e5;
+  --indigo: #7c3aed;
 
-  --accent: #4f46e5;
-  --accent-2: #818cf8;
-  --accent-hover: color-mix(in srgb, var(--accent) 82%, #000);
-  --accent-soft: color-mix(in srgb, var(--accent) 20%, transparent);
-  --accent-softer: color-mix(in srgb, var(--accent) 12%, transparent);
+  --accent: #7c3aed;
+  --accent-2: #a78bfa;
+  --accent-hover: color-mix(in srgb, var(--accent) 84%, #000);
+  --accent-soft: color-mix(in srgb, var(--accent) 22%, transparent);
+  --accent-softer: color-mix(in srgb, var(--accent) 13%, transparent);
   --accent-contrast: #ffffff;
 
   --dur-fast: 120ms;
@@ -113,7 +115,7 @@ button {
 
 .scroll-thin {
   scrollbar-width: thin;
-  scrollbar-color: #1a1b1e transparent;
+  scrollbar-color: #232327 transparent;
 }
 .scroll-thin::-webkit-scrollbar {
   width: 8px;
@@ -123,7 +125,7 @@ button {
   background: transparent;
 }
 .scroll-thin::-webkit-scrollbar-thumb {
-  background: #1a1b1e;
+  background: #232327;
   border-radius: 8px;
   border: 1px solid var(--bg-chat);
 }
@@ -388,7 +390,7 @@ kbd,
 }
 
 .nameplate-holo-chrome {
-  background-image: linear-gradient(90deg, #67e8f9, #a5b4fc, #f0abfc, #fde68a, #67e8f9);
+  background-image: linear-gradient(90deg, #67e8f9, #c4b5fd, #f0abfc, #fde68a, #67e8f9);
   filter: drop-shadow(0 0 7px rgba(165, 180, 252, 0.5));
   animation-duration: 5.5s;
 }
@@ -414,7 +416,7 @@ kbd,
   text-decoration: underline;
 }
 .msg-content code {
-  background: #1e1f22;
+  background: #1e1e22;
   border-radius: 4px;
   padding: 0 4px;
   font-size: 0.85em;
@@ -430,14 +432,14 @@ kbd,
 /* No blocky fill: a mention is colour and weight inside the flat black message. */
 .msg-mention {
   background: transparent;
-  color: #a5b4fc;
+  color: #c4b5fd;
   border-radius: 0;
   padding: 0;
   font-weight: 600;
 }
 .msg-mention:hover {
   background: transparent;
-  color: #c7d2fe;
+  color: #ddd6fe;
   text-decoration: underline;
 }
 

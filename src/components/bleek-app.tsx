@@ -22,11 +22,13 @@ import { ChatView } from "./chat-view";
 import { GiftDialog } from "./gift-dialog";
 import { HomeFeed } from "./home-feed";
 import { Icon } from "./icons";
+import { JoinServerDialog } from "./join-server-dialog";
 import { MemberList } from "./member-list";
 import { ProfilePage } from "./profile-page";
 import { ProfilePopout } from "./profile-popout";
 import { ServerConsole } from "./server-console";
 import { ServerRail } from "./server-rail";
+import { ServerSettings } from "./server-settings";
 import { SettingsModal } from "./settings-modal";
 import { ShopModal } from "./shop-modal";
 import { StorefrontModal } from "./storefront-modal";
@@ -65,6 +67,8 @@ function applyEvent(previous: Snapshot | null, event: ServerEvent): Snapshot | n
         ],
       };
     case "server:new":
+      // A join event belongs to the account that joined, not to everyone else.
+      if (event.accountId && event.accountId !== previous.me.id) return previous;
       return previous.servers.some((server) => server.id === event.server.id)
         ? previous
         : {
@@ -72,6 +76,17 @@ function applyEvent(previous: Snapshot | null, event: ServerEvent): Snapshot | n
             servers: [...previous.servers, event.server],
             shop: [...previous.shop, ...(event.server.storefront?.items ?? [])],
           };
+    case "server:delete": {
+      const gone = new Set(
+        previous.servers.find((server) => server.id === event.serverId)?.channels.map((channel) => channel.id) ?? [],
+      );
+      return {
+        ...previous,
+        servers: previous.servers.filter((server) => server.id !== event.serverId),
+        messages: previous.messages.filter((message) => !gone.has(message.channelId)),
+        shop: previous.shop.filter((item) => item.serverId !== event.serverId),
+      };
+    }
     case "payout":
       return {
         ...previous,
@@ -150,6 +165,8 @@ export function BleekApp({ identity }: { identity: AppIdentity }) {
   const [giftItemId, setGiftItemId] = useState<string | null>(null);
   const [createServerOpen, setCreateServerOpen] = useState(false);
   const [createChannelOpen, setCreateChannelOpen] = useState(false);
+  const [joinServerOpen, setJoinServerOpen] = useState(false);
+  const [serverSettingsOpen, setServerSettingsOpen] = useState(false);
   const [popout, setPopout] = useState<{ userId: string; rect: DOMRect } | null>(null);
   const [voiceChannelId, setVoiceChannelId] = useState<string | null>(null);
   const [micMuted, setMicMuted] = useState(false);
@@ -521,6 +538,101 @@ export function BleekApp({ identity }: { identity: AppIdentity }) {
     [activeServer, mergeServer, toast],
   );
 
+  const removeServerLocally = useCallback((serverId: string) => {
+    setRawSnap((previous) => {
+      if (!previous) return previous;
+      const gone = new Set(
+        previous.servers.find((server) => server.id === serverId)?.channels.map((channel) => channel.id) ?? [],
+      );
+      return {
+        ...previous,
+        servers: previous.servers.filter((server) => server.id !== serverId),
+        messages: previous.messages.filter((message) => !gone.has(message.channelId)),
+        shop: previous.shop.filter((item) => item.serverId !== serverId),
+      };
+    });
+    setActiveServerId((current) => (current === serverId ? "" : current));
+  }, []);
+
+  const onJoinServer = useCallback(
+    async (code: string) => {
+      const { server } = await api.joinServer(code);
+      setRawSnap((previous) =>
+        previous && !previous.servers.some((entry) => entry.id === server.id)
+          ? {
+              ...previous,
+              servers: [...previous.servers, server],
+              shop: [...previous.shop, ...(server.storefront?.items ?? [])],
+            }
+          : previous,
+      );
+      setActiveServerId(server.id);
+      setView("server");
+      setMobileNavOpen(false);
+      toast(`Joined “${server.name}”.`);
+    },
+    [toast],
+  );
+
+  const onRenameServer = useCallback(
+    async (name: string) => {
+      if (!activeServer) return;
+      const { server } = await api.updateServer(activeServer.id, { name });
+      mergeServer(server);
+      toast(`Renamed to “${server.name}”.`);
+    },
+    [activeServer, mergeServer, toast],
+  );
+
+  const onRotateInvite = useCallback(async () => {
+    if (!activeServer) return;
+    const { server } = await api.updateServer(activeServer.id, { rotateInvite: true });
+    mergeServer(server);
+    toast("New invite code issued. The old one no longer works.");
+  }, [activeServer, mergeServer, toast]);
+
+  const onRenameChannel = useCallback(
+    async (channelId: string, name: string) => {
+      const { server } = await api.updateChannel(channelId, { name });
+      mergeServer(server);
+      toast(`Channel renamed to #${server.channels.find((channel) => channel.id === channelId)?.name ?? name}.`);
+    },
+    [mergeServer, toast],
+  );
+
+  const onDeleteChannel = useCallback(
+    async (channelId: string) => {
+      const { server } = await api.deleteChannel(channelId);
+      mergeServer(server);
+      setChannelByServer((previous) => {
+        if (previous[server.id] !== channelId) return previous;
+        const next = { ...previous };
+        delete next[server.id];
+        return next;
+      });
+      toast("Channel deleted.");
+    },
+    [mergeServer, toast],
+  );
+
+  const onDeleteServer = useCallback(async () => {
+    if (!activeServer) return;
+    const name = activeServer.name;
+    await api.deleteServer(activeServer.id);
+    removeServerLocally(activeServer.id);
+    setServerSettingsOpen(false);
+    toast(`“${name}” deleted.`);
+  }, [activeServer, removeServerLocally, toast]);
+
+  const onLeaveServer = useCallback(async () => {
+    if (!activeServer) return;
+    const name = activeServer.name;
+    await api.leaveServer(activeServer.id);
+    removeServerLocally(activeServer.id);
+    setServerSettingsOpen(false);
+    toast(`Left “${name}”.`);
+  }, [activeServer, removeServerLocally, toast]);
+
   const onSetLayout = useCallback(
     async (layout: ChannelLayout) => {
       if (!activeChannel) return;
@@ -699,6 +811,7 @@ export function BleekApp({ identity }: { identity: AppIdentity }) {
         }}
         onSelect={selectServer}
         onCreateServer={() => setCreateServerOpen(true)}
+        onJoinServer={() => setJoinServerOpen(true)}
         onOpenShop={() => setShopOpen(true)}
         onOpenSettings={() => setSettingsOpen(true)}
         onOpenProfile={() => {
@@ -740,6 +853,7 @@ export function BleekApp({ identity }: { identity: AppIdentity }) {
               onOpenShop={() => setShopOpen(true)}
               onOpenStorefront={() => setStorefrontServerId(activeServer.id)}
               onOpenServerConsole={() => setConsoleOpen(true)}
+              onOpenServerSettings={() => setServerSettingsOpen(true)}
               onOpenProfile={(rect) => setPopout({ userId: me.id, rect })}
               onClose={() => setMobileNavOpen(false)}
             />
@@ -887,6 +1001,27 @@ export function BleekApp({ identity }: { identity: AppIdentity }) {
         onClose={() => setCreateChannelOpen(false)}
         onSubmit={(name, type) => onCreateChannel({ name, type })}
       />
+
+      <JoinServerDialog
+        open={joinServerOpen}
+        onClose={() => setJoinServerOpen(false)}
+        onJoin={onJoinServer}
+      />
+
+      {serverSettingsOpen && (
+        <ServerSettings
+          open
+          server={activeServer}
+          me={me}
+          onClose={() => setServerSettingsOpen(false)}
+          onRename={onRenameServer}
+          onRotateInvite={onRotateInvite}
+          onRenameChannel={onRenameChannel}
+          onDeleteChannel={onDeleteChannel}
+          onDeleteServer={onDeleteServer}
+          onLeaveServer={onLeaveServer}
+        />
+      )}
 
       {giftItem && (
         <GiftDialog

@@ -128,8 +128,8 @@ export function UserTable({
   return (
     <div className="space-y-4">
       <div>
-        <h1 className="text-[22px] font-semibold tracking-tight text-[#F8FAFC]">Members</h1>
-        <p className="mt-1 text-[12.5px] text-[#94A3B8]">
+        <h1 className="text-[22px] font-semibold tracking-tight text-[#FAFAFA]">Members</h1>
+        <p className="mt-1 text-[12.5px] text-[#A1A1AA]">
           Every ASTRO account, its wallet, its chips and its staff role.
         </p>
       </div>
@@ -150,7 +150,7 @@ export function UserTable({
           <div
             role="group"
             aria-label="Filter members"
-            className="flex rounded-full border border-white/10 bg-[#111318] p-0.5"
+            className="flex rounded-full border border-white/10 bg-[#1A1A1E] p-0.5"
           >
             {FILTERS.map((option) => (
               <button
@@ -159,7 +159,7 @@ export function UserTable({
                 aria-pressed={filter === option.key}
                 onClick={() => setFilter(option.key)}
                 className={`rounded-full px-2.5 py-1 text-[11px] font-semibold transition-colors ${
-                  filter === option.key ? "bg-[#4F46E5] text-white" : "text-[#94A3B8] hover:text-[#F8FAFC]"
+                  filter === option.key ? "bg-[#7C3AED] text-white" : "text-[#A1A1AA] hover:text-[#FAFAFA]"
                 }`}
               >
                 {option.label}
@@ -167,7 +167,7 @@ export function UserTable({
             ))}
           </div>
 
-          <span className="ml-auto text-[11px] tabular-nums text-[#6E7C93]">
+          <span className="ml-auto text-[11px] tabular-nums text-[#8A8A94]">
             {visible.length} of {users.length}
           </span>
         </div>
@@ -193,7 +193,7 @@ export function UserTable({
           <div className="overflow-x-auto">
             <table className="w-full min-w-[760px] border-collapse text-left">
               <thead>
-                <tr className="border-b border-white/[0.06] text-[10px] uppercase tracking-[0.12em] text-[#6E7C93]">
+                <tr className="border-b border-white/[0.06] text-[10px] uppercase tracking-[0.12em] text-[#8A8A94]">
                   <th scope="col" className="px-4 py-2 font-semibold">Account</th>
                   <th scope="col" className="px-3 py-2 font-semibold">Role</th>
                   <th scope="col" className="px-3 py-2 font-semibold">Status</th>
@@ -211,19 +211,19 @@ export function UserTable({
                     key={user.id}
                     onClick={() => open(user)}
                     className={`cursor-pointer border-b border-white/[0.04] transition-colors last:border-0 hover:bg-white/[0.03] ${
-                      selectedHandle === user.handle ? "bg-[#4F46E5]/10" : ""
+                      selectedHandle === user.handle ? "bg-[#7C3AED]/10" : ""
                     }`}
                   >
                     <td className="px-4 py-2.5">
                       <button type="button" onClick={() => open(user)} className="flex items-center gap-2.5 text-left">
-                        <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white/[0.06] text-[10px] font-bold text-[#CBD5E1]">
+                        <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white/[0.06] text-[10px] font-bold text-[#D4D4D8]">
                           {user.displayName.slice(0, 2).toUpperCase()}
                         </span>
                         <span className="min-w-0">
-                          <span className="block truncate text-[12.5px] font-medium text-[#F8FAFC]">
+                          <span className="block truncate text-[12.5px] font-medium text-[#FAFAFA]">
                             {user.displayName}
                           </span>
-                          <span className="flex items-center gap-1 text-[10.5px] text-[#6E7C93]">
+                          <span className="flex items-center gap-1 text-[10.5px] text-[#8A8A94]">
                             @{user.handle}
                             {user.handleVerifiedAt ? <VerifiedBadge size={11} /> : null}
                           </span>
@@ -236,15 +236,15 @@ export function UserTable({
                     <td className="px-3 py-2.5">
                       <AccountStatusTag status={user.status} />
                     </td>
-                    <td className="px-3 py-2.5 text-right text-[12px] tabular-nums text-[#CBD5E1]">
+                    <td className="px-3 py-2.5 text-right text-[12px] tabular-nums text-[#D4D4D8]">
                       {user.coins.toLocaleString()}
                     </td>
-                    <td className="px-3 py-2.5 text-right text-[12px] tabular-nums text-[#94A3B8]">
+                    <td className="px-3 py-2.5 text-right text-[12px] tabular-nums text-[#A1A1AA]">
                       {user.connections}
                     </td>
-                    <td className="px-3 py-2.5 text-[11px] text-[#94A3B8]">{formatDate(user.createdAt)}</td>
+                    <td className="px-3 py-2.5 text-[11px] text-[#A1A1AA]">{formatDate(user.createdAt)}</td>
                     <td className="px-4 py-2.5 text-right">
-                      <span className="text-[11px] font-medium text-[#A5B4FC]">Manage →</span>
+                      <span className="text-[11px] font-medium text-[#C4B5FD]">Manage →</span>
                     </td>
                   </tr>
                 ))}
@@ -264,21 +264,21 @@ export function UserTable({
           <DialogPanel
             label={`Manage @${selected.handle}`}
             onClose={close}
-            className="h-full w-full max-w-[430px] overflow-y-auto border-l border-white/10 bg-[#0B0C0E]"
+            className="h-full w-full max-w-[430px] overflow-y-auto border-l border-white/10 bg-[#121214]"
           >
-            <div className="sticky top-0 z-10 border-b border-white/[0.07] bg-[#0B0C0E] px-4 py-3">
+            <div className="sticky top-0 z-10 border-b border-white/[0.07] bg-[#121214] px-4 py-3">
               <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0">
                   <Eyebrow>Account</Eyebrow>
-                  <h2 className="mt-1 truncate text-[16px] font-semibold text-[#F8FAFC]">
+                  <h2 className="mt-1 truncate text-[16px] font-semibold text-[#FAFAFA]">
                     {selected.displayName}
                   </h2>
-                  <p className="text-[12px] text-[#94A3B8]">@{selected.handle}</p>
+                  <p className="text-[12px] text-[#A1A1AA]">@{selected.handle}</p>
                 </div>
                 <button
                   type="button"
                   onClick={close}
-                  className="rounded-md p-1.5 text-[#94A3B8] transition-colors hover:bg-white/[0.06] hover:text-white"
+                  className="rounded-md p-1.5 text-[#A1A1AA] transition-colors hover:bg-white/[0.06] hover:text-white"
                   aria-label="Close account panel"
                 >
                   ✕
@@ -288,7 +288,7 @@ export function UserTable({
                 <RoleBadge role={selected.staffRole} />
                 <AccountStatusTag status={selected.status} />
                 {selected.staffTitle ? (
-                  <span className="text-[10.5px] text-[#6E7C93]">{selected.staffTitle}</span>
+                  <span className="text-[10.5px] text-[#8A8A94]">{selected.staffTitle}</span>
                 ) : null}
               </div>
             </div>
@@ -311,23 +311,23 @@ export function UserTable({
                   { label: "Earned", value: selected.lifetimeEarned.toLocaleString() },
                   { label: "Chips", value: selected.connections.toString() },
                 ].map((stat) => (
-                  <div key={stat.label} className="rounded-lg border border-white/[0.07] bg-[#111318] px-2.5 py-2">
-                    <dt className="text-[9.5px] uppercase tracking-[0.12em] text-[#6E7C93]">{stat.label}</dt>
-                    <dd className="mt-1 text-[14px] font-semibold tabular-nums text-[#F8FAFC]">{stat.value}</dd>
+                  <div key={stat.label} className="rounded-lg border border-white/[0.07] bg-[#1A1A1E] px-2.5 py-2">
+                    <dt className="text-[9.5px] uppercase tracking-[0.12em] text-[#8A8A94]">{stat.label}</dt>
+                    <dd className="mt-1 text-[14px] font-semibold tabular-nums text-[#FAFAFA]">{stat.value}</dd>
                   </div>
                 ))}
               </dl>
 
-              <p className="text-[11px] leading-5 text-[#6E7C93]">
+              <p className="text-[11px] leading-5 text-[#8A8A94]">
                 Joined {formatDate(selected.createdAt)} · Last seen {formatDate(selected.lastSeenAt)}
                 {selected.suspendedReason ? ` · Suspended: ${selected.suspendedReason}` : ""}
               </p>
 
-              <section className="rounded-lg border border-white/[0.07] bg-[#111318] p-3">
-                <h3 className="text-[12px] font-semibold text-[#F8FAFC]">Handle verification</h3>
+              <section className="rounded-lg border border-white/[0.07] bg-[#1A1A1E] p-3">
+                <h3 className="text-[12px] font-semibold text-[#FAFAFA]">Handle verification</h3>
                 <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
                   {selected.handleVerifiedAt ? <VerifiedBadge size={13} /> : <UnverifiedTag />}
-                  <span className="text-[11px] text-[#94A3B8]">
+                  <span className="text-[11px] text-[#A1A1AA]">
                     {selected.handleVerifiedAt
                       ? `Verified ${formatDate(selected.handleVerifiedAt)}`
                       : "Not verified. The cyan check is hidden in Bleek and on profile cards."}
@@ -349,14 +349,14 @@ export function UserTable({
                     {selected.handleVerifiedAt ? "Remove verification" : `Verify @${selected.handle}`}
                   </button>
                 ) : (
-                  <p className="mt-2 text-[10.5px] text-[#6E7C93]">Only admins can change verification.</p>
+                  <p className="mt-2 text-[10.5px] text-[#8A8A94]">Only admins can change verification.</p>
                 )}
               </section>
 
               {canEditRole ? (
-                <section className="rounded-lg border border-white/[0.07] bg-[#111318] p-3">
-                  <h3 className="text-[12px] font-semibold text-[#F8FAFC]">Staff role</h3>
-                  <p className="mt-0.5 text-[11px] leading-4 text-[#6E7C93]">
+                <section className="rounded-lg border border-white/[0.07] bg-[#1A1A1E] p-3">
+                  <h3 className="text-[12px] font-semibold text-[#FAFAFA]">Staff role</h3>
+                  <p className="mt-0.5 text-[11px] leading-4 text-[#8A8A94]">
                     A {ROLE_META[role].label} can assign{" "}
                     {grantable.length > 0 ? grantable.map((entry) => ROLE_META[entry].label).join(", ") : "no roles"}.
                   </p>
@@ -391,15 +391,15 @@ export function UserTable({
                     </button>
                   </div>
                   {selected.handle === meHandle ? (
-                    <p className="mt-2 text-[10.5px] text-[#6E7C93]">You cannot change your own role.</p>
+                    <p className="mt-2 text-[10.5px] text-[#8A8A94]">You cannot change your own role.</p>
                   ) : null}
                 </section>
               ) : null}
 
               {canMoveCoins ? (
-                <section className="rounded-lg border border-white/[0.07] bg-[#111318] p-3">
-                  <h3 className="text-[12px] font-semibold text-[#F8FAFC]">Adjust wallet</h3>
-                  <p className="mt-0.5 text-[11px] leading-4 text-[#6E7C93]">
+                <section className="rounded-lg border border-white/[0.07] bg-[#1A1A1E] p-3">
+                  <h3 className="text-[12px] font-semibold text-[#FAFAFA]">Adjust wallet</h3>
+                  <p className="mt-0.5 text-[11px] leading-4 text-[#8A8A94]">
                     Writes through the version-guarded ledger. Negative values debit.
                   </p>
                   <div className="mt-2 flex gap-2">
@@ -436,11 +436,11 @@ export function UserTable({
               ) : null}
 
               {canSuspend ? (
-                <section className="rounded-lg border border-white/[0.07] bg-[#111318] p-3">
-                  <h3 className="text-[12px] font-semibold text-[#F8FAFC]">
+                <section className="rounded-lg border border-white/[0.07] bg-[#1A1A1E] p-3">
+                  <h3 className="text-[12px] font-semibold text-[#FAFAFA]">
                     {selected.status === "SUSPENDED" ? "Restore access" : "Suspend account"}
                   </h3>
-                  <p className="mt-0.5 text-[11px] leading-4 text-[#6E7C93]">
+                  <p className="mt-0.5 text-[11px] leading-4 text-[#8A8A94]">
                     Suspended accounts cannot sign in. Sessions already issued are blocked from the console.
                   </p>
                   {selected.status === "SUSPENDED" ? (
@@ -482,7 +482,7 @@ export function UserTable({
                   File a case
                 </Link>
                 {roleRank(role) >= roleRank("ADMIN") ? null : (
-                  <span className="text-[10.5px] leading-4 text-[#6E7C93]">
+                  <span className="text-[10.5px] leading-4 text-[#8A8A94]">
                     Moderators can suspend and file cases; wallet and role changes need an admin.
                   </span>
                 )}

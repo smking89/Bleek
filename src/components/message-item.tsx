@@ -79,7 +79,7 @@ export function MessageItem({
     <div
       id={`msg-${message.id}`}
       className={`group relative border-l-2 px-4 transition-colors hover:bg-white/[0.02] ${
-        mentionsMe ? "border-[#4F46E5]" : "border-transparent"
+        mentionsMe ? "border-[#7C3AED]" : "border-transparent"
       } ${compact ? "py-0.5" : "mt-4 py-0.5"}`}
     >
       {reply && (

@@ -270,10 +270,11 @@ model ChatMember {
   joinedAt     DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
-  servers   ChatServer[]  @relation("ServerOwner")
-  messages  ChatMessage[]
-  giftsSent ChatGift[]    @relation("GiftsSent")
-  giftsGot  ChatGift[]    @relation("GiftsReceived")
+  servers    ChatServer[]     @relation("ServerOwner")
+  memberships ChatMembership[]
+  messages   ChatMessage[]
+  giftsSent  ChatGift[]       @relation("GiftsSent")
+  giftsGot   ChatGift[]       @relation("GiftsReceived")
 
   @@index([joinedAt])
   @@map("chat_members")
@@ -287,6 +288,8 @@ model ChatServer {
   name       String
   icon       String   @default("")
   color      String   @default("#4f46e5")
+  /// Eight characters, shared as the join code. Unique across every server.
+  inviteCode String   @unique
   position   Int      @default(0)
   roles      Json
   guard      Json
@@ -295,11 +298,28 @@ model ChatServer {
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
-  owner    ChatMember    @relation("ServerOwner", fields: [ownerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  owner    ChatMember       @relation("ServerOwner", fields: [ownerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   channels ChatChannel[]
+  members  ChatMembership[]
 
   @@index([ownerId, position])
   @@map("chat_servers")
+}
+
+/// Membership in a server the account does not own. Joining is invite-code only.
+model ChatMembership {
+  id       String   @id @default(cuid())
+  serverId String
+  memberId String
+  roleId   String   @default("member")
+  joinedAt DateTime @default(now())
+
+  server ChatServer @relation(fields: [serverId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  member ChatMember @relation(fields: [memberId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@unique([serverId, memberId])
+  @@index([memberId, joinedAt])
+  @@map("chat_memberships")
 }
 
 model ChatChannel {

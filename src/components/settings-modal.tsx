@@ -13,13 +13,13 @@ import { DialogPanel } from "./dialog-panel";
 import { Icon, type IconName } from "./icons";
 
 const BANNERS: [string, string][] = [
-  ["#4f46e5", "#a855f7"],
+  ["#7C3AED", "#a855f7"],
   ["#0c4a6e", "#0ea5e9"],
-  ["#0f172a", "#4338ca"],
+  ["#121214", "#6D28D9"],
   ["#831843", "#a78bfa"],
   ["#7c2d12", "#dc2626"],
   ["#064e3b", "#0d9488"],
-  ["#1e293b", "#64748b"],
+  ["#1e293b", "#71717A"],
   ["#9d174d", "#fb923c"],
 ];
 

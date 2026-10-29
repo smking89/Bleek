@@ -23,8 +23,8 @@ function actionTone(action: string): string {
   if (action.startsWith("wallet.") || action.startsWith("staff.role")) {
     return "border-[#06B6D4]/45 text-[#67E8F9]";
   }
-  if (action.startsWith("case.")) return "border-[#4F46E5]/55 text-[#A5B4FC]";
-  return "border-white/12 text-[#CBD5E1]";
+  if (action.startsWith("case.")) return "border-[#7C3AED]/55 text-[#C4B5FD]";
+  return "border-white/12 text-[#D4D4D8]";
 }
 
 export function AuditLog({ entries }: { entries: AuditRow[] }) {
@@ -51,8 +51,8 @@ export function AuditLog({ entries }: { entries: AuditRow[] }) {
   return (
     <div className="space-y-4">
       <div>
-        <h1 className="text-[22px] font-semibold tracking-tight text-[#F8FAFC]">Audit log</h1>
-        <p className="mt-1 text-[12.5px] text-[#94A3B8]">
+        <h1 className="text-[22px] font-semibold tracking-tight text-[#FAFAFA]">Audit log</h1>
+        <p className="mt-1 text-[12.5px] text-[#A1A1AA]">
           Append-only record of every privileged action: who did it, to whom, and from where.
         </p>
       </div>
@@ -63,9 +63,9 @@ export function AuditLog({ entries }: { entries: AuditRow[] }) {
           { label: "Actors", value: actors.toString() },
           { label: "Latest", value: entries[0] ? formatWhen(entries[0].createdAt) : "—" },
         ].map((card) => (
-          <div key={card.label} className="rounded-xl border border-white/[0.08] bg-[#0B0C0E] px-4 py-3">
-            <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#6E7C93]">{card.label}</p>
-            <p className="mt-1.5 text-[15px] font-semibold tabular-nums text-[#F8FAFC]">{card.value}</p>
+          <div key={card.label} className="rounded-xl border border-white/[0.08] bg-[#121214] px-4 py-3">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#8A8A94]">{card.label}</p>
+            <p className="mt-1.5 text-[15px] font-semibold tabular-nums text-[#FAFAFA]">{card.value}</p>
           </div>
         ))}
       </div>
@@ -97,7 +97,7 @@ export function AuditLog({ entries }: { entries: AuditRow[] }) {
             </option>
           ))}
         </select>
-        <span className="ml-auto text-[11px] tabular-nums text-[#6E7C93]">{visible.length} shown</span>
+        <span className="ml-auto text-[11px] tabular-nums text-[#8A8A94]">{visible.length} shown</span>
       </div>
 
       <Panel>
@@ -114,12 +114,12 @@ export function AuditLog({ entries }: { entries: AuditRow[] }) {
                   <span className={`rounded-full border px-2 py-0.5 font-mono text-[10px] ${actionTone(entry.action)}`}>
                     {entry.action}
                   </span>
-                  <span className="text-[12px] font-medium text-[#F8FAFC]">@{entry.actorHandle}</span>
+                  <span className="text-[12px] font-medium text-[#FAFAFA]">@{entry.actorHandle}</span>
                   <RoleBadge role={entry.actorRole} short />
-                  <span className="ml-auto text-[10.5px] tabular-nums text-[#6E7C93]">{formatWhen(entry.createdAt)}</span>
+                  <span className="ml-auto text-[10.5px] tabular-nums text-[#8A8A94]">{formatWhen(entry.createdAt)}</span>
                 </div>
-                <p className="mt-1.5 text-[12.5px] leading-5 text-[#CBD5E1]">{entry.summary}</p>
-                <p className="mt-0.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-[10.5px] text-[#6E7C93]">
+                <p className="mt-1.5 text-[12.5px] leading-5 text-[#D4D4D8]">{entry.summary}</p>
+                <p className="mt-0.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-[10.5px] text-[#8A8A94]">
                   <span>
                     target {entry.targetType}
                     {entry.targetLabel ? ` · ${entry.targetLabel}` : ""}
@@ -128,10 +128,10 @@ export function AuditLog({ entries }: { entries: AuditRow[] }) {
                 </p>
                 {entry.metadata && Object.keys(entry.metadata).length > 0 ? (
                   <details className="mt-1.5">
-                    <summary className="cursor-pointer text-[10.5px] text-[#6E7C93] hover:text-[#CBD5E1]">
+                    <summary className="cursor-pointer text-[10.5px] text-[#8A8A94] hover:text-[#D4D4D8]">
                       Metadata
                     </summary>
-                    <pre className="mt-1 overflow-x-auto rounded-lg border border-white/[0.07] bg-[#111318] p-2 font-mono text-[10.5px] leading-5 text-[#94A3B8]">
+                    <pre className="mt-1 overflow-x-auto rounded-lg border border-white/[0.07] bg-[#1A1A1E] p-2 font-mono text-[10.5px] leading-5 text-[#A1A1AA]">
                       {JSON.stringify(entry.metadata, null, 2)}
                     </pre>
                   </details>

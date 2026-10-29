@@ -1,5 +1,8 @@
 import { Prisma } from "@prisma/client";
 import { astroDb } from "@astro/core/db";
+import { adjustWallet, getAstroAccount } from "@astro/core/accounts";
+import { AstroDataError } from "@astro/core/errors";
+import { nameViolation } from "./names";
 import { SHOP } from "./shop";
 import { CHARACTER_KEYS } from "./types";
 import type {
@@ -120,6 +123,7 @@ type ServerRow = {
   name: string;
   icon: string;
   color: string;
+  inviteCode: string;
   roles: unknown;
   guard: unknown;
   flagged: unknown;
@@ -173,6 +177,8 @@ function toUser(row: MemberRow): User {
 function toServer(row: ServerRow): Server {
   return {
     id: row.id,
+    ownerId: row.ownerId,
+    inviteCode: row.inviteCode,
     name: row.name,
     icon: row.icon,
     color: row.color,
@@ -228,6 +234,49 @@ async function memberRow(accountId: string): Promise<MemberRow> {
   return row as unknown as MemberRow;
 }
 
+/** Mirrors the shared ASTRO wallet onto the chat row, which is only a cache. */
+async function syncWallet(member: MemberRow): Promise<MemberRow> {
+  let coins: number;
+  try {
+    const account = await getAstroAccount(member.handle);
+    coins = account.wallet?.coins ?? 0;
+  } catch {
+    return member;
+  }
+  if (coins === member.coins) return member;
+  const row = await db().chatMember.update({ where: { id: member.id }, data: { coins } });
+  return row as unknown as MemberRow;
+}
+
+/**
+ * Debits the shared wallet every ASTRO product reads, then mirrors the balance.
+ * The wallet's version guard makes concurrent purchases lose the race instead of
+ * overwriting each other.
+ */
+async function debitWallet(member: MemberRow, amount: number): Promise<{ coins: number }> {
+  if (amount <= 0) return { coins: member.coins };
+  try {
+    const wallet = await adjustWallet(member.handle, -amount);
+    return { coins: wallet.coins };
+  } catch (error) {
+    if (error instanceof AstroDataError) throw new ApiError(400, error.message);
+    throw error;
+  }
+}
+
+/** Credits a creator's share of a sale into the same shared wallet. */
+async function creditWallet(memberId: string, coins: number) {
+  if (coins <= 0) return;
+  const creator = await db().chatMember.findUnique({ where: { id: memberId } });
+  if (!creator) return;
+  try {
+    const wallet = await adjustWallet(creator.handle, coins);
+    await db().chatMember.update({ where: { id: memberId }, data: { coins: wallet.coins } });
+  } catch (error) {
+    if (!(error instanceof AstroDataError)) throw error;
+  }
+}
+
 async function ownedServer(accountId: string, serverId: string): Promise<ServerRow> {
   const row = await db().chatServer.findFirst({
     where: { id: serverId, ownerId: accountId },
@@ -239,7 +288,11 @@ async function ownedServer(accountId: string, serverId: string): Promise<ServerR
 
 async function channelWithServer(accountId: string, channelId: string) {
   const channel = await db().chatChannel.findFirst({
-    where: { id: channelId, server: { ownerId: accountId } },
+    where: {
+      id: channelId,
+      // Owners and joined members can both read and post in a channel.
+      server: { OR: [{ ownerId: accountId }, { members: { some: { memberId: accountId } } }] },
+    },
     include: { server: { include: { channels: { orderBy: { position: "asc" } } } } },
   });
   if (!channel) throw new ApiError(404, "Unknown channel");
@@ -290,24 +343,45 @@ function starterRoles(): ServerRole[] {
 const DEFAULT_GUARD: GuardConfig = { enabled: false, sensitivity: "balanced", rules: [] };
 
 async function createServerRow(ownerId: string, name: string, position: number) {
-  return db().chatServer.create({
-    data: {
-      ownerId,
-      name,
-      color: "#4f46e5",
-      position,
-      roles: starterRoles() as unknown as Prisma.InputJsonValue,
-      guard: DEFAULT_GUARD as unknown as Prisma.InputJsonValue,
-      flagged: [] as unknown as Prisma.InputJsonValue,
-      channels: {
-        create: [
-          { name: "general", type: "text", position: 0 },
-          { name: "Voice", type: "voice", position: 1 },
-        ],
-      },
-    },
-    include: { channels: { orderBy: { position: "asc" } } },
-  });
+  for (let attempt = 0; attempt < 5; attempt += 1) {
+    try {
+      return await db().chatServer.create({
+        data: {
+          ownerId,
+          name,
+          color: "#4f46e5",
+          inviteCode: newInviteCode(),
+          position,
+          roles: starterRoles() as unknown as Prisma.InputJsonValue,
+          guard: DEFAULT_GUARD as unknown as Prisma.InputJsonValue,
+          flagged: [] as unknown as Prisma.InputJsonValue,
+          channels: {
+            create: [
+              { name: "general", type: "text", position: 0 },
+              { name: "Voice", type: "voice", position: 1 },
+            ],
+          },
+        },
+        include: { channels: { orderBy: { position: "asc" } } },
+      });
+    } catch (error) {
+      // The only unique column the client supplies is the invite code.
+      if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002") continue;
+      throw error;
+    }
+  }
+  throw new ApiError(500, "Could not allocate an invite code. Try again.");
+}
+
+const INVITE_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+
+/** Eight characters, no look-alikes, so a code can be read out loud. */
+function newInviteCode(): string {
+  let code = "";
+  for (let index = 0; index < 8; index += 1) {
+    code += INVITE_ALPHABET[Math.floor(Math.random() * INVITE_ALPHABET.length)];
+  }
+  return code;
 }
 
 /**
@@ -335,6 +409,8 @@ export async function ensureMember(input: {
         verified: input.verified,
         region: input.region,
         playPlatform: input.playPlatform,
+        // The ASTRO wallet is authoritative, so every load mirrors it here.
+        coins: input.coins,
       },
     });
     return toUser(updated as unknown as MemberRow);
@@ -361,7 +437,10 @@ export async function ensureMember(input: {
 // ── Reads ────────────────────────────────────────────────────────────────
 
 export async function allItems(accountId: string): Promise<ShopItem[]> {
-  const servers = await db().chatServer.findMany({ where: { ownerId: accountId }, select: { storefront: true } });
+  const servers = await db().chatServer.findMany({
+    where: { OR: [{ ownerId: accountId }, { members: { some: { memberId: accountId } } }] },
+    select: { storefront: true },
+  });
   const minted = servers.flatMap((row) => (row.storefront as unknown as Storefront | null)?.items ?? []);
   return [...SHOP, ...minted];
 }
@@ -371,14 +450,28 @@ export async function findItem(accountId: string, itemId: string): Promise<ShopI
 }
 
 export async function snapshot(accountId: string): Promise<Snapshot> {
-  const member = await memberRow(accountId);
+  const member = await syncWallet(await memberRow(accountId));
   const servers = await db().chatServer.findMany({
-    where: { ownerId: accountId },
+    where: { OR: [{ ownerId: accountId }, { members: { some: { memberId: accountId } } }] },
     orderBy: { position: "asc" },
     include: { channels: { orderBy: { position: "asc" } } },
   });
+
+  const serverIds = servers.map((server) => server.id);
+  const memberships = await db().chatMembership.findMany({
+    where: { serverId: { in: serverIds } },
+    select: { memberId: true },
+  });
+  const peopleIds = [
+    ...new Set([accountId, ...servers.map((server) => server.ownerId), ...memberships.map((entry) => entry.memberId)]),
+  ];
+
+  const people = await db().chatMember.findMany({
+    where: { id: { in: peopleIds } },
+    orderBy: { joinedAt: "asc" },
+  });
   const messages = await db().chatMessage.findMany({
-    where: { channel: { server: { ownerId: accountId } } },
+    where: { channel: { serverId: { in: serverIds } } },
     orderBy: { createdAt: "asc" },
     take: 2000,
   });
@@ -388,14 +481,14 @@ export async function snapshot(accountId: string): Promise<Snapshot> {
     take: 50,
   });
   const payouts = await db().chatPayout.findMany({
-    where: { serverId: { in: servers.map((server) => server.id) } },
+    where: { serverId: { in: serverIds } },
     orderBy: { createdAt: "desc" },
     take: 50,
   });
 
   return {
     me: toUser(member),
-    users: [toUser(member)],
+    users: people.map((person) => toUser(person as unknown as MemberRow)),
     servers: servers.map((server) => toServer(server as unknown as ServerRow)),
     messages: messages.map((message) => toMessage(message as unknown as MessageRow)),
     shop: await allItems(accountId),
@@ -699,6 +792,8 @@ function channelSlug(input: string): string {
 export async function createServer(accountId: string, input: { name: string }) {
   const name = input.name.trim().slice(0, 48);
   if (!name) throw new ApiError(400, "Give the server a name");
+  const violation = nameViolation(name);
+  if (violation) throw new ApiError(400, violation);
 
   const count = await db().chatServer.count({ where: { ownerId: accountId } });
   if (count >= MAX_SERVERS) throw new ApiError(400, `A workspace holds ${MAX_SERVERS} servers`);
@@ -722,11 +817,123 @@ export async function createChannel(
   if (server.channels.some((channel) => channel.name.toLowerCase() === name.toLowerCase())) {
     throw new ApiError(409, "That channel already exists");
   }
+  const violation = nameViolation(name);
+  if (violation) throw new ApiError(400, violation);
 
   await db().chatChannel.create({
     data: { serverId, name, type: input.type === "voice" ? "voice" : "text", position: server.channels.length },
   });
   return { server: await persistServer(serverId) };
+}
+
+/** Joins a server with its invite code. The code is the only credential needed. */
+export async function joinServer(accountId: string, rawCode: string) {
+  await memberRow(accountId);
+
+  const code = rawCode
+    .trim()
+    .toUpperCase()
+    .replace(/[^A-Z0-9]/g, "");
+  if (code.length !== 8) throw new ApiError(400, "An invite code is eight characters.");
+
+  const server = await db().chatServer.findUnique({
+    where: { inviteCode: code },
+    include: { channels: { orderBy: { position: "asc" } } },
+  });
+  if (!server) throw new ApiError(404, "That invite code is not active.");
+  if (server.ownerId === accountId) throw new ApiError(400, "You own that server already.");
+
+  const existing = await db().chatMembership.findUnique({
+    where: { serverId_memberId: { serverId: server.id, memberId: accountId } },
+    select: { id: true },
+  });
+  if (existing) throw new ApiError(409, "You are already in that server.");
+
+  await db().chatMembership.create({ data: { serverId: server.id, memberId: accountId } });
+
+  const joined = toServer(server as unknown as ServerRow);
+  broadcast({ type: "server:new", server: joined, accountId });
+  return { server: joined };
+}
+
+/** Removes a membership. Owners cannot leave their own server. */
+export async function leaveServer(accountId: string, serverId: string) {
+  const server = await db().chatServer.findUnique({ where: { id: serverId }, select: { ownerId: true } });
+  if (!server) throw new ApiError(404, "Unknown server");
+  if (server.ownerId === accountId) {
+    throw new ApiError(400, "Owners cannot leave their own server. Delete it instead.");
+  }
+
+  const removed = await db().chatMembership.deleteMany({ where: { serverId, memberId: accountId } });
+  if (removed.count === 0) throw new ApiError(404, "You are not in that server.");
+  return { ok: true as const, serverId };
+}
+
+export async function renameServer(accountId: string, serverId: string, rawName: string) {
+  await ownedServer(accountId, serverId);
+  const name = rawName.trim().slice(0, 48);
+  if (!name) throw new ApiError(400, "Give the server a name");
+  const violation = nameViolation(name);
+  if (violation) throw new ApiError(400, violation);
+
+  await db().chatServer.update({ where: { id: serverId }, data: { name } });
+  return { server: await persistServer(serverId) };
+}
+
+/** Issues a fresh code and retires the old one immediately. */
+export async function rotateInvite(accountId: string, serverId: string) {
+  await ownedServer(accountId, serverId);
+
+  for (let attempt = 0; attempt < 5; attempt += 1) {
+    try {
+      await db().chatServer.update({ where: { id: serverId }, data: { inviteCode: newInviteCode() } });
+      return { server: await persistServer(serverId) };
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002") continue;
+      throw error;
+    }
+  }
+  throw new ApiError(500, "Could not allocate an invite code. Try again.");
+}
+
+/** Deletes the server and everything under it; the cascade handles channels. */
+export async function deleteServer(accountId: string, serverId: string) {
+  await ownedServer(accountId, serverId);
+  await db().chatServer.delete({ where: { id: serverId } });
+  broadcast({ type: "server:delete", serverId });
+  return { ok: true as const, serverId };
+}
+
+export async function renameChannel(accountId: string, channelId: string, rawName: string) {
+  const channel = await channelWithServer(accountId, channelId);
+  if (channel.server.ownerId !== accountId) throw new ApiError(403, "Only the owner can rename channels.");
+
+  const name = channelSlug(rawName);
+  const violation = nameViolation(name);
+  if (violation) throw new ApiError(400, violation);
+  if (channel.server.channels.some((entry) => entry.id !== channelId && entry.name.toLowerCase() === name)) {
+    throw new ApiError(409, "That channel already exists");
+  }
+
+  await db().chatChannel.update({ where: { id: channelId }, data: { name } });
+  return { server: await persistServer(channel.server.id) };
+}
+
+export async function setChannelTopic(accountId: string, channelId: string, rawTopic: string) {
+  const channel = await channelWithServer(accountId, channelId);
+  if (channel.server.ownerId !== accountId) throw new ApiError(403, "Only the owner can edit channel topics.");
+  const topic = rawTopic.trim().slice(0, 120);
+  await db().chatChannel.update({ where: { id: channelId }, data: { topic: topic || null } });
+  return { server: await persistServer(channel.server.id) };
+}
+
+export async function deleteChannel(accountId: string, channelId: string) {
+  const channel = await channelWithServer(accountId, channelId);
+  if (channel.server.ownerId !== accountId) throw new ApiError(403, "Only the owner can delete channels.");
+  if (channel.server.channels.length <= 1) throw new ApiError(400, "A server needs at least one channel.");
+
+  await db().chatChannel.delete({ where: { id: channelId } });
+  return { server: await persistServer(channel.server.id) };
 }
 
 // ── Role constructor ─────────────────────────────────────────────────────
@@ -771,6 +978,8 @@ export async function createRole(
   const roles = [...(server.roles as ServerRole[])];
   const name = (input.name ?? "New role").trim().slice(0, 32);
   if (!name) throw new ApiError(400, "Role name cannot be empty");
+  const violation = nameViolation(name);
+  if (violation) throw new ApiError(400, violation);
 
   const role: ServerRole = {
     id: `r-${Date.now().toString(36)}`,
@@ -798,6 +1007,8 @@ export async function updateRole(
   if (typeof patch.name === "string") {
     const name = patch.name.trim().slice(0, 32);
     if (!name) throw new ApiError(400, "Role name cannot be empty");
+    const violation = nameViolation(name);
+    if (violation) throw new ApiError(400, violation);
     role.name = name;
   }
   if (typeof patch.color === "string" && /^#[0-9a-f]{6}$/i.test(patch.color)) role.color = patch.color;
@@ -863,6 +1074,8 @@ export async function mintCosmetic(
   const server = await ownedServer(accountId, serverId);
   const name = input.name.trim();
   if (!name) throw new ApiError(400, "Give the cosmetic a name");
+  const violation = nameViolation(name);
+  if (violation) throw new ApiError(400, violation);
   if (!MINT_KEYS[input.slot]?.includes(input.key)) throw new ApiError(400, "Unknown visual template");
 
   const price = Math.round(Number(input.price));
@@ -913,6 +1126,9 @@ async function payCreator(item: ShopItem, payerId: string): Promise<Payout | nul
   });
   void payerId;
 
+  // The creator's 90% lands in the shared wallet, not a Bleek-only ledger.
+  await creditWallet(item.creatorId, creatorShare);
+
   const payout = toPayout(row);
   broadcast({ type: "payout", payout });
   return payout;
@@ -922,13 +1138,14 @@ export async function purchase(accountId: string, itemId: string) {
   const item = await findItem(accountId, itemId);
   if (!item) throw new ApiError(404, "Unknown item");
 
-  const member = await memberRow(accountId);
+  const member = await syncWallet(await memberRow(accountId));
   if (member.owned.includes(item.id)) throw new ApiError(400, "You already own this item");
   if (member.coins < item.price) throw new ApiError(400, "Not enough coins for this item");
 
+  const wallet = await debitWallet(member, item.price);
   const updated = await db().chatMember.update({
     where: { id: accountId },
-    data: { coins: { decrement: item.price }, owned: { push: item.id } },
+    data: { coins: wallet.coins, owned: { push: item.id } },
   });
 
   const payout = await payCreator(item, accountId);
@@ -947,13 +1164,15 @@ export async function giftItem(accountId: string, itemId: string, toUserId: stri
   const recipient = toUser(recipientRow as unknown as MemberRow);
   if (recipient.owned.includes(item.id)) throw new ApiError(400, `${recipient.name} already owns this`);
 
-  const senderRow = await memberRow(accountId);
+  const senderRow = await syncWallet(await memberRow(accountId));
   if (senderRow.coins < item.price) throw new ApiError(400, "Not enough coins for this gift");
+
+  const wallet = await debitWallet(senderRow, item.price);
 
   const [senderUpdated, recipientUpdated] = await db().$transaction([
     db().chatMember.update({
       where: { id: accountId },
-      data: { coins: { decrement: item.price } },
+      data: { coins: wallet.coins },
     }),
     db().chatMember.update({
       where: { id: toUserId },
@@ -999,6 +1218,8 @@ export async function updateProfile(
   if (typeof patch.name === "string") {
     const name = patch.name.trim().slice(0, 32);
     if (!name) throw new ApiError(400, "Display name cannot be empty");
+    const violation = nameViolation(name);
+    if (violation) throw new ApiError(400, violation);
     data.name = name;
   }
   if (typeof patch.bio === "string") data.bio = patch.bio.slice(0, 190);

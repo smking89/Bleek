@@ -58,7 +58,7 @@ function TrendChart({
           </div>
         ))}
       </div>
-      <div className="mt-2 flex items-center justify-between text-[10px] text-[#6E7C93]">
+      <div className="mt-2 flex items-center justify-between text-[10px] text-[#8A8A94]">
         <span>{points[0] ? formatDay(points[0].day) : ""}</span>
         <span>{points[points.length - 1] ? formatDay(points[points.length - 1].day) : ""}</span>
       </div>
@@ -70,7 +70,7 @@ function Legend({ items }: { items: { label: string; color: string }[] }) {
   return (
     <div className="flex flex-wrap items-center gap-3">
       {items.map((item) => (
-        <span key={item.label} className="flex items-center gap-1.5 text-[10.5px] text-[#94A3B8]">
+        <span key={item.label} className="flex items-center gap-1.5 text-[10.5px] text-[#A1A1AA]">
           <span className={`h-2 w-2 rounded-[2px] ${item.color}`} aria-hidden />
           {item.label}
         </span>
@@ -100,8 +100,8 @@ export function OverviewDashboard({
     <div className="space-y-5">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="text-[22px] font-semibold tracking-tight text-[#F8FAFC]">Platform overview</h1>
-          <p className="mt-1 text-[12.5px] text-[#94A3B8]">
+          <h1 className="text-[22px] font-semibold tracking-tight text-[#FAFAFA]">Platform overview</h1>
+          <p className="mt-1 text-[12.5px] text-[#A1A1AA]">
             Live totals across ASTRO, the moderation queue and every developer key.
           </p>
         </div>
@@ -113,7 +113,7 @@ export function OverviewDashboard({
           <div
             role="group"
             aria-label="Trend range"
-            className="flex rounded-full border border-white/10 bg-[#0B0C0E] p-0.5"
+            className="flex rounded-full border border-white/10 bg-[#121214] p-0.5"
           >
             {RANGES.map((option) => (
               <button
@@ -122,7 +122,7 @@ export function OverviewDashboard({
                 aria-pressed={range === option}
                 onClick={() => setRange(option)}
                 className={`rounded-full px-2.5 py-1 text-[11px] font-semibold tabular-nums transition-colors ${
-                  range === option ? "bg-[#4F46E5] text-white" : "text-[#94A3B8] hover:text-[#F8FAFC]"
+                  range === option ? "bg-[#7C3AED] text-white" : "text-[#A1A1AA] hover:text-[#FAFAFA]"
                 }`}
               >
                 {option}d
@@ -172,7 +172,7 @@ export function OverviewDashboard({
             action={
               <Legend
                 items={[
-                  { label: "Signups", color: "bg-[#4F46E5]" },
+                  { label: "Signups", color: "bg-[#7C3AED]" },
                   { label: "Cases", color: "bg-[#06B6D4]" },
                 ]}
               />
@@ -182,7 +182,7 @@ export function OverviewDashboard({
             <TrendChart
               points={points}
               series={[
-                { key: "signups", label: "signups", color: "bg-[#4F46E5]" },
+                { key: "signups", label: "signups", color: "bg-[#7C3AED]" },
                 { key: "cases", label: "cases", color: "bg-[#06B6D4]" },
               ]}
             />
@@ -196,7 +196,7 @@ export function OverviewDashboard({
             action={
               <Legend
                 items={[
-                  { label: "Requests", color: "bg-[#4F46E5]/80" },
+                  { label: "Requests", color: "bg-[#7C3AED]/80" },
                   { label: "Errors", color: "bg-[#EF4444]/80" },
                 ]}
               />
@@ -206,7 +206,7 @@ export function OverviewDashboard({
             <TrendChart
               points={points}
               series={[
-                { key: "requests", label: "requests", color: "bg-[#4F46E5]/80" },
+                { key: "requests", label: "requests", color: "bg-[#7C3AED]/80" },
                 { key: "errors", label: "errors", color: "bg-[#EF4444]/80" },
               ]}
             />
@@ -220,7 +220,7 @@ export function OverviewDashboard({
             title="Priority queue"
             hint="Open and investigating cases, highest priority first"
             action={
-              <Link href="/admin/moderation" className="text-[11.5px] font-medium text-[#A5B4FC] hover:text-[#C7D2FE]">
+              <Link href="/admin/moderation" className="text-[11.5px] font-medium text-[#C4B5FD] hover:text-[#DDD6FE]">
                 Open queue →
               </Link>
             }
@@ -235,12 +235,12 @@ export function OverviewDashboard({
                     href={`/admin/moderation?case=${item.id}`}
                     className="flex items-center gap-3 px-4 py-2.5 transition-colors hover:bg-white/[0.03]"
                   >
-                    <span className="w-[86px] shrink-0 font-mono text-[10.5px] text-[#6E7C93]">{item.reference}</span>
+                    <span className="w-[86px] shrink-0 font-mono text-[10.5px] text-[#8A8A94]">{item.reference}</span>
                     <span className="min-w-0 flex-1">
-                      <span className="block truncate text-[12.5px] text-[#F8FAFC]">
+                      <span className="block truncate text-[12.5px] text-[#FAFAFA]">
                         @{item.subjectHandle} · {item.reason}
                       </span>
-                      <span className="mt-0.5 block text-[10.5px] text-[#6E7C93]">
+                      <span className="mt-0.5 block text-[10.5px] text-[#8A8A94]">
                         {item.assignee ? `Assigned to @${item.assignee.handle}` : "Unassigned"} ·{" "}
                         {formatWhen(item.createdAt)}
                       </span>
@@ -259,12 +259,12 @@ export function OverviewDashboard({
             <ul className="divide-y divide-white/[0.05]">
               {staff.slice(0, 6).map((member) => (
                 <li key={member.id} className="flex items-center gap-2.5 px-4 py-2.5">
-                  <span className="flex h-7 w-7 items-center justify-center rounded-full bg-white/[0.06] text-[10px] font-bold text-[#CBD5E1]">
+                  <span className="flex h-7 w-7 items-center justify-center rounded-full bg-white/[0.06] text-[10px] font-bold text-[#D4D4D8]">
                     {member.displayName.slice(0, 2).toUpperCase()}
                   </span>
                   <span className="min-w-0 flex-1">
-                    <span className="block truncate text-[12px] text-[#F8FAFC]">@{member.handle}</span>
-                    <span className="block text-[10.5px] text-[#6E7C93]">
+                    <span className="block truncate text-[12px] text-[#FAFAFA]">@{member.handle}</span>
+                    <span className="block text-[10.5px] text-[#8A8A94]">
                       {member.lastSeenAt ? `Seen ${formatWhen(member.lastSeenAt)}` : "Never signed in"}
                     </span>
                   </span>
@@ -278,19 +278,19 @@ export function OverviewDashboard({
             <PanelHeader
               title="Recent staff activity"
               action={
-                <Link href="/admin/audit" className="text-[11.5px] font-medium text-[#A5B4FC] hover:text-[#C7D2FE]">
+                <Link href="/admin/audit" className="text-[11.5px] font-medium text-[#C4B5FD] hover:text-[#DDD6FE]">
                   Full log →
                 </Link>
               }
             />
             {audit.length === 0 ? (
-              <p className="px-4 py-6 text-[12px] text-[#6E7C93]">No privileged actions recorded yet.</p>
+              <p className="px-4 py-6 text-[12px] text-[#8A8A94]">No privileged actions recorded yet.</p>
             ) : (
               <ul className="divide-y divide-white/[0.05]">
                 {audit.slice(0, 5).map((entry) => (
                   <li key={entry.id} className="px-4 py-2.5">
-                    <p className="truncate text-[12px] text-[#E2E8F0]">{entry.summary}</p>
-                    <p className="mt-0.5 flex items-center gap-1.5 text-[10.5px] text-[#6E7C93]">
+                    <p className="truncate text-[12px] text-[#E4E4E7]">{entry.summary}</p>
+                    <p className="mt-0.5 flex items-center gap-1.5 text-[10.5px] text-[#8A8A94]">
                       <span className="font-mono">{entry.action}</span> · @{entry.actorHandle}
                       {entry.actorRole ? ` · ${ROLE_META[entry.actorRole].label}` : ""} · {formatWhen(entry.createdAt)}
                     </p>

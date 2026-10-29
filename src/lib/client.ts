@@ -70,6 +70,18 @@ export const api = {
     request<{ server: Snapshot["servers"][number] }>("/api/servers", { method: "POST", body: JSON.stringify({ name }) }),
   createChannel: (serverId: string, input: { name: string; type: "text" | "voice" }) =>
     request<ServerPayload>(`/api/servers/${serverId}/channels`, { method: "POST", body: JSON.stringify(input) }),
+  joinServer: (code: string) =>
+    request<ServerPayload>("/api/servers/join", { method: "POST", body: JSON.stringify({ code }) }),
+  updateServer: (serverId: string, patch: { name?: string; rotateInvite?: boolean }) =>
+    request<ServerPayload>(`/api/servers/${serverId}`, { method: "PATCH", body: JSON.stringify(patch) }),
+  deleteServer: (serverId: string) =>
+    request<{ ok: boolean; serverId: string }>(`/api/servers/${serverId}`, { method: "DELETE" }),
+  leaveServer: (serverId: string) =>
+    request<{ ok: boolean; serverId: string }>(`/api/servers/${serverId}/membership`, { method: "DELETE" }),
+  updateChannel: (channelId: string, patch: { name?: string; topic?: string }) =>
+    request<ServerPayload>(`/api/channels/${channelId}`, { method: "PATCH", body: JSON.stringify(patch) }),
+  deleteChannel: (channelId: string) =>
+    request<ServerPayload>(`/api/channels/${channelId}`, { method: "DELETE" }),
   setLayout: (channelId: string, layout: ChannelLayout) =>
     request<ServerPayload>(`/api/channels/${channelId}`, { method: "PATCH", body: JSON.stringify({ layout }) }),
   setDoc: (channelId: string, doc: string) =>

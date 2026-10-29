@@ -51,6 +51,7 @@ export function ServerRail({
   onHome,
   onSelect,
   onCreateServer,
+  onJoinServer,
   onOpenShop,
   onOpenSettings,
   onOpenProfile,
@@ -63,6 +64,7 @@ export function ServerRail({
   onHome: () => void;
   onSelect: (id: string) => void;
   onCreateServer: () => void;
+  onJoinServer: () => void;
   onOpenShop: () => void;
   onOpenSettings: () => void;
   onOpenProfile: () => void;
@@ -94,6 +96,10 @@ export function ServerRail({
           </RailButton>
         ))}
       </div>
+
+      <RailButton label="Join a server" onClick={onJoinServer}>
+        <Icon name="compass" size={22} />
+      </RailButton>
 
       <RailButton label="Create a server" onClick={onCreateServer}>
         <span className={SERVER_ADD} aria-hidden>

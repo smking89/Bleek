@@ -10,10 +10,16 @@ export const metadata: Metadata = {
 };
 
 const PRODUCTS = [
-  { name: "Bleek", role: "Chat, voice & cosmetics", badge: "BK" },
-  { name: "Koba.games", role: "Play & publish games", badge: "KG" },
-  { name: "SnagChat", role: "Mobile media feed", badge: "SC" },
-  { name: "KOBAbot", role: "Bot for your community servers", badge: "KB" },
+  { name: "Bleek", role: "Chat, voice & cosmetics", badge: "BK", href: "/app", external: false },
+  { name: "Koba.games", role: "Play & publish games", badge: "KG", href: "https://koba.games", external: true },
+  { name: "SnagChat", role: "Mobile media feed", badge: "SC", href: "https://snag.chat", external: true },
+  {
+    name: "KOBAbot",
+    role: "Bot for your community servers",
+    badge: "KB",
+    href: "https://koba.games/kobabot",
+    external: true,
+  },
 ] as const;
 
 export default async function LandingPage({
@@ -87,9 +93,11 @@ export default async function LandingPage({
 
           <div className="mt-8 grid gap-2.5 sm:grid-cols-2 lg:grid-cols-4">
             {PRODUCTS.map((product) => (
-              <div
+              <a
                 key={product.name}
-                className="rounded-xl border border-white/[0.08] bg-[#0B0C0E] p-3.5"
+                href={product.href}
+                {...(product.external ? { target: "_blank", rel: "noreferrer" } : {})}
+                className="group rounded-xl border border-white/[0.08] bg-[#0B0C0E] p-3.5 transition-colors hover:border-[#4F46E5]"
               >
                 <div className="flex items-center gap-2.5">
                   <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white/[0.05] text-[10px] font-bold tracking-wide text-[#CBD5E1] ring-1 ring-inset ring-white/10">
@@ -98,7 +106,7 @@ export default async function LandingPage({
                   <span className="text-sm font-semibold text-[#F8FAFC]">{product.name}</span>
                 </div>
                 <p className="mt-2 text-[12px] leading-5 text-[#64748B]">{product.role}</p>
-              </div>
+              </a>
             ))}
           </div>
 

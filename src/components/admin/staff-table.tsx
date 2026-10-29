@@ -71,8 +71,8 @@ export function StaffTable({
   return (
     <div className="space-y-4">
       <div>
-        <h1 className="text-[22px] font-semibold tracking-tight text-[#F8FAFC]">Staff</h1>
-        <p className="mt-1 text-[12.5px] text-[#94A3B8]">
+        <h1 className="text-[22px] font-semibold tracking-tight text-[#FAFAFA]">Staff</h1>
+        <p className="mt-1 text-[12.5px] text-[#A1A1AA]">
           Who can act in this console, and exactly what each role is allowed to do.
         </p>
       </div>
@@ -95,13 +95,13 @@ export function StaffTable({
             <Panel key={entry} className="px-4 py-3.5">
               <div className="flex items-center justify-between gap-2">
                 <RoleBadge role={entry} />
-                <span className="text-[10.5px] tabular-nums text-[#6E7C93]">
+                <span className="text-[10.5px] tabular-nums text-[#8A8A94]">
                   {staff.filter((member) => member.role === entry).length} member
                   {staff.filter((member) => member.role === entry).length === 1 ? "" : "s"}
                 </span>
               </div>
-              <p className="mt-2 text-[11.5px] leading-5 text-[#94A3B8]">{meta.blurb}</p>
-              <p className="mt-2 font-mono text-[10px] text-[#6E7C93]">
+              <p className="mt-2 text-[11.5px] leading-5 text-[#A1A1AA]">{meta.blurb}</p>
+              <p className="mt-2 font-mono text-[10px] text-[#8A8A94]">
                 {capabilitiesFor(entry).length} capabilities · rank {meta.rank}
               </p>
             </Panel>
@@ -119,7 +119,7 @@ export function StaffTable({
           }
         />
         <div className="flex flex-wrap items-end gap-2 px-4 py-4">
-          <label className="text-[11px] font-medium text-[#CBD5E1]">
+          <label className="text-[11px] font-medium text-[#D4D4D8]">
             Member handle
             <input
               value={handle}
@@ -129,7 +129,7 @@ export function StaffTable({
               className={`${INPUT} mt-1 sm:w-[220px]`}
             />
           </label>
-          <label className="text-[11px] font-medium text-[#CBD5E1]">
+          <label className="text-[11px] font-medium text-[#D4D4D8]">
             Role
             <select
               value={nextRole}
@@ -166,7 +166,7 @@ export function StaffTable({
           <div className="overflow-x-auto">
             <table className="w-full min-w-[720px] border-collapse text-left">
               <thead>
-                <tr className="border-b border-white/[0.06] text-[10px] uppercase tracking-[0.12em] text-[#6E7C93]">
+                <tr className="border-b border-white/[0.06] text-[10px] uppercase tracking-[0.12em] text-[#8A8A94]">
                   <th scope="col" className="px-4 py-2 font-semibold">Member</th>
                   <th scope="col" className="px-3 py-2 font-semibold">Role</th>
                   <th scope="col" className="px-3 py-2 font-semibold">Title</th>
@@ -183,15 +183,15 @@ export function StaffTable({
                   return (
                     <tr key={member.id} className="border-b border-white/[0.04] last:border-0 hover:bg-white/[0.02]">
                       <td className="px-4 py-2.5">
-                        <span className="block text-[12.5px] font-medium text-[#F8FAFC]">{member.displayName}</span>
-                        <span className="text-[10.5px] text-[#6E7C93]">@{member.handle}</span>
+                        <span className="block text-[12.5px] font-medium text-[#FAFAFA]">{member.displayName}</span>
+                        <span className="text-[10.5px] text-[#8A8A94]">@{member.handle}</span>
                       </td>
                       <td className="px-3 py-2.5">
                         <RoleBadge role={member.role} />
                       </td>
-                      <td className="px-3 py-2.5 text-[11.5px] text-[#94A3B8]">{member.title ?? "—"}</td>
-                      <td className="px-3 py-2.5 text-[11px] text-[#94A3B8]">{formatDate(member.since)}</td>
-                      <td className="px-3 py-2.5 text-[11px] text-[#94A3B8]">{formatDate(member.lastSeenAt)}</td>
+                      <td className="px-3 py-2.5 text-[11.5px] text-[#A1A1AA]">{member.title ?? "—"}</td>
+                      <td className="px-3 py-2.5 text-[11px] text-[#A1A1AA]">{formatDate(member.since)}</td>
+                      <td className="px-3 py-2.5 text-[11px] text-[#A1A1AA]">{formatDate(member.lastSeenAt)}</td>
                       <td className="px-4 py-2.5 text-right">
                         {removable ? (
                           <button
@@ -203,7 +203,7 @@ export function StaffTable({
                             Remove
                           </button>
                         ) : (
-                          <span className="text-[10.5px] text-[#6E7C93]">Protected</span>
+                          <span className="text-[10.5px] text-[#8A8A94]">Protected</span>
                         )}
                       </td>
                     </tr>
@@ -215,9 +215,9 @@ export function StaffTable({
         )}
       </Panel>
 
-      <div className="rounded-xl border border-white/[0.08] bg-[#0B0C0E] px-4 py-3">
+      <div className="rounded-xl border border-white/[0.08] bg-[#121214] px-4 py-3">
         <Eyebrow>Invariant</Eyebrow>
-        <p className="mt-1 text-[11.5px] leading-5 text-[#94A3B8]">
+        <p className="mt-1 text-[11.5px] leading-5 text-[#A1A1AA]">
           A staff member cannot edit their own role, cannot touch a role at or above their own, and the last super admin
           cannot be demoted. Every grant and removal lands in the audit log with the actor, target and IP.
         </p>
