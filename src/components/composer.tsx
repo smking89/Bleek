@@ -129,6 +129,7 @@ export function Composer({
 
           <textarea
             ref={textareaRef}
+            data-flat-focus
             rows={1}
             value={value}
             placeholder={`Message #${channelName}`}
