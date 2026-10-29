@@ -1,0 +1,41 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: Typecheck and build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      # Build-time placeholders: the build never opens a database connection,
+      # but the Prisma client and the data layer refuse to initialise without these.
+      DATABASE_URL: postgresql://ci:ci@localhost:5432/astro?schema=public
+      ASTRO_AUTH_SECRET: ci-placeholder-secret-not-used-for-real-sessions
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies from the lockfile
+        run: npm ci
+
+      - name: Generate the Prisma client
+        run: npx prisma generate
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Build
+        run: npm run build
