@@ -1,6 +1,6 @@
 // ASTRO — unified schema for the Bleek · Koba.games · SnagChat ecosystem.
 // One User owns one AccountWallet (the shared coin balance across every product)
-// and any number of UserConnection rows (the Meta-style profile link chips).
+// and any number of UserConnection rows (the profile link chips).
 //
 //   npx prisma generate
 //   npx prisma migrate dev --name astro_init

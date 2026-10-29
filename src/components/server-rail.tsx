@@ -86,7 +86,7 @@ export function ServerRail({
             active={!homeActive && server.id === activeServerId}
             onClick={() => onSelect(server.id)}
           >
-            <span className="text-[22px] leading-none">{server.icon}</span>
+            <span className="text-[22px] leading-none">{server.icon || server.name.slice(0, 1).toUpperCase()}</span>
           </RailButton>
         ))}
       </div>

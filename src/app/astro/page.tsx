@@ -13,7 +13,7 @@ const PRODUCTS = [
   { name: "Bleek", role: "Chat, voice & cosmetics", badge: "BK" },
   { name: "Koba.games", role: "Play & publish games", badge: "KG" },
   { name: "SnagChat", role: "Mobile media feed", badge: "SC" },
-  { name: "KOBAbot", role: "Discord bot for your servers", badge: "KB" },
+  { name: "KOBAbot", role: "Bot for your community servers", badge: "KB" },
 ] as const;
 
 export default async function LandingPage({
@@ -81,7 +81,7 @@ export default async function LandingPage({
 
           <p className="mt-5 max-w-xl text-[15px] leading-7 text-[#94A3B8]">
             Bleek for chat and voice rooms. Koba.games for the games you build. SnagChat for the feed. KOBAbot for the
-            Discord servers you run. A single ASTRO handle signs you in everywhere, carries one coin balance, and keeps
+            community servers you run. A single ASTRO handle signs you in everywhere, carries one coin balance, and keeps
             your profile chips in sync.
           </p>
 

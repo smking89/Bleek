@@ -124,7 +124,7 @@ export function StaffTable({
             <input
               value={handle}
               onChange={(event) => setHandle(event.target.value)}
-              placeholder="@nova"
+              placeholder="@handle"
               disabled={grantable.length === 0}
               className={`${INPUT} mt-1 sm:w-[220px]`}
             />

@@ -36,12 +36,8 @@ const COSMETICS = [
   { slot: "App themes", detail: "Recolour the whole client", tone: "from-[#23A55A]/25 via-[#23A55A]/5 to-transparent" },
 ] as const;
 
-const VOICE_MEMBERS: { key: CharacterKey; name: string }[] = [
-  { key: "comet", name: "Luna" },
-  { key: "tide", name: "Pixie" },
-  { key: "sprout", name: "Ash" },
-  { key: "static", name: "Unit-9" },
-];
+/** Decorative roster art for the voice illustration. No member names or counts. */
+const VOICE_MEMBERS: CharacterKey[] = ["comet", "tide", "sprout", "static"];
 
 /** The API and its keys are documented with ASTRO, not with Bleek. */
 const ASTRO_DEVELOPER_DOCS = "https://github.com/smking89/Astro/blob/main/DEVELOPERS.md";
@@ -190,14 +186,14 @@ export default async function BleekLandingPage() {
                 <Icon name="volume" size={15} className="text-[#94A3B8]" />
                 voice-general
                 <span className="ml-auto rounded-full bg-[#06B6D4]/15 px-2 py-0.5 text-[10px] font-bold text-[#67E8F9]">
-                  {VOICE_MEMBERS.length} in
+                  Live
                 </span>
               </div>
 
               <ul className="mt-3 grid grid-cols-2 gap-2">
                 {VOICE_MEMBERS.map((member, index) => (
                   <li
-                    key={member.key}
+                    key={member}
                     className="flex items-center gap-2 rounded-lg border border-white/[0.06] bg-black px-2 py-1.5"
                   >
                     <span
@@ -209,9 +205,8 @@ export default async function BleekLandingPage() {
                             : "linear-gradient(145deg, #0EA5E9, #23A55A)",
                       }}
                     >
-                      <CharacterArt kind={member.key} size={32} />
+                      <CharacterArt kind={member} size={32} />
                     </span>
-                    <span className="min-w-0 truncate text-[12px] text-[#CBD5E1]">{member.name}</span>
                     <span className="ml-auto h-1.5 w-1.5 shrink-0 rounded-full bg-[#06B6D4]" aria-hidden />
                   </li>
                 ))}

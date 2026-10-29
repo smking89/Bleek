@@ -39,7 +39,7 @@ function DockButton({ icon, label, onClick }: { icon: IconName; label: string; o
   );
 }
 
-/** Full-screen profile, the way Discord's mobile client shows it. */
+/** Full-screen profile: banner, avatar and presence over the member's own banner art. */
 export function ProfilePage({
   user,
   isMe,

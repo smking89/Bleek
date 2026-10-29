@@ -193,7 +193,7 @@ export function CaseBoard({
                 required
                 value={form.subjectHandle}
                 onChange={(event) => setForm({ ...form, subjectHandle: event.target.value })}
-                placeholder="@nova"
+                placeholder="@handle"
                 className={`${INPUT} mt-1`}
               />
             </label>

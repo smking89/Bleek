@@ -1,7 +1,8 @@
 import { redirect } from "next/navigation";
-import { DiscordApp } from "@/components/discord-app";
+import { BleekApp } from "@/components/bleek-app";
 import { currentAccount } from "@/lib/session";
 import { profileForUser } from "@/lib/astro/account-profile";
+import { bindAccount } from "@/lib/store";
 import { astroConfigured } from "@astro/core/db";
 import { AstroDataError } from "@astro/core/errors";
 
@@ -29,8 +30,19 @@ export default async function AppPage() {
 
   const profile = await profileForUser(account.id);
 
+  // The chat store carries the account, not a stand-in: name, handle, region,
+  // platform and wallet balance are read from the rows this session owns.
+  bindAccount({
+    name: account.displayName,
+    handle: account.handle,
+    verified: Boolean(account.handleVerifiedAt),
+    region: profile?.region ?? null,
+    playPlatform: profile?.platform ?? null,
+    coins: account.wallet?.coins ?? 0,
+  });
+
   return (
-    <DiscordApp
+    <BleekApp
       identity={{
         handle: account.handle,
         displayName: account.displayName,

@@ -21,7 +21,7 @@ function withMe(snapshot: Snapshot, me: User): Snapshot {
 
 /**
  * Stamps the session's handle and verification state onto the local chat user.
- * The chat store seeds a demo identity; the ASTRO account is canonical.
+ * The chat store starts empty; the ASTRO account is canonical.
  */
 export function withHandle(snapshot: Snapshot, identity: AppIdentity): Snapshot {
   return withMe(snapshot, {
@@ -35,8 +35,8 @@ export function withHandle(snapshot: Snapshot, identity: AppIdentity): Snapshot 
 }
 
 /**
- * Full binding for a fresh snapshot: display name too. Used on first load so the
- * seeded demo name never appears for a real account.
+ * Full binding for a fresh snapshot: display name too, so every surface renders
+ * the account's own name rather than a stand-in.
  */
 export function withIdentity(snapshot: Snapshot, identity: AppIdentity): Snapshot {
   const displayName = identity.displayName.trim();

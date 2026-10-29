@@ -1,4 +1,4 @@
-# Bleek — a social platform that isn't just a Discord skin
+# Bleek — a social platform built for communities
 
 A working full-stack social client built with Next.js 15, React 19 and Tailwind v4. Real-time chat, animated
 cosmetics, and the four structural changes from the brief: a unified home feed, hybrid channel layouts, creator-owned
@@ -10,7 +10,7 @@ npm run dev      # http://localhost:3000
 npm run build
 ```
 
-State is in-process and reseeds on restart. There is one signed-in demo user (`Nova`).
+Chat state is in-process and starts empty: the signed-in ASTRO account, one server provisioned for it, and nothing else until people join and talk. Accounts and wallets live in PostgreSQL.
 
 ## Landing page and ASTRO sign-in
 
@@ -41,7 +41,7 @@ ASTRO is the account layer shared by Bleek, Koba.games, SnagChat and KOBAbot. It
   surface, truncated handles, verified marks and the dotted `+ Add` chip in editing mode.
 
 `/astro` renders a real account straight from PostgreSQL, with a connect form that writes through the API and a chip
-row you can remove from. On an empty database it offers a one-click demo account.
+row you can remove from. Signed out, it asks you to sign in instead of showing a stand-in account.
 
 ### ASTROid
 
@@ -58,8 +58,9 @@ the handle behind it. Accounts created before the split receive one the first ti
 
 ### KOBAbot
 
-KOBAbot is the Discord bot, and it signs people in with the same ASTRO account. A member links their Discord user ID
-as a `KOBABOT` connection (the chip deep-links to `https://discord.com/users/<id>`), and the bot resolves that ID to
+KOBAbot is the chat bot for community servers, and it signs people in with the same ASTRO account. A member links
+their KOBAbot ID as a `KOBABOT` connection (the chip deep-links to `https://koba.games/kobabot/users/<id>`), and the
+bot resolves that ID to
 the ASTRO account, verifies the ASTROid signature, and only then acts on a command — a nickname alone is never enough. Set
 `ASTRO_ID_SECRET` in production so rotating `ASTRO_AUTH_SECRET` does not invalidate every ID.
 
@@ -104,7 +105,7 @@ Every text channel is chat, gallery, or canvas, chosen from the header and persi
 - **Chat** — the familiar linear stream (replies, reactions, edits, search, typing).
 - **Gallery** — a masonry board for art drops and links, each message rendered as a gradient card with reactions.
 - **Canvas** — a Notion-style document with a markdown editor (headings, bullets, numbered lists, quotes) and a saved
-  preview. `#dev-log` in Pixel Forge ships seeded as a canvas.
+  preview. A channel switches to the canvas layout from its header.
 
 **3. Creator-first storefronts inside each server**
 Every server has its own shop, opened from the channel sidebar, a channel's bag icon, or the home feed:
@@ -170,34 +171,7 @@ permission sanitisation and ordering rejection, minting with template validation
   WebRTC/LiveKit deployment and token endpoint.
 - No Tauri/Rust desktop shell; this is the web client the shell would wrap.
 - No encrypted DMs, webhooks, or external integrations from the brief.
-- Single in-process store, no auth or database; data reseeds on restart.
-
-## Demo accounts
-
-`npm run seed:accounts` creates six ASTRO accounts on the configured database: a
-player, a business account and one of each staff role. It reads `DATABASE_URL`
-from `.env`, and runs through `npx tsx`, which is fetched on first use rather
-than pinned as a dependency. Every account keeps the
-ASTRO product chips that the landing page, `/astro` profile preview and
-developer API render, and `@koba` is the handle `/astro` reads.
-
-| Handle | Role | Coins | Chips |
-| --- | --- | --- | --- |
-| `player` | member | 1,200 | Beek, Koba.games |
-| `business` | member | 4,800 | Beek, Koba.games, SnagChat, KOBAbot |
-| `moderator` | Moderator | 900 | Beek |
-| `admin` | Admin | 2,400 | Beek |
-| `superadmin` | Super admin | 9,000 | Beek, KOBAbot |
-| `koba` | member | 250 | Beek, Koba.games, SnagChat, KOBAbot |
-
-The password for every seeded account is `astro-demo-1234`; override it with
-`ASTRO_DEMO_PASSWORD` when seeding. Sign in at `/#access`, then `/app` opens
-Bleek and `/admin` opens the console for the three staff roles.
-
-The seed is idempotent: re-running it keeps existing accounts, wallets and
-ASTROids (it only resets the role, verification and chips, and never overwrites
-a password). Seeded passwords are development fixtures — register real accounts
-before putting a database behind a public URL.
+- Chat state is a single in-process store: it starts empty and is not persisted across restarts. Accounts, wallets and sessions are in PostgreSQL.
 
 ## Operations console and developer platform
 
@@ -292,7 +266,7 @@ Migration `20261029070000_staff_dev_platform` adds `StaffRole`, `AccountStatus`,
 Suspended accounts are sent to `/?suspended=1#access`, where the card explains the suspension and offers a sign-out
 instead of a login form. Neither the chat shell nor its data request renders for an anonymous visitor.
 
-The chat identity is the ASTRO account, not the seeded demo user. `/app` passes `{ handle, displayName, verified }` into
+The chat identity is the ASTRO account itself. `/app` binds `{ handle, displayName, verified, region, platform }` into
 the client and `src/lib/identity.ts` stamps it onto the local snapshot on every read, so the member list, message
 headers, hover cards, the user dock and `/astro` all show the real `@handle`.
 

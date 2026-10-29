@@ -12,8 +12,7 @@
     "db:migrate": "prisma migrate dev --schema prisma/schema",
     "db:deploy": "prisma migrate deploy --schema prisma/schema",
     "db:studio": "prisma studio --schema prisma/schema",
-    "staff:grant": "node scripts/grant-staff.mjs",
-    "seed:accounts": "npx --yes tsx@4.23.15 scripts/seed-astro-accounts.ts"
+    "staff:grant": "node scripts/grant-staff.mjs"
   },
   "dependencies": {
     "@astro/core": "github:smking89/Astro",

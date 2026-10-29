@@ -329,7 +329,7 @@ export function StorefrontModal({
                     value={name}
                     maxLength={40}
                     onChange={(event) => setName(event.target.value)}
-                    placeholder="Vent Glow"
+                    placeholder="Name your cosmetic"
                     className="mt-1 w-full rounded bg-[var(--bg-rail)] px-3 py-2 text-sm text-[var(--text)] outline-none focus:ring-1 focus:ring-[var(--accent)]"
                   />
                 </div>

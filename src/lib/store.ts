@@ -1,4 +1,4 @@
-import { buildSeed, ME_ID } from "./seed";
+import { buildStore, ME_ID, type Store } from "./bootstrap";
 import { SHOP } from "./shop";
 import { CHARACTER_KEYS } from "./types";
 import type {
@@ -18,15 +18,6 @@ import type {
   User,
 } from "./types";
 
-type Store = {
-  users: User[];
-  servers: Server[];
-  messages: Snapshot["messages"];
-  typing: Snapshot["typing"];
-  gifts: Gift[];
-  payouts: Payout[];
-};
-
 type Subscriber = (event: ServerEvent) => void;
 
 const globalRef = globalThis as unknown as {
@@ -35,7 +26,7 @@ const globalRef = globalThis as unknown as {
 };
 
 function store(): Store {
-  if (!globalRef.__nebulaStore) globalRef.__nebulaStore = buildSeed();
+  if (!globalRef.__nebulaStore) globalRef.__nebulaStore = buildStore();
   return globalRef.__nebulaStore;
 }
 
@@ -79,6 +70,45 @@ export function me(): User {
   const user = store().users.find((candidate) => candidate.id === ME_ID);
   if (!user) throw new Error("Session user missing");
   return user;
+}
+
+let walletBound = false;
+
+/**
+ * Binds the local chat identity to the signed-in ASTRO account and names the
+ * server provisioned for them. Every field comes from the account row, so no
+ * invented member, name or balance reaches a screen.
+ */
+export function bindAccount(binding: {
+  name: string;
+  handle: string;
+  verified: boolean;
+  region: string | null;
+  playPlatform: string | null;
+  coins: number;
+}) {
+  const user = me();
+  const displayName = binding.name.trim();
+
+  user.name = displayName || binding.handle;
+  user.handle = binding.handle;
+  user.verified = binding.verified;
+  user.region = binding.region;
+  user.playPlatform = binding.playPlatform;
+
+  // The wallet is the source of the balance. It is copied once, so shop
+  // activity in this session is not undone by the next page load.
+  if (!walletBound) {
+    user.coins = binding.coins;
+    walletBound = true;
+  }
+
+  for (const server of store().servers) {
+    if (!server.name) server.name = `${user.name}’s server`;
+  }
+
+  touchUser(user);
+  return structuredClone(user);
 }
 
 export function allItems(): ShopItem[] {

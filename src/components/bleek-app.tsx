@@ -124,7 +124,7 @@ function AppSkeleton() {
   );
 }
 
-export function DiscordApp({ identity }: { identity: AppIdentity }) {
+export function BleekApp({ identity }: { identity: AppIdentity }) {
   const [rawSnap, setRawSnap] = useState<Snapshot | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [view, setView] = useState<"home" | "server">("server");

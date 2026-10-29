@@ -84,7 +84,7 @@ const TYPE_SCALE = [
   ["Section", "20px / 28px", "600", "−0.01em", "Page and panel titles."],
   ["Body", "13px / 24px", "400", "0", "Explanatory copy, form labels."],
   ["Chat", "16px / 22px", "400", "0", "Message content in Bleek."],
-  ["Meta", "11–12px / 16px", "500", "0.14em uppercase", "Eyebrows, table heads, captions."],
+  ["Label", "11–12px / 16px", "500", "0.14em uppercase", "Eyebrows, table heads, captions."],
   ["Mono", "11.5–12px / 20px", "500", "0", "ASTROid, keys, code. Tabular numbers for balances."],
 ];
 
@@ -559,7 +559,7 @@ export default function BrandGuidelinesPage() {
             <RuleList
               tone="deny"
               items={[
-                "Don’t letterspace body copy or messages; tracking belongs to the wordmark and to uppercase meta labels.",
+                "Don’t letterspace body copy or messages; tracking belongs to the wordmark and to uppercase label text.",
                 "Don’t centre paragraphs, and don’t set text below 11px in product UI.",
                 "Don’t substitute the operating system’s default sans when Inter fails to load — ship the font.",
               ]}
