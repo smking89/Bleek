@@ -3,6 +3,8 @@ import { revalidatePath } from "next/cache";
 import { ProfileEditor } from "@astro/core/react/editor";
 import { UnverifiedTag, VerifiedBadge } from "@/components/verified-badge";
 import { createAstroAccount, getAstroAccount, type AstroAccount } from "@astro/core/accounts";
+import { profileForUser } from "@/lib/astro/account-profile";
+import { playPlatformLabel, regionLabel } from "@/lib/astro/regions";
 import { astroConfigured } from "@astro/core/db";
 import { AstroDataError } from "@astro/core/errors";
 
@@ -73,6 +75,8 @@ export default async function AstroProfilePage() {
     throw error;
   }
 
+  const profile = await profileForUser(account.id);
+
   return (
     <Shell>
       <div className="flex items-start justify-between gap-4">
@@ -88,6 +92,13 @@ export default async function AstroProfilePage() {
           <p className="mt-2 font-mono text-[11px] uppercase tracking-[0.16em] text-neutral-600">
             {account.astroId ?? "ASTROid pending"}
           </p>
+          {profile ? (
+            <div className="mt-3 flex flex-wrap items-center gap-1.5 text-[12px] text-neutral-300">
+              <span className="rounded-full border border-white/10 bg-[#111214] px-2.5 py-1">{regionLabel(profile.region)}</span>
+              <span className="rounded-full border border-white/10 bg-[#111214] px-2.5 py-1">{playPlatformLabel(profile.platform)}</span>
+              <span className="text-neutral-500">{profile.email}</span>
+            </div>
+          ) : null}
         </div>
         <span className="shrink-0 rounded-full border border-white/10 bg-[#111214] px-3 py-1.5 text-[12px] font-semibold tabular-nums text-neutral-300">
           {(account.wallet?.coins ?? 0).toLocaleString()} coins

@@ -36,6 +36,16 @@ const PASSWORD = process.env.ASTRO_DEMO_PASSWORD ?? "astro-demo-1234";
 
 type StaffRoleName = "MODERATOR" | "ADMIN" | "SUPER_ADMIN";
 
+type RegionValue =
+  | "NORTH_AMERICA"
+  | "EUROPE"
+  | "LATIN_AMERICA"
+  | "MIDDLE_EAST_AFRICA"
+  | "ASIA_PACIFIC"
+  | "OCEANIA";
+
+type PlatformValue = "PC" | "CONSOLE" | "BOTH";
+
 type DemoAccount = {
   handle: string;
   displayName: string;
@@ -45,12 +55,18 @@ type DemoAccount = {
   coins: number;
   staffRole: StaffRoleName | null;
   staffTitle: string | null;
+  email: string;
+  region: RegionValue;
+  platform: PlatformValue;
   connections: { platform: PlatformType; handle: string }[];
 };
 
 const ACCOUNTS: DemoAccount[] = [
   {
     handle: "player",
+    email: "player@bleek.example",
+    region: "NORTH_AMERICA",
+    platform: "PC",
     displayName: "Player One",
     headline: "just here to play",
     bio: "Picks up quests in Koba.games, drops clips in SnagChat.",
@@ -65,6 +81,9 @@ const ACCOUNTS: DemoAccount[] = [
   },
   {
     handle: "business",
+    email: "studio@koba.example",
+    region: "EUROPE",
+    platform: "BOTH",
     displayName: "Koba Studio",
     headline: "creator studio · games & drops",
     bio: "Sells cosmetics through creator storefronts and pays out 90% to the artists we sign.",
@@ -81,6 +100,9 @@ const ACCOUNTS: DemoAccount[] = [
   },
   {
     handle: "moderator",
+    email: "rin@bleek.example",
+    region: "EUROPE",
+    platform: "CONSOLE",
     displayName: "Rin Voss",
     headline: "moderation",
     bio: "Triage reports, suspend the obvious scams and keep the audit trail clean.",
@@ -92,6 +114,9 @@ const ACCOUNTS: DemoAccount[] = [
   },
   {
     handle: "admin",
+    email: "kai@bleek.example",
+    region: "NORTH_AMERICA",
+    platform: "PC",
     displayName: "Kai Mercer",
     headline: "operations",
     bio: "Wallets, staff roles and developer apps for the ASTRO products.",
@@ -103,6 +128,9 @@ const ACCOUNTS: DemoAccount[] = [
   },
   {
     handle: "superadmin",
+    email: "nova@bleek.example",
+    region: "ASIA_PACIFIC",
+    platform: "BOTH",
     displayName: "Nova",
     headline: "platform owner",
     bio: "Unrestricted access, including who wears a staff badge.",
@@ -117,6 +145,9 @@ const ACCOUNTS: DemoAccount[] = [
   },
   {
     handle: "koba",
+    email: "koba@koba.example",
+    region: "ASIA_PACIFIC",
+    platform: "BOTH",
     displayName: "Koba",
     headline: "building small games",
     bio: "The account the /astro profile preview reads, with one chip per product.",
@@ -165,6 +196,13 @@ async function seedAccount(seed: DemoAccount) {
       handleVerifiedAt: account.handleVerifiedAt ?? new Date(),
     },
   });
+
+  const existingProfile = await astroDb().accountProfile.findUnique({ where: { userId: account.id } });
+  if (!existingProfile) {
+    await astroDb().accountProfile.create({
+      data: { userId: account.id, email: seed.email, region: seed.region, platform: seed.platform },
+    });
+  }
 
   for (const connection of seed.connections) {
     try {
