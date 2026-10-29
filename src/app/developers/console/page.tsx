@@ -40,7 +40,7 @@ export default async function DeveloperConsolePage() {
         <Gate
           title="Sign in to issue keys"
           body="Developer apps belong to an ASTRO account, and their keys act on that account's wallet and profile chips."
-          action={{ href: "/#access", label: "Sign in with ASTRO" }}
+          action={{ href: "/astro#access", label: "Sign in with ASTRO" }}
         />
       </Shell>
     );
