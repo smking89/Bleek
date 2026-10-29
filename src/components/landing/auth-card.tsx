@@ -3,29 +3,47 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { PLAY_PLATFORMS, REGIONS } from "@/lib/astro/regions";
 
 type Mode = "register" | "login";
 
 const FIELD =
   "w-full rounded-lg border border-white/10 bg-[#111318] px-3.5 py-2.5 text-sm text-[#F8FAFC] outline-none transition-colors placeholder:text-[#5B6675] focus-visible:border-[#4F46E5] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#4F46E5]";
 
+const AUTH_ERRORS: Record<string, string> = {
+  steam_cancelled: "Steam sign-in was cancelled before it finished.",
+  steam_failed: "Steam could not verify that sign-in. Try again.",
+  xbox_cancelled: "Xbox sign-in was cancelled before it finished.",
+  xbox_failed: "Microsoft could not complete that Xbox sign-in. Try again.",
+  xbox_unconfigured: "Xbox sign-in is not configured on this deployment.",
+};
+
 export function AuthCard({
   available,
   signedInHandle,
   suspended = false,
   next,
+  providers = { steam: true, xbox: false },
+  authError = null,
+  initialMode = "register",
 }: {
   available: boolean;
   signedInHandle: string | null;
   suspended?: boolean;
   next?: string;
+  providers?: { steam: boolean; xbox: boolean };
+  authError?: string | null;
+  initialMode?: Mode;
 }) {
   const router = useRouter();
-  const [mode, setMode] = useState<Mode>("register");
+  const [mode, setMode] = useState<Mode>(initialMode);
   const [handle, setHandle] = useState("");
   const [displayName, setDisplayName] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState<string | null>(null);
+  const [region, setRegion] = useState<string>("NORTH_AMERICA");
+  const [platform, setPlatform] = useState<string>("PC");
+  const [error, setError] = useState<string | null>(authError ? AUTH_ERRORS[authError] ?? "That sign-in did not finish." : null);
   const [busy, setBusy] = useState(false);
   const [signingOut, setSigningOut] = useState(false);
 
@@ -38,8 +56,8 @@ export function AuthCard({
       const endpoint = mode === "register" ? "/api/astro/auth/register" : "/api/astro/auth/login";
       const payload =
         mode === "register"
-          ? { handle, displayName: displayName.trim() || handle, password }
-          : { handle, password };
+          ? { handle, displayName: displayName.trim() || handle, email, password, region, platform }
+          : { identifier: handle.trim(), password };
 
       const response = await fetch(endpoint, {
         method: "POST",
@@ -75,7 +93,7 @@ export function AuthCard({
             <code className="text-[#CBD5E1]">npm run db:deploy</code>. Accounts, wallets and sessions live in PostgreSQL.
           </p>
           <Link
-            href="/astro"
+            href="/astro/profile"
             className="mt-5 inline-flex rounded-full border border-white/15 px-4 py-1.5 text-[13px] font-medium text-[#F8FAFC] transition-colors hover:border-white/30"
           >
             See the profile preview
@@ -122,7 +140,7 @@ export function AuthCard({
             Open Bleek
           </Link>
           <Link
-            href="/astro"
+            href="/astro/profile"
             className="mt-2 flex w-full items-center justify-center rounded-lg border border-white/10 px-4 py-2.5 text-sm font-medium text-[#CBD5E1] transition-colors hover:border-white/25 hover:text-white"
           >
             Manage profile
@@ -155,13 +173,51 @@ export function AuthCard({
             ))}
           </div>
 
-          <h2 className="mt-5 text-lg font-semibold text-[#F8FAFC]">
+          <div className="mt-5 flex flex-col gap-2">
+            <a
+              href="/api/astro/auth/steam/start"
+              aria-disabled={!providers.steam}
+              title={providers.steam ? "Sign in with Steam" : "Steam sign-in is unavailable"}
+              className="flex w-full items-center justify-center gap-2 rounded-lg border border-white/10 bg-[#111318] px-4 py-2.5 text-sm font-semibold text-[#F8FAFC] transition-colors hover:border-white/25"
+            >
+              <span className="flex h-4 w-4 items-center justify-center rounded-full bg-[#1B2838] text-[9px] font-bold text-[#66C0F4]">
+                S
+              </span>
+              Continue with Steam
+            </a>
+            <a
+              href="/api/astro/auth/xbox/start"
+              aria-disabled={!providers.xbox}
+              title={providers.xbox ? "Sign in with Xbox" : "Add XBOX_CLIENT_ID and XBOX_CLIENT_SECRET to enable Xbox sign-in"}
+              className={`flex w-full items-center justify-center gap-2 rounded-lg border border-white/10 bg-[#111318] px-4 py-2.5 text-sm font-semibold transition-colors ${
+                providers.xbox ? "text-[#F8FAFC] hover:border-white/25" : "cursor-not-allowed text-[#5B6675]"
+              }`}
+            >
+              <span className="flex h-4 w-4 items-center justify-center rounded-full bg-[#107C10] text-[9px] font-bold text-white">
+                X
+              </span>
+              Continue with Xbox
+            </a>
+            {!providers.xbox ? (
+              <p className="text-center text-[11px] text-[#5B6675]">
+                Xbox needs an Entra app registration; email and Steam work today.
+              </p>
+            ) : null}
+          </div>
+
+          <div className="my-5 flex items-center gap-3 text-[11px] uppercase tracking-[0.16em] text-[#5B6675]">
+            <span className="h-px flex-1 bg-white/10" />
+            or use email
+            <span className="h-px flex-1 bg-white/10" />
+          </div>
+
+          <h2 className="text-lg font-semibold text-[#F8FAFC]">
             {mode === "register" ? "Claim your ASTRO handle" : "Welcome back"}
           </h2>
           <p className="mt-1 text-[13px] leading-6 text-[#94A3B8]">
             {mode === "register"
               ? "One handle, one wallet. It works in Bleek, Koba.games, SnagChat and KOBAbot from the moment you sign up."
-              : "Sign in with the handle and password you registered."}
+              : "Sign in with your email address or your handle."}
           </p>
 
           {next === "/app" ? (
@@ -173,14 +229,14 @@ export function AuthCard({
           <form onSubmit={submit} className="mt-5 space-y-3">
             <div>
               <label htmlFor="auth-handle" className="mb-1.5 block text-[12px] font-medium text-[#CBD5E1]">
-                Handle
+                {mode === "register" ? "Handle" : "Email or handle"}
               </label>
               <input
                 id="auth-handle"
                 name="handle"
                 value={handle}
                 onChange={(event) => setHandle(event.target.value)}
-                placeholder="@koba"
+                placeholder={mode === "register" ? "@koba" : "you@example.com"}
                 autoComplete="username"
                 autoCapitalize="none"
                 spellCheck={false}
@@ -190,20 +246,87 @@ export function AuthCard({
             </div>
 
             {mode === "register" ? (
-              <div>
-                <label htmlFor="auth-name" className="mb-1.5 block text-[12px] font-medium text-[#CBD5E1]">
-                  Display name
-                </label>
-                <input
-                  id="auth-name"
-                  name="displayName"
-                  value={displayName}
-                  onChange={(event) => setDisplayName(event.target.value)}
-                  placeholder="Koba"
-                  autoComplete="nickname"
-                  className={FIELD}
-                />
-              </div>
+              <>
+                <div>
+                  <label htmlFor="auth-name" className="mb-1.5 block text-[12px] font-medium text-[#CBD5E1]">
+                    Display name
+                  </label>
+                  <input
+                    id="auth-name"
+                    name="displayName"
+                    value={displayName}
+                    onChange={(event) => setDisplayName(event.target.value)}
+                    placeholder="Koba"
+                    autoComplete="nickname"
+                    className={FIELD}
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="auth-email" className="mb-1.5 block text-[12px] font-medium text-[#CBD5E1]">
+                    Email
+                  </label>
+                  <input
+                    id="auth-email"
+                    name="email"
+                    type="email"
+                    value={email}
+                    onChange={(event) => setEmail(event.target.value)}
+                    placeholder="you@example.com"
+                    autoComplete="email"
+                    required
+                    className={FIELD}
+                  />
+                </div>
+
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <div>
+                    <label htmlFor="auth-region" className="mb-1.5 block text-[12px] font-medium text-[#CBD5E1]">
+                      Region
+                    </label>
+                    <select
+                      id="auth-region"
+                      name="region"
+                      value={region}
+                      onChange={(event) => setRegion(event.target.value)}
+                      className={FIELD}
+                    >
+                      {REGIONS.map((option) => (
+                        <option key={option.value} value={option.value} className="bg-[#111318]">
+                          {option.label}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <fieldset>
+                    <legend className="mb-1.5 block text-[12px] font-medium text-[#CBD5E1]">You play on</legend>
+                    <div className="flex rounded-lg border border-white/10 bg-[#111318] p-1" role="radiogroup" aria-label="Platform">
+                      {PLAY_PLATFORMS.map((option) => (
+                        <label
+                          key={option.value}
+                          title={option.hint}
+                          className={`flex-1 cursor-pointer rounded-md px-2 py-1.5 text-center text-[12px] font-semibold transition-colors ${
+                            platform === option.value
+                              ? "bg-[#4F46E5] text-white"
+                              : "text-[#94A3B8] hover:text-[#F8FAFC]"
+                          }`}
+                        >
+                          <input
+                            type="radio"
+                            name="platform"
+                            value={option.value}
+                            checked={platform === option.value}
+                            onChange={() => setPlatform(option.value)}
+                            className="sr-only"
+                          />
+                          {option.label}
+                        </label>
+                      ))}
+                    </div>
+                  </fieldset>
+                </div>
+              </>
             ) : null}
 
             <div>
@@ -240,7 +363,8 @@ export function AuthCard({
           </form>
 
           <p className="mt-4 text-[11px] leading-5 text-[#64748B]">
-            Handles are lowercase and unique per ASTRO. New accounts start with 250 coins in the shared wallet.
+            New accounts start with 250 coins in the shared wallet. Your email and region stay on this deployment and are
+            never sent to a third party.
           </p>
         </>
       )}
