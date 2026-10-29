@@ -135,7 +135,7 @@ export function OverviewDashboard({
       <div className="grid gap-2.5 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-6">
         <Metric label="Accounts" value={metrics.accounts.total.toLocaleString()} hint={`+${metrics.accounts.new7d} this week`} />
         <Metric
-          label="Coins in circulation"
+          label="ASTRO Coins in circulation"
           value={metrics.wallet.coins.toLocaleString()}
           hint={`${metrics.wallet.holders.toLocaleString()} wallets`}
           tone="indigo"

@@ -664,7 +664,7 @@ export function BleekApp({ identity }: { identity: AppIdentity }) {
   );
 
   const onMint = useCallback(
-    async (input: { name: string; description?: string; slot: ShopItem["slot"]; key: string; price: number }) => {
+    async (input: { name: string; description?: string; slot: ShopItem["slot"]; price: number }) => {
       if (!storefrontServerId) return;
       try {
         const result = await api.mint(storefrontServerId, input);

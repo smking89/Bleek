@@ -233,8 +233,8 @@ export function ProfilePage({
                   <>
                     <Card className="flex items-center justify-between">
                       <div>
-                        <div className="text-[15px] font-semibold text-[var(--text-strong)]">Coin balance</div>
-                        <div className="text-[12px] text-[var(--text-muted)]">Virtual currency</div>
+                        <div className="text-[15px] font-semibold text-[var(--text-strong)]">ASTRO Coins</div>
+                        <div className="text-[12px] text-[var(--text-muted)]">Shared ASTRO wallet</div>
                       </div>
                       <div className="flex items-center gap-2">
                         <span className="text-[16px] font-bold tabular-nums text-[var(--yellow)]">

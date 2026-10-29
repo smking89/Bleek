@@ -283,7 +283,7 @@ export function SettingsModal({
             ? `${regionLabel(me.region)}${me.playPlatform ? ` · ${playPlatformLabel(me.playPlatform)}` : ""}`
             : "Not set",
         },
-        { icon: "bag", label: "Open cosmetic shop", value: `${me.coins.toLocaleString()} coins`, onClick: onOpenShop },
+        { icon: "bag", label: "Open cosmetic shop", value: `${me.coins.toLocaleString()} ASTRO Coins`, onClick: onOpenShop },
       ],
     },
     {

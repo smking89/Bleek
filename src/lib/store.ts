@@ -1069,14 +1069,16 @@ const MINT_KEYS: Record<ShopItem["slot"], string[]> = {
 export async function mintCosmetic(
   accountId: string,
   serverId: string,
-  input: { name: string; description?: string; slot: ShopItem["slot"]; key: string; price: number },
+  input: { name: string; description?: string; slot: ShopItem["slot"]; price: number },
 ) {
   const server = await ownedServer(accountId, serverId);
   const name = input.name.trim();
   if (!name) throw new ApiError(400, "Give the cosmetic a name");
   const violation = nameViolation(name);
   if (violation) throw new ApiError(400, violation);
-  if (!MINT_KEYS[input.slot]?.includes(input.key)) throw new ApiError(400, "Unknown visual template");
+
+  // Creators choose a slot, not a template: the slot's own artwork renders it.
+  const key = MINT_KEYS[input.slot][0];
 
   const price = Math.round(Number(input.price));
   if (!Number.isFinite(price) || price < 0 || price > 100_000) throw new ApiError(400, "Price out of range");
@@ -1084,7 +1086,7 @@ export async function mintCosmetic(
   const item: ShopItem = {
     id: `mint-${serverId}-${Date.now().toString(36)}`,
     slot: input.slot,
-    key: input.key as ShopItem["key"],
+    key: key as ShopItem["key"],
     name: name.slice(0, 40),
     description: (input.description ?? "A community-made cosmetic.").slice(0, 140),
     price,

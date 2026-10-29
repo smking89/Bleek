@@ -131,7 +131,7 @@ export function HomeFeed({
               </p>
             </div>
             <div className="flex items-center gap-2 rounded-full bg-[var(--bg-sidebar)] px-3 py-1.5">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--text-faint)]">Balance</span>
+              <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--text-faint)]">ASTRO wallet</span>
               <span className="flex items-center gap-1 font-semibold tabular-nums text-[var(--yellow)]">
                 <Icon name="coins" size={14} /> {me.coins.toLocaleString()}
               </span>

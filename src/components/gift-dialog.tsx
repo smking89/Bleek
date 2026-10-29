@@ -47,7 +47,7 @@ export function GiftDialog({
           <div>
             <h2 className="text-sm font-bold text-[var(--text-strong)]">Gift “{item.name}”</h2>
             <p className="mt-0.5 text-[11px] text-[var(--text-body)]">
-              {item.price > 0 ? `${item.price.toLocaleString()} coins from your balance` : "Free to send"} · they own it
+              {item.price > 0 ? `${item.price.toLocaleString()} ASTRO Coins from your ASTRO wallet` : "Free to send"} · they own it
               instantly
             </p>
           </div>

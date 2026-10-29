@@ -8,43 +8,14 @@ import { RARITY, THEMES } from "@/lib/shop";
 import { Avatar } from "./cosmetics/avatar";
 import { Nameplate } from "./cosmetics/nameplate";
 import { ProfileEffect } from "./cosmetics/profile-effect";
+import { AstroGlyph } from "./brand/astro-brand";
 import { Icon } from "./icons";
 
-const TEMPLATES: Record<ShopItem["slot"], { key: string; label: string }[]> = {
-  decoration: [
-    { key: "neon-haze", label: "Neon haze" },
-    { key: "static-surge", label: "Static surge" },
-    { key: "glacier-ring", label: "Glacier ring" },
-    { key: "aurora-halo", label: "Aurora halo" },
-    { key: "sakura-bloom", label: "Sakura bloom" },
-    { key: "pixel-pals", label: "Pixel pals" },
-    { key: "ember-crown", label: "Ember crown" },
-    { key: "stardust-orbit", label: "Stardust orbit" },
-    { key: "lunar-eclipse", label: "Lunar eclipse" },
-    { key: "thorn-wreath", label: "Thorn wreath" },
-  ],
-  effect: [
-    { key: "soft-glow", label: "Soft glow" },
-    { key: "aurora-drift", label: "Aurora drift" },
-    { key: "starfall", label: "Starfall" },
-    { key: "ember-sparks", label: "Ember sparks" },
-    { key: "confetti-burst", label: "Confetti burst" },
-    { key: "rgb-wave", label: "RGB wave" },
-  ],
-  nameplate: [
-    { key: "neon-pulse", label: "Neon pulse" },
-    { key: "gold-shimmer", label: "Gold shimmer" },
-    { key: "holo-chrome", label: "Holo chrome" },
-    { key: "shadowflame", label: "Shadowflame" },
-  ],
-  theme: [
-    { key: "blurple", label: "Blurple" },
-    { key: "sunset", label: "Sunset" },
-    { key: "forest", label: "Forest" },
-    { key: "crimson", label: "Crimson" },
-    { key: "ice", label: "Ice" },
-    { key: "mono", label: "Monochrome" },
-  ],
+const PREVIEW_KEY: Record<ShopItem["slot"], ShopItem["key"]> = {
+  decoration: "aurora-halo",
+  effect: "soft-glow",
+  nameplate: "neon-pulse",
+  theme: "blurple",
 };
 
 const SLOTS: { key: ShopItem["slot"]; label: string }[] = [
@@ -111,7 +82,7 @@ export function StorefrontModal({
   me: User;
   payouts: Payout[];
   onClose: () => void;
-  onMint: (input: { name: string; description?: string; slot: ShopItem["slot"]; key: string; price: number }) => Promise<void>;
+  onMint: (input: { name: string; description?: string; slot: ShopItem["slot"]; price: number }) => Promise<void>;
   onPurchase: (itemId: string) => Promise<void>;
   onGift: (itemId: string) => void;
 }) {
@@ -119,7 +90,6 @@ export function StorefrontModal({
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [slot, setSlot] = useState<ShopItem["slot"]>("decoration");
-  const [template, setTemplate] = useState("aurora-halo");
   const [price, setPrice] = useState("800");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -138,10 +108,6 @@ export function StorefrontModal({
     return () => document.removeEventListener("keydown", onKey);
   }, [open, onClose]);
 
-  useEffect(() => {
-    setTemplate(TEMPLATES[slot][0].key);
-  }, [slot]);
-
   if (!open) return null;
 
   async function mint() {
@@ -152,7 +118,6 @@ export function StorefrontModal({
         name: name.trim(),
         description: description.trim() || undefined,
         slot,
-        key: template,
         price: Math.max(0, Math.round(Number(price) || 0)),
       });
       setName("");
@@ -187,8 +152,14 @@ export function StorefrontModal({
                 </div>
               </div>
               <div className="flex shrink-0 items-center gap-2">
-                <span className="flex items-center gap-1.5 rounded-full bg-[var(--bg-float)] px-3 py-1.5 text-xs font-semibold tabular-nums text-[var(--yellow)]">
-                  <Icon name="coins" size={14} /> {me.coins.toLocaleString()}
+                <span
+                  title="ASTRO wallet"
+                  className="flex items-center gap-1.5 rounded-full bg-[var(--bg-float)] px-3 py-1.5 text-xs font-semibold tabular-nums text-[var(--yellow)]"
+                >
+                  <AstroGlyph size={13} /> {me.coins.toLocaleString()}
+                  <span className="text-[10px] font-semibold uppercase tracking-[0.08em] text-[var(--text-muted)]">
+                    ASTRO Coins
+                  </span>
                 </span>
                 <button
                   type="button"
@@ -343,11 +314,11 @@ export function StorefrontModal({
                     maxLength={140}
                     rows={2}
                     onChange={(event) => setDescription(event.target.value)}
-                    placeholder="What makes it worth 800 coins?"
+                    placeholder="What makes it worth 800 ASTRO Coins?"
                     className="mt-1 w-full resize-none rounded bg-[var(--bg-rail)] px-3 py-2 text-sm text-[var(--text)] outline-none focus:ring-1 focus:ring-[var(--accent)]"
                   />
                 </div>
-                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                <div className="grid grid-cols-1 gap-3">
                   <div>
                     <label htmlFor="mint-slot" className="text-[11px] font-bold uppercase tracking-wider text-[var(--text-muted)]">
                       Slot
@@ -365,27 +336,10 @@ export function StorefrontModal({
                       ))}
                     </select>
                   </div>
-                  <div>
-                    <label htmlFor="mint-template" className="text-[11px] font-bold uppercase tracking-wider text-[var(--text-muted)]">
-                      Visual template
-                    </label>
-                    <select
-                      id="mint-template"
-                      value={template}
-                      onChange={(event) => setTemplate(event.target.value)}
-                      className="mt-1 w-full rounded bg-[var(--bg-rail)] px-3 py-2 text-sm text-[var(--text)] outline-none focus:ring-1 focus:ring-[var(--accent)]"
-                    >
-                      {TEMPLATES[slot].map((entry) => (
-                        <option key={entry.key} value={entry.key}>
-                          {entry.label}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
                 </div>
                 <div>
                   <label htmlFor="mint-price" className="text-[11px] font-bold uppercase tracking-wider text-[var(--text-muted)]">
-                    Price (coins)
+                    Price (ASTRO Coins)
                   </label>
                   <input
                     id="mint-price"
@@ -410,7 +364,7 @@ export function StorefrontModal({
                         item={{
                           id: "preview",
                           slot,
-                          key: template as ShopItem["key"],
+                          key: PREVIEW_KEY[slot],
                           name: name || "Untitled",
                           description: description,
                           price: Number(price) || 0,
@@ -422,7 +376,7 @@ export function StorefrontModal({
                     </div>
                     <div className="mt-2 flex items-center justify-between">
                       <span className="text-sm font-semibold text-[var(--text-strong)]">{name}</span>
-                      <span className="text-xs tabular-nums text-[var(--yellow)]">{Number(price) || 0} c</span>
+                      <span className="text-xs tabular-nums text-[var(--yellow)]">{Number(price) || 0} ASTRO Coins</span>
                     </div>
                   </div>
                 ) : null}

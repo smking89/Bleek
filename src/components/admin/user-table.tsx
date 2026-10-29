@@ -197,7 +197,7 @@ export function UserTable({
                   <th scope="col" className="px-4 py-2 font-semibold">Account</th>
                   <th scope="col" className="px-3 py-2 font-semibold">Role</th>
                   <th scope="col" className="px-3 py-2 font-semibold">Status</th>
-                  <th scope="col" className="px-3 py-2 text-right font-semibold">Coins</th>
+                  <th scope="col" className="px-3 py-2 text-right font-semibold">ASTRO Coins</th>
                   <th scope="col" className="px-3 py-2 text-right font-semibold">Chips</th>
                   <th scope="col" className="px-3 py-2 font-semibold">Joined</th>
                   <th scope="col" className="px-4 py-2 text-right font-semibold">
@@ -398,7 +398,7 @@ export function UserTable({
 
               {canMoveCoins ? (
                 <section className="rounded-lg border border-white/[0.07] bg-[#1A1A1E] p-3">
-                  <h3 className="text-[12px] font-semibold text-[#FAFAFA]">Adjust wallet</h3>
+                  <h3 className="text-[12px] font-semibold text-[#FAFAFA]">Adjust ASTRO wallet</h3>
                   <p className="mt-0.5 text-[11px] leading-4 text-[#8A8A94]">
                     Writes through the version-guarded ledger. Negative values debit.
                   </p>
@@ -425,12 +425,12 @@ export function UserTable({
                       void act(
                         selected.handle,
                         { action: "wallet", delta: Number(delta), note },
-                        `Wallet adjusted by ${Number(delta) > 0 ? "+" : ""}${Number(delta).toLocaleString()} coins.`,
+                        `ASTRO wallet adjusted by ${Number(delta) > 0 ? "+" : ""}${Number(delta).toLocaleString()} ASTRO Coins.`,
                       )
                     }
                     className={`${BUTTON_GHOST} mt-2`}
                   >
-                    Move coins
+                    Move ASTRO Coins
                   </button>
                 </section>
               ) : null}

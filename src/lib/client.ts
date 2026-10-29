@@ -86,7 +86,7 @@ export const api = {
     request<ServerPayload>(`/api/channels/${channelId}`, { method: "PATCH", body: JSON.stringify({ layout }) }),
   setDoc: (channelId: string, doc: string) =>
     request<ServerPayload>(`/api/channels/${channelId}`, { method: "PATCH", body: JSON.stringify({ doc }) }),
-  mint: (serverId: string, input: { name: string; description?: string; slot: ShopItem["slot"]; key: string; price: number }) =>
+  mint: (serverId: string, input: { name: string; description?: string; slot: ShopItem["slot"]; price: number }) =>
     request<ServerPayload & { item: ShopItem }>(`/api/servers/${serverId}/storefront`, {
       method: "POST",
       body: JSON.stringify(input),

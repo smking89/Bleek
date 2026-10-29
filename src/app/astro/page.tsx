@@ -142,7 +142,7 @@ export default async function LandingPage({
           {[
             {
               title: "One wallet",
-              body: "Coins earned in a Koba match spend the same in the Bleek cosmetic shop. One balance, one ledger, no transfers.",
+              body: "ASTRO Coins earned in a Koba match spend the same in the Bleek cosmetic shop. One balance, one ledger, no transfers.",
             },
             {
               title: "Chips that travel",

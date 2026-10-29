@@ -9,7 +9,7 @@ import {
   ASTRO_SIGNIN_HTML,
   ASTRO_SIGNIN_LABEL,
   AstroLockup,
-  AstroMark,
+  AstroGlyph, AstroMark,
   AstroSignInButton,
 } from "@/components/brand/astro-brand";
 
@@ -327,6 +327,13 @@ export default function BrandGuidelinesPage() {
               the transparent knockouts are for layout where the surface has to show through.
             </p>
 
+            <p className="mt-3">
+              The mark is flat and single-colour, so a product recolours it by setting one fill — <code className="text-[#06B6D4]">currentColor</code>{" "}
+              on <code className="text-[#06B6D4]">&lt;AstroGlyph /&gt;</code> — and nothing else. Never add a gradient,
+              pattern, texture, glow or internal detail, and never redraw the strokes to carry one: the silhouette has to
+              stay identical in a 13px balance chip and at 512px.
+            </p>
+
             <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
               <Specimen label="Full colour · Space Black" note="The default. App icon and metadata.">
                 <AstroMark src={ASTRO_ICON} size={64} />
@@ -339,6 +346,9 @@ export default function BrandGuidelinesPage() {
               </Specimen>
               <Specimen label="Knockout · black on Static White" background="#F8FAFC">
                 <AstroMark src={ASTRO_MARK_BLACK} size={64} />
+              </Specimen>
+              <Specimen label="Tinted · one fill, no pattern" background="#0B0C0E">
+                <AstroGlyph size={64} className="text-[#06B6D4]" />
               </Specimen>
             </div>
 

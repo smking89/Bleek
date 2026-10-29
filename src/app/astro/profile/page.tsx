@@ -98,7 +98,7 @@ export default async function AstroProfilePage() {
           ) : null}
         </div>
         <span className="shrink-0 rounded-full border border-white/10 bg-[#111214] px-3 py-1.5 text-[12px] font-semibold tabular-nums text-neutral-300">
-          {(account.wallet?.coins ?? 0).toLocaleString()} coins
+          {(account.wallet?.coins ?? 0).toLocaleString()} ASTRO Coins
         </span>
       </div>
 

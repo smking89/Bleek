@@ -121,3 +121,27 @@ export const ASTRO_SIGNIN_HTML = [
   `  ${ASTRO_SIGNIN_LABEL}`,
   `</a>`,
 ].join("\n");
+
+/**
+ * The mark as a flat, single-colour vector.
+ *
+ * It fills with `currentColor`, so a product tints it by setting a text colour
+ * and nothing else. There is deliberately no gradient, pattern, texture or inner
+ * detail: the shape is the whole mark, which is what keeps it legible at 12px in
+ * a balance chip and identical at 512px.
+ */
+export function AstroGlyph({ size = 16, className = "" }: { size?: number; className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 32 32"
+      width={size}
+      height={size}
+      aria-hidden="true"
+      focusable="false"
+      fill="currentColor"
+      className={`shrink-0 ${className}`}
+    >
+      <path d="M13.55 1.7 1.15 30.3h6.35c1.5 0 2.55-1.02 2.95-2.45l3.95-13.1c.25-.85 1.35-.84 1.6 0l4 13.1c.4 1.43 1.45 2.45 2.95 2.45h6.35L18.45 1.7c-1.2-2.27-3.7-2.27-4.9 0Z" />
+    </svg>
+  );
+}

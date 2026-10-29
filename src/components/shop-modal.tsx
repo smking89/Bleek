@@ -1,5 +1,7 @@
 "use client";
 
+import { AstroGlyph } from "./brand/astro-brand";
+
 import { useState } from "react";
 import type { CosmeticSlot, ShopItem, User } from "@/lib/types";
 import { RARITY, SLOT_META, THEMES } from "@/lib/shop";
@@ -17,13 +19,16 @@ const TABS: { key: CosmeticSlot | "inventory"; label: string; icon: "sparkles" |
   { key: "inventory", label: "Inventory", icon: "inbox" },
 ];
 
-function Coins({ amount }: { amount: number }) {
+function Coins({ amount, label = false }: { amount: number; label?: boolean }) {
   return (
-    <span className="flex items-center gap-1.5 font-semibold tabular-nums text-[var(--yellow)]">
-      <span className="flex h-4 w-4 items-center justify-center rounded-full bg-[var(--yellow)] text-[9px] font-black text-black">
-        C
-      </span>
+    <span title="ASTRO Coins" className="flex items-center gap-1.5 font-semibold tabular-nums text-[var(--yellow)]">
+      <AstroGlyph size={13} />
       {amount.toLocaleString()}
+      {label ? (
+        <span className="text-[10px] font-semibold uppercase tracking-[0.08em] text-[var(--text-muted)]">
+          ASTRO Coins
+        </span>
+      ) : null}
     </span>
   );
 }
@@ -194,13 +199,13 @@ function ItemDetail({
                       : "cursor-not-allowed bg-[var(--bg-active)] text-[var(--text-faint)]"
               } disabled:opacity-70`}
             >
-              {busy ? "Working…" : equipped ? "Equipped" : owned ? "Equip now" : affordable ? "Buy now" : "Not enough coins"}
+              {busy ? "Working…" : equipped ? "Equipped" : owned ? "Equip now" : affordable ? "Buy now" : "Not enough ASTRO Coins"}
             </button>
             <button
               type="button"
               onClick={() => onGift(item.id)}
               disabled={busy || !affordable}
-              title={affordable ? "Buy this for another member" : "Not enough coins to gift this"}
+              title={affordable ? "Buy this for another member" : "Not enough ASTRO Coins to gift this"}
               className="flex h-9 items-center justify-center gap-2 rounded-lg border border-[var(--border-strong)] text-sm font-semibold text-[var(--text)] transition hover:border-[var(--accent)] disabled:cursor-not-allowed disabled:opacity-40"
             >
               <Icon name="gift" size={15} /> Gift to a member
@@ -298,10 +303,10 @@ export function ShopModal({
             })}
           </nav>
           <div className="m-2 rounded-lg bg-[var(--bg-sidebar)] p-3">
-            <div className="text-[10px] font-bold uppercase tracking-wider text-[var(--text-muted)]">Balance</div>
+            <div className="text-[10px] font-bold uppercase tracking-wider text-[var(--text-muted)]">ASTRO wallet</div>
             <div className="mt-1 flex items-center justify-between">
-              <Coins amount={me.coins} />
-              <span className="text-[10px] text-[var(--text-faint)]">virtual</span>
+              <Coins amount={me.coins} label />
+              <span className="text-[10px] text-[var(--text-faint)]">shared</span>
             </div>
           </div>
         </aside>

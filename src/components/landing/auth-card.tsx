@@ -394,7 +394,7 @@ export function AuthCard({
           </form>
 
           <p className="mt-4 text-[11px] leading-5 text-[#71717A]">
-            New accounts start with 250 coins in the shared wallet. Your email and region stay on this deployment and are
+            New accounts start with 250 ASTRO Coins in their ASTRO wallet. Your email and region stay on this deployment and are
             never sent to a third party.
           </p>
         </>

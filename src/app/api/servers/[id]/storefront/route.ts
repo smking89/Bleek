@@ -9,18 +9,16 @@ export async function POST(request: Request, context: { params: Promise<{ id: st
       name?: string;
       description?: string;
       slot?: ShopItem["slot"];
-      key?: string;
       price?: number;
     };
-    if (!body.name || !body.slot || !body.key) {
-      return Response.json({ error: "name, slot and key are required" }, { status: 400 });
+    if (!body.name || !body.slot) {
+      return Response.json({ error: "name and slot are required" }, { status: 400 });
     }
     return Response.json(
       await mintCosmetic(await actorId(), id, {
         name: body.name,
         description: body.description,
         slot: body.slot,
-        key: body.key,
         price: Number(body.price ?? 0),
       }),
     );
